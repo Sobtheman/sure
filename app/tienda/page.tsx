@@ -35,14 +35,14 @@ export default function Tienda() {
 
       <section className="relative h-[70svh] min-h-[420px] overflow-hidden bg-ink" aria-label="Campaña">
         <Image
-          src={hero.image}
-          alt={hero.imageAlt}
+          src="/img/producto/camiseta-campana.jpg"
+          alt="Campaña Watch Your Demons: la camiseta Dissidencia de espaldas y de frente bajo luz naranja"
           fill
           sizes="100vw"
-          className="object-cover object-[64%_35%]"
+          className="object-cover object-[50%_40%]"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-        <p className="wrap label absolute inset-x-0 bottom-8 text-paper">SURE · {hero.collection}</p>
+        <p className="wrap label absolute inset-x-0 bottom-8 text-paper">Watch Your Demons · {hero.collection}</p>
       </section>
     </div>
   );

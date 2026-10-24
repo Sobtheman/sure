@@ -3,14 +3,17 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type { ProductImage } from "@/lib/catalog";
-import { Close } from "@/components/icons";
+import Lightbox from "@/components/Lightbox";
 
-// Móvil: carrusel a todo el ancho con deslizamiento. Escritorio: fotos apiladas.
-// Tocar una foto la abre a pantalla completa.
+const HOVER_ZOOM = 2.2;
+
+// Móvil: carrusel a todo el ancho; tocar abre el visor con pellizco y doble toque.
+// Escritorio: fotos apiladas; al pasar el cursor la foto se acerca en su marco y sigue al mouse,
+// clic abre el visor a pantalla completa.
 export default function ProductGallery({ images }: { images: ProductImage[] }) {
   const track = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
-  const [zoom, setZoom] = useState<number | null>(null);
+  const [viewer, setViewer] = useState<number | null>(null);
 
   useEffect(() => {
     const el = track.current;
@@ -20,22 +23,12 @@ export default function ProductGallery({ images }: { images: ProductImage[] }) {
     return () => el.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    if (zoom === null) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setZoom(null);
-    window.addEventListener("keydown", onKey);
-    return () => {
-      document.body.style.overflow = prev;
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [zoom]);
-
   const go = (i: number) => {
     const el = track.current;
     if (el) el.scrollTo({ left: i * el.clientWidth, behavior: "smooth" });
   };
+
+  const fit = (img: ProductImage) => (img.view === "Frente" || img.view === "Espalda" ? "object-cover" : "object-cover");
 
   return (
     <>
@@ -46,23 +39,18 @@ export default function ProductGallery({ images }: { images: ProductImage[] }) {
             <button
               key={img.src}
               className="relative aspect-[4/5] w-full shrink-0 snap-center bg-frame"
-              onClick={() => setZoom(i)}
+              onClick={() => setViewer(i)}
               aria-label={`Ampliar foto: ${img.view}`}
             >
-              <Image
-                src={img.src}
-                alt={img.alt}
-                fill
-                priority={i === 0}
-                sizes="100vw"
-                className="object-cover"
-              />
+              <Image src={img.src} alt={img.alt} fill priority={i === 0} sizes="100vw" className={fit(img)} />
             </button>
           ))}
         </div>
-        {images.length > 1 && (
-          <div className="pointer-events-none absolute inset-x-0 bottom-4 flex items-center justify-between px-4">
-            <span className="label rounded-sm bg-paper/85 px-2 py-1 text-[10px]">{images[index]?.view}</span>
+        <div className="pointer-events-none absolute inset-x-0 bottom-4 flex items-center justify-between px-4">
+          <span className="label bg-paper/85 px-2 py-1 text-[10px]">
+            {images[index]?.view} · Toca para ampliar
+          </span>
+          {images.length > 1 && (
             <div className="pointer-events-auto flex gap-1.5">
               {images.map((img, i) => (
                 <button
@@ -73,52 +61,77 @@ export default function ProductGallery({ images }: { images: ProductImage[] }) {
                 />
               ))}
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Escritorio */}
       <div className="hidden gap-3 lg:grid">
         {images.map((img, i) => (
-          <figure key={img.src} className="relative">
-            <button
-              className="relative block aspect-[4/5] w-full cursor-zoom-in overflow-hidden bg-frame"
-              onClick={() => setZoom(i)}
-              aria-label={`Ampliar foto: ${img.view}`}
-            >
-              <Image src={img.src} alt={img.alt} fill priority={i === 0} sizes="58vw" className="object-cover" />
-            </button>
-            <figcaption className="label absolute left-4 top-4 text-[10px] text-ink/60">{img.view}</figcaption>
-          </figure>
+          <HoverZoom key={img.src} img={img} priority={i === 0} onOpen={() => setViewer(i)} />
         ))}
       </div>
 
-      {zoom !== null && (
-        <div role="dialog" aria-modal="true" aria-label="Foto ampliada" className="fixed inset-0 z-[70] bg-frame">
-          <Image src={images[zoom].src} alt={images[zoom].alt} fill sizes="100vw" className="object-contain" />
-          <button
-            autoFocus
-            onClick={() => setZoom(null)}
-            className="absolute right-3 top-3 grid h-12 w-12 place-items-center bg-paper"
-            aria-label="Cerrar foto"
-          >
-            <Close />
-          </button>
-          {images.length > 1 && (
-            <div className="absolute inset-x-0 bottom-6 flex justify-center gap-2">
-              {images.map((img, i) => (
-                <button
-                  key={img.src}
-                  onClick={() => setZoom(i)}
-                  className={`label bg-paper px-3 py-2 text-[10px] ${i === zoom ? "" : "opacity-50"}`}
-                >
-                  {img.view}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+      {viewer !== null && (
+        <Lightbox
+          images={images.map((i) => ({ src: i.src, alt: i.alt, label: i.view }))}
+          start={viewer}
+          onClose={() => setViewer(null)}
+        />
       )}
     </>
+  );
+}
+
+function HoverZoom({ img, priority, onOpen }: { img: ProductImage; priority: boolean; onOpen: () => void }) {
+  const frame = useRef<HTMLButtonElement>(null);
+  const layer = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(false);
+
+  // El punto bajo el cursor queda fijo mientras la foto crece: se recorre moviendo el mouse
+  const move = (e: React.MouseEvent) => {
+    const b = frame.current!.getBoundingClientRect();
+    const x = ((e.clientX - b.left) / b.width) * 100;
+    const y = ((e.clientY - b.top) / b.height) * 100;
+    if (layer.current) layer.current.style.transformOrigin = `${x}% ${y}%`;
+  };
+
+  return (
+    <figure className="relative">
+      <button
+        ref={frame}
+        onMouseEnter={(e) => {
+          move(e);
+          setActive(true);
+        }}
+        onMouseMove={move}
+        onMouseLeave={() => setActive(false)}
+        onClick={onOpen}
+        className="relative block aspect-[4/5] w-full cursor-zoom-in overflow-hidden bg-frame"
+        aria-label={`Ampliar foto: ${img.view}`}
+      >
+        <div
+          ref={layer}
+          className="absolute inset-0 transition-transform duration-500 ease-out will-change-transform"
+          style={{ transform: active ? `scale(${HOVER_ZOOM})` : "scale(1)" }}
+        >
+          <Image src={img.src} alt={img.alt} fill priority={priority} sizes="100vw" quality={90} className="object-cover" />
+        </div>
+      </button>
+      <figcaption
+        className={`label pointer-events-none absolute left-4 top-4 text-[10px] text-ink/60 transition-opacity duration-300 ${
+          active ? "opacity-0" : "opacity-100"
+        }`}
+      >
+        {img.view}
+      </figcaption>
+      <p
+        className={`label pointer-events-none absolute bottom-4 left-4 bg-paper/85 px-2 py-1 text-[10px] transition-opacity duration-300 ${
+          active ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        Clic para ver en pantalla completa
+      </p>
+    </figure>
   );
 }

@@ -11,8 +11,7 @@ export default function Envios() {
       <section>
         <h2>Envíos</h2>
         <p>
-          Enviamos a todo Colombia por una tarifa única de {formatCOP(shipping.fee)}
-          {shipping.carrier ? ` con ${shipping.carrier}` : ""}.
+          Enviamos a todo Colombia por una tarifa única de {formatCOP(shipping.fee)}.
         </p>
         <p>
           Despachamos en {shipping.dispatch} desde que se confirma el pago. La entrega tarda {shipping.delivery}. Cuando

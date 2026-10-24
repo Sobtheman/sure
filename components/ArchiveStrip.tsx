@@ -23,7 +23,7 @@ export default function ArchiveStrip() {
       <ul className="no-scrollbar mt-8 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 sm:mt-10 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible sm:px-8 lg:mx-auto lg:max-w-[1440px] lg:px-12">
         {archive.map((c, i) => (
           <Reveal as="li" key={c.slug} delay={i * 90} className="w-[78vw] shrink-0 snap-start sm:w-auto">
-            <Link href={`/archivo#${c.slug}`} className="group block">
+            <Link href={`/archivo/${c.slug}`} className="group block">
               <div className="relative aspect-[4/5] overflow-hidden bg-white/5 sm:aspect-[5/4]">
                 <Image
                   src={c.cover.src}

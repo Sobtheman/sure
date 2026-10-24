@@ -18,16 +18,6 @@ export default function Contacto() {
         <a href={store.instagram} target="_blank" rel="noopener noreferrer" className="link-line text-[14px]">
           {store.instagramHandle} <Arrow className="text-burgundy" />
         </a>
-        {store.whatsapp && (
-          <a href={`https://wa.me/${store.whatsapp}`} target="_blank" rel="noopener noreferrer" className="link-line text-[14px]">
-            WhatsApp <Arrow className="text-burgundy" />
-          </a>
-        )}
-        {store.email && (
-          <a href={`mailto:${store.email}`} className="link-line text-[14px]">
-            {store.email} <Arrow className="text-burgundy" />
-          </a>
-        )}
       </div>
     </Prose>
   );

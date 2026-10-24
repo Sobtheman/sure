@@ -14,7 +14,7 @@ export default function Privacidad() {
       </p>
       <p>
         De acuerdo con la Ley 1581 de 2012, puedes conocer, actualizar, rectificar o pedir que eliminemos tus datos en
-        cualquier momento escribiéndonos a {store.email || `Instagram (${store.instagramHandle})`}.
+        cualquier momento escribiéndonos por Instagram ({store.instagramHandle}).
       </p>
       <p>
         Los datos de tu tarjeta o cuenta bancaria nunca pasan por este sitio: los recibe directamente la pasarela de

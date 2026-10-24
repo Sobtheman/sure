@@ -48,11 +48,12 @@ export const products: Product[] = [
     collection: "Dissidencia",
     tagline: "Watch Your Demons",
     description:
-      "Camiseta blanca de corte amplio con el ojo rojo de Dissidencia al pecho y “Watch Your Demons” en caligrafía sobre el ruedo. Hombro caído, cuello grueso y caída pesada.",
+      "Camiseta blanca de corte amplio. Al frente, el ojo rojo de Dissidencia al pecho y “Watch Your Demons” en caligrafía sobre el ruedo. A la espalda, el ojo grande en semitono con la misma frase. Hombro caído, cuello grueso y caída pesada.",
     details: [
       "Fit oversize, hombro caído",
       "100 % algodón, tejido de punto pesado", // POR CONFIRMAR
       "Estampado frontal en rojo y frase en el ruedo",
+      "Estampado trasero: ojo en semitono y “Watch Your Demons”",
       "Etiqueta SURE en el cuello",
     ],
     care,
@@ -63,6 +64,20 @@ export const products: Product[] = [
         view: "Frente",
         width: 792,
         height: 990,
+      },
+      {
+        src: "/img/producto/camiseta-espalda.jpg",
+        alt: "Espalda de la camiseta Dissidencia en modelo: ojo rojo en semitono y la frase Watch Your Demons",
+        view: "Espalda",
+        width: 690,
+        height: 862,
+      },
+      {
+        src: "/img/producto/camiseta-campana.jpg",
+        alt: "Campaña Watch Your Demons: un modelo de espaldas y una modelo de frente con la camiseta Dissidencia, bajo luz naranja",
+        view: "En modelo",
+        width: 1179,
+        height: 1348,
       },
       {
         src: "/img/producto/camiseta-modelo.jpg",

@@ -12,10 +12,11 @@ npm run build && npm start
 
 | Ruta | Qué tiene |
 |---|---|
-| `/` | Hero de campaña (foto, o film si se configura), Disponible ahora, Archivo, pie |
+| `/` | Hero de campaña, Disponible ahora, Archivo, pie |
 | `/tienda` | La colección Dissidencia |
-| `/producto/[slug]` | Galería, tallas con stock, guía de medidas, envíos, agregar a la bolsa |
-| `/archivo` | Niebla, Intrinsic y Sure26 como archivo editorial (agotadas) |
+| `/producto/[slug]` | Galería con zoom, tallas con stock, guía de medidas, envíos, agregar a la bolsa |
+| `/archivo` | Las tres colecciones anteriores (agotadas) |
+| `/archivo/[slug]` | Una colección: portada, historia, galería con zoom, piezas y la siguiente colección |
 | `/checkout` | Datos de envío, resumen y pago |
 | `/pedido` | Regreso de la pasarela: consulta el estado real del pago con el proveedor |
 | `/envios`, `/contacto`, `/privacidad` | Políticas y contacto |
@@ -23,16 +24,18 @@ npm run build && npm start
 ## Dónde se cambia cada cosa
 
 - `lib/catalog.ts`: productos, precios, stock por talla, medidas, composición y fotos
-- `lib/config.ts`: Instagram, correo, WhatsApp, tarifa y tiempos de envío, días de cambio, foto o film del hero
-- `lib/archive.ts`: colecciones del archivo y sus fotos
+- `lib/config.ts`: Instagram, tarifa y tiempos de envío, días de cambio, foto del hero
+- `lib/archive.ts`: colecciones del archivo: historia, cita, piezas y fotos
 - `public/img/`: fotos (Next las sirve en AVIF/WebP al tamaño de cada pantalla)
 - `public/brand/sure-logo.svg`, `components/Logo.tsx`: logo vectorizado
 
 Todo lo marcado `POR CONFIRMAR` en esos archivos es un valor de demo.
 
-## Film del hero
+## Zoom
 
-Pon el video en `public/media/` y su ruta en `hero.video` (`lib/config.ts`). La foto queda como póster y respaldo, y aparecen los controles de pausa, progreso y sonido.
+- Escritorio: al pasar el cursor por una foto de producto se acerca 2,2× dentro de su marco y sigue al mouse. Clic abre el visor a pantalla completa: clic acerca en ese punto, mover el mouse recorre, otro clic aleja, flechas del teclado cambian de foto.
+- Móvil: tocar abre el visor; pellizcar o doble toque acerca, arrastrar recorre, deslizar cambia de foto.
+- El visor (`components/Lightbox.tsx`) se usa también en las galerías del archivo.
 
 ## Pagos
 
