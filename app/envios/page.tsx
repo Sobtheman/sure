@@ -1,0 +1,55 @@
+import type { Metadata } from "next";
+import Prose from "@/components/Prose";
+import { shipping, store } from "@/lib/config";
+import { formatCOP } from "@/lib/format";
+
+export const metadata: Metadata = { title: "Envíos y cambios" };
+
+export default function Envios() {
+  return (
+    <Prose eyebrow="Ayuda" title="Envíos y cambios">
+      <section>
+        <h2>Envíos</h2>
+        <p>
+          Enviamos a todo Colombia por una tarifa única de {formatCOP(shipping.fee)}
+          {shipping.carrier ? ` con ${shipping.carrier}` : ""}.
+        </p>
+        <p>
+          Despachamos en {shipping.dispatch} desde que se confirma el pago. La entrega tarda {shipping.delivery}. Cuando
+          sale tu pedido te escribimos con el número de guía.
+        </p>
+      </section>
+      <section>
+        <h2>Cambios de talla</h2>
+        <p>
+          Si la talla no te quedó, puedes cambiarla dentro de los {shipping.exchangeDays} días siguientes a la entrega.
+          La prenda debe estar sin uso, sin lavar y con sus etiquetas. El cambio está sujeto a disponibilidad de la talla
+          que necesitas.
+        </p>
+        <p>
+          Escríbenos por{" "}
+          <a href={store.instagramDM} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">
+            Instagram
+          </a>{" "}
+          con tu número de pedido para coordinar el cambio.
+        </p>
+      </section>
+      <section>
+        <h2>Derecho de retracto</h2>
+        <p>
+          Como compraste en línea, tienes derecho a retractarte de la compra dentro de los cinco (5) días hábiles
+          siguientes a la entrega, según el artículo 47 de la Ley 1480 de 2011 (Estatuto del Consumidor). La prenda
+          debe devolverse en el mismo estado en que la recibiste; los costos de transporte de la devolución corren por tu
+          cuenta. Te reintegramos el dinero dentro de los treinta (30) días calendario siguientes.
+        </p>
+      </section>
+      <section>
+        <h2>Garantía</h2>
+        <p>
+          Si tu prenda llega con un defecto de fabricación, escríbenos con fotos y la reponemos o te devolvemos el
+          dinero.
+        </p>
+      </section>
+    </Prose>
+  );
+}
