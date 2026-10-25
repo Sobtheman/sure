@@ -60,8 +60,21 @@ export default function CheckoutForm({ payment }: { payment: Payment }) {
       setServerError("Acepta el tratamiento de datos para continuar.");
       return;
     }
-    setBusy(true);
     setServerError("");
+    // Sin pasarela: el pedido se arma aquí y se envía por Instagram. Nada se cobra.
+    if (!payment) {
+      const reference = `SURE-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(16).slice(2, 6).toUpperCase()}`;
+      const text = orderText(reference);
+      let copied = false;
+      try {
+        await navigator.clipboard.writeText(text);
+        copied = true;
+      } catch {}
+      setManual({ reference, text, copied });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    setBusy(true);
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
@@ -70,18 +83,8 @@ export default function CheckoutForm({ payment }: { payment: Payment }) {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "No se pudo procesar el pedido.");
-      if (data.mode === "redirect") {
-        window.location.href = data.url;
-        return;
-      }
-      const text = orderText(data.reference);
-      let copied = false;
-      try {
-        await navigator.clipboard.writeText(text);
-        copied = true;
-      } catch {}
-      setManual({ reference: data.reference, text, copied });
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      if (data.mode !== "redirect") throw new Error("Los pagos en línea no están disponibles en este momento.");
+      window.location.href = data.url;
     } catch (err) {
       setServerError(err instanceof Error ? err.message : "No se pudo procesar el pedido.");
     } finally {

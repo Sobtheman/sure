@@ -104,11 +104,13 @@ export const products: Product[] = [
     collection: "Dissidencia",
     tagline: "El monograma S",
     description:
-      "Hoodie negro con el monograma S de SURE al pecho y repetido en la manga. Capucha doble, bolsillo canguro y puños en rib.",
+      "Hoodie negro. Al pecho, el monograma S de SURE; en la manga, la firma en caligrafía; a la espalda, un rostro en blanco atravesado por “Demons” en rojo. Capucha doble, bolsillo canguro y puños en rib.",
     details: [
       "Fit amplio, hombro caído",
       "Algodón perchado por dentro", // POR CONFIRMAR
-      "Monograma S estampado en el pecho y en la manga",
+      "Monograma S estampado al pecho",
+      "Firma en caligrafía sobre la manga",
+      "Estampado trasero: rostro en blanco y “Demons” en rojo",
       "Capucha doble sin cordón, bolsillo canguro",
     ],
     care,
@@ -119,6 +121,27 @@ export const products: Product[] = [
         view: "Frente",
         width: 808,
         height: 1010,
+      },
+      {
+        src: "/img/producto/hoodie-espalda.jpg",
+        alt: "Modelo de espaldas subiendo una escalera con el hoodie Dissidencia: rostro en blanco y Demons en rojo",
+        view: "Espalda",
+        width: 1156,
+        height: 1467,
+      },
+      {
+        src: "/img/producto/hoodie-detalle.jpg",
+        alt: "Detalle del hoodie Dissidencia: firma en caligrafía sobre la manga y monograma S al pecho",
+        view: "Detalle",
+        width: 1148,
+        height: 1467,
+      },
+      {
+        src: "/img/producto/hoodie-modelo.jpg",
+        alt: "Modelo agachado en una escalera de ladrillo con el hoodie Dissidencia negro",
+        view: "En modelo",
+        width: 1151,
+        height: 1464,
       },
     ],
     stock: { S: 5, M: 9, L: 6, XL: 0 },
