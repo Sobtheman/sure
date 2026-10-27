@@ -5,6 +5,8 @@ import { useMemo, useState } from "react";
 import type { ArchiveImage } from "@/lib/archive";
 import Lightbox from "@/components/Lightbox";
 import Reveal from "@/components/Reveal";
+import { useLang } from "@/components/LangProvider";
+import { archiveCopy } from "@/lib/copy/archive";
 
 type Tile = { img: ArchiveImage; shape: "wide" | "half" | "single" };
 
@@ -36,6 +38,7 @@ export default function ArchiveGallery({
   name: string;
   dark?: boolean;
 }) {
+  const t = archiveCopy[useLang()];
   const [open, setOpen] = useState<number | null>(null);
   const tiles = useMemo(() => layout(images), [images]);
 
@@ -54,7 +57,7 @@ export default function ArchiveGallery({
                 shape === "wide" ? "" : "aspect-[4/5]"
               }`}
               style={shape === "wide" ? { aspectRatio: `${img.width} / ${img.height}` } : undefined}
-              aria-label={`Ampliar foto ${i + 1} de ${name}`}
+              aria-label={t.zoomPhoto(i + 1, name)}
             >
               <Image
                 src={img.src}

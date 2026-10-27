@@ -3,6 +3,8 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { getProduct, type Size } from "@/lib/catalog";
 import { shippingFor } from "@/lib/config";
+import { useLang } from "@/components/LangProvider";
+import { cartCopy } from "@/lib/copy/cart";
 
 export type CartLine = { slug: string; size: Size; qty: number };
 
@@ -47,6 +49,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [lines, setLines] = useState<CartLine[]>([]);
   const [ready, setReady] = useState(false);
   const [open, setOpen] = useState(false);
+  // Los motivos de add() salen en el idioma de la página
+  const lang = useLang();
 
   useEffect(() => {
     try {
@@ -67,8 +71,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     (slug: string, size: Size, qty = 1) => {
       const max = stockOf(slug, size);
       const current = lines.find((l) => l.slug === slug && l.size === size)?.qty ?? 0;
-      if (max <= 0) return { ok: false, reason: "Talla agotada" };
-      if (current + qty > max) return { ok: false, reason: `Ya tienes en la bolsa todas las unidades disponibles en talla ${size}.` };
+      const t = cartCopy[lang];
+      if (max <= 0) return { ok: false, reason: t.sizeSoldOut };
+      if (current + qty > max) return { ok: false, reason: t.allInBag(size) };
       setLines((prev) => {
         const found = prev.find((l) => l.slug === slug && l.size === size);
         if (found) return prev.map((l) => (l === found ? { ...l, qty: l.qty + qty } : l));
@@ -76,7 +81,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       });
       return { ok: true };
     },
-    [lines]
+    [lines, lang]
   );
 
   const setQty = useCallback((slug: string, size: Size, qty: number) => {

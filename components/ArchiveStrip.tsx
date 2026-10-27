@@ -1,22 +1,26 @@
 import Image from "next/image";
 import Link from "@/components/Link";
-import { archive } from "@/lib/archive";
+import { archiveFor } from "@/lib/archive";
+import { archiveCopy } from "@/lib/copy/archive";
+import type { Lang } from "@/lib/i18n";
 import { Arrow } from "@/components/icons";
 import Reveal from "@/components/Reveal";
 
 // Bloque negro del inicio: las colecciones anteriores como archivo editorial.
-export default function ArchiveStrip() {
+export default function ArchiveStrip({ lang }: { lang: Lang }) {
+  const t = archiveCopy[lang];
+  const archive = archiveFor(lang);
   return (
     <section className="bg-ink pb-14 pt-12 text-paper sm:pb-20 sm:pt-16" aria-labelledby="archivo-titulo">
       <div className="wrap flex items-end justify-between gap-6">
         <div>
           <h2 id="archivo-titulo" className="display text-[34px] uppercase sm:text-[44px]">
-            Archivo
+            {t.stripTitle}
           </h2>
-          <p className="mt-2 text-[13px] text-white/55">Colecciones anteriores. Ya no están a la venta.</p>
+          <p className="mt-2 text-[13px] text-white/55">{t.stripIntro}</p>
         </div>
         <Link href="/archivo" className="link-line label shrink-0">
-          Ver colecciones <Arrow />
+          {t.stripCta} <Arrow />
         </Link>
       </div>
 

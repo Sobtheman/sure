@@ -11,8 +11,13 @@ import SizeGuide from "@/components/SizeGuide";
 import { Plus } from "@/components/icons";
 import SellingPoints from "@/components/SellingPoints";
 import { track } from "@/lib/track";
+import { useLang } from "@/components/LangProvider";
+import { shop } from "@/lib/copy/shop";
 
+// product llega ya traducido (getProduct con el idioma)
 export default function PurchasePanel({ product }: { product: Product }) {
+  const lang = useLang();
+  const t = shop[lang].purchase;
   const cart = useCart();
   const [size, setSize] = useState<Size | null>(null);
   const [error, setError] = useState("");
@@ -21,21 +26,22 @@ export default function PurchasePanel({ product }: { product: Product }) {
   const left = size ? product.stock[size] : 0;
 
   useEffect(() => {
-    track("Producto visto", { producto: product.name });
-  }, [product.name]);
+    track("Producto visto", { producto: product.slug });
+  }, [product.slug]);
 
   const add = () => {
     if (!size) {
-      setError("Elige una talla.");
+      setError(t.pickSize);
       return;
     }
     const res = cart.add(product.slug, size);
     if (!res.ok) {
-      setError(res.reason || "No se pudo agregar.");
+      // Mismos casos que la bolsa (talla agotada o ya están todas en la bolsa), con el texto en el idioma de la página
+      setError(res.reason ? (product.stock[size] <= 0 ? t.sizeSoldOut : t.allInBag(size)) : t.addFailed);
       return;
     }
     setError("");
-    track("Agregado a la bolsa", { producto: product.name, talla: size });
+    track("Agregado a la bolsa", { producto: product.slug, talla: size });
     cart.setOpen(true);
   };
 
@@ -45,17 +51,17 @@ export default function PurchasePanel({ product }: { product: Product }) {
       <h1 className="display mt-3 text-[40px] uppercase sm:text-[52px]">{product.short}</h1>
       <div className="mt-3 flex items-baseline justify-between gap-4">
         <p className="text-[15px] text-muted">{product.color}</p>
-        <p className="text-[18px] font-bold">{formatCOP(product.price)}</p>
+        <p className="text-[18px] font-bold">{formatCOP(product.price, lang)}</p>
       </div>
 
       <fieldset className="mt-8">
-        <legend className="sr-only">Talla</legend>
+        <legend className="sr-only">{t.size}</legend>
         <div className="flex items-center justify-between">
           <span className="label" aria-hidden>
-            Talla
+            {t.size}
           </span>
           <button onClick={() => setGuide(true)} className="text-[13px] underline underline-offset-4 hover:text-burgundy">
-            Guía de medidas
+            {t.sizeGuide}
           </button>
         </div>
         <div className="mt-3 grid grid-cols-4 gap-2">
@@ -73,7 +79,7 @@ export default function PurchasePanel({ product }: { product: Product }) {
                   setError("");
                 }}
                 aria-pressed={active}
-                aria-label={out ? `Talla ${s}, agotada` : `Talla ${s}`}
+                aria-label={out ? t.sizeOptionSoldOut(s) : t.sizeOption(s)}
                 className={`relative h-12 border text-[14px] font-semibold transition-colors ${
                   active
                     ? "border-burgundy bg-burgundy text-paper"
@@ -97,29 +103,27 @@ export default function PurchasePanel({ product }: { product: Product }) {
           {error ? (
             <span className="text-burgundy">{error}</span>
           ) : soldOut ? (
-            <span className="text-muted">Agotado en todas las tallas.</span>
+            <span className="text-muted">{t.soldOutAll}</span>
           ) : size && LOW_STOCK > 0 && left <= LOW_STOCK ? (
-            <span className="text-burgundy">
-              Últimas {left} {left === 1 ? "unidad" : "unidades"} en talla {size}.
-            </span>
+            <span className="text-burgundy">{t.lowStock(left, size)}</span>
           ) : size ? (
-            <span className="text-muted">Disponible en talla {size}.</span>
+            <span className="text-muted">{t.inStock(size)}</span>
           ) : null}
         </p>
       </fieldset>
 
       <button onClick={add} disabled={soldOut} className="btn-dark mt-3 w-full">
-        {soldOut ? "Agotado" : size ? `Agregar a la bolsa · ${formatCOP(product.price)}` : "Agregar a la bolsa"}
+        {soldOut ? t.soldOut : size ? t.addToBagPrice(formatCOP(product.price, lang)) : t.addToBag}
       </button>
 
-      <SellingPoints className="mt-6" />
+      <SellingPoints lang={lang} className="mt-6" />
 
       <div className="mt-8 border-t border-line">
-        <Section title="Descripción" open>
+        <Section title={t.description} open>
           <p>{product.description}</p>
           <p className="mt-3 text-muted">{product.fitNote}</p>
         </Section>
-        <Section title="Detalles y cuidado">
+        <Section title={t.detailsCare}>
           <ul className="list-disc space-y-1 pl-4">
             {product.details.map((d) => (
               <li key={d}>{d}</li>
@@ -131,17 +135,14 @@ export default function PurchasePanel({ product }: { product: Product }) {
             ))}
           </ul>
         </Section>
-        <Section title="Envíos y cambios">
+        <Section title={t.shippingTitle}>
           <p>
-            Envío gratis en compras desde {formatCOP(shipping.freeFrom)}; en compras menores, {formatCOP(shipping.fee)} a
-            cualquier ciudad de Colombia. Pagas contra entrega o te confirmamos el pago por WhatsApp. Te llega en{" "}
-            {shipping.deliveryDays} días hábiles o menos.
+            {t.shippingText(formatCOP(shipping.freeFrom, lang), formatCOP(shipping.fee, lang), shipping.deliveryDays)}
           </p>
           <p className="mt-3">
-            ¿No te quedó? Cambias la talla dentro de los {shipping.exchangeDays} días siguientes a la entrega, con la
-            prenda sin uso y con sus etiquetas.{" "}
+            {t.exchangeText(shipping.exchangeDays)}{" "}
             <Link href="/envios" className="underline underline-offset-4">
-              Ver envíos y cambios
+              {t.shippingLink}
             </Link>
           </p>
         </Section>

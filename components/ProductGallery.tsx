@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type { ProductImage } from "@/lib/catalog";
 import Lightbox from "@/components/Lightbox";
+import { useLang } from "@/components/LangProvider";
+import { shop } from "@/lib/copy/shop";
 
 const HOVER_ZOOM = 1.75;
 
@@ -11,6 +13,9 @@ const HOVER_ZOOM = 1.75;
 // Escritorio: fotos apiladas; al pasar el cursor la foto se acerca en su marco y sigue al mouse,
 // clic abre el visor a pantalla completa.
 export default function ProductGallery({ images }: { images: ProductImage[] }) {
+  const lang = useLang();
+  const t = shop[lang].gallery;
+  const viewLabel = shop[lang].viewLabel;
   const track = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
   const [viewer, setViewer] = useState<number | null>(null);
@@ -34,13 +39,13 @@ export default function ProductGallery({ images }: { images: ProductImage[] }) {
     <>
       {/* Móvil y tablet */}
       <div className="relative lg:hidden">
-        <div ref={track} className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto" aria-roledescription="carrusel">
+        <div ref={track} className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto" aria-roledescription={t.carousel}>
           {images.map((img, i) => (
             <button
               key={img.src}
               className="relative aspect-[4/5] w-full shrink-0 snap-center bg-frame"
               onClick={() => setViewer(i)}
-              aria-label={`Ampliar foto: ${img.view}`}
+              aria-label={t.zoomPhoto(viewLabel[img.view])}
             >
               <Image src={img.src} alt={img.alt} fill priority={i === 0} sizes="100vw" className={fit(img)} />
             </button>
@@ -48,7 +53,7 @@ export default function ProductGallery({ images }: { images: ProductImage[] }) {
         </div>
         <div className="pointer-events-none absolute inset-x-0 bottom-3 flex items-center justify-between gap-3 px-4">
           <span className="label whitespace-nowrap bg-paper/90 px-2 py-1 text-[10px]">
-            {images[index]?.view} · Ampliar
+            {images[index] && viewLabel[images[index].view]} · {t.zoomChip}
           </span>
           {images.length > 1 && (
             <div className="pointer-events-auto flex bg-paper/90 px-1">
@@ -56,7 +61,7 @@ export default function ProductGallery({ images }: { images: ProductImage[] }) {
                 <button
                   key={img.src}
                   onClick={() => go(i)}
-                  aria-label={`Ver foto ${i + 1}: ${img.view}`}
+                  aria-label={t.viewPhoto(i + 1, viewLabel[img.view])}
                   aria-current={i === index ? "true" : undefined}
                   className="grid h-8 w-7 place-items-center"
                 >
@@ -77,7 +82,7 @@ export default function ProductGallery({ images }: { images: ProductImage[] }) {
 
       {viewer !== null && (
         <Lightbox
-          images={images.map((i) => ({ src: i.src, alt: i.alt, width: i.width, height: i.height, label: i.view }))}
+          images={images.map((i) => ({ src: i.src, alt: i.alt, width: i.width, height: i.height, label: viewLabel[i.view] }))}
           start={viewer}
           onClose={() => setViewer(null)}
         />
@@ -87,6 +92,9 @@ export default function ProductGallery({ images }: { images: ProductImage[] }) {
 }
 
 function HoverZoom({ img, priority, onOpen }: { img: ProductImage; priority: boolean; onOpen: () => void }) {
+  const lang = useLang();
+  const t = shop[lang].gallery;
+  const view = shop[lang].viewLabel[img.view];
   const frame = useRef<HTMLButtonElement>(null);
   const layer = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(false);
@@ -111,7 +119,7 @@ function HoverZoom({ img, priority, onOpen }: { img: ProductImage; priority: boo
         onMouseLeave={() => setActive(false)}
         onClick={onOpen}
         className="relative block aspect-[4/5] w-full cursor-zoom-in overflow-hidden bg-frame"
-        aria-label={`Ampliar foto: ${img.view}`}
+        aria-label={t.zoomPhoto(view)}
       >
         <div
           ref={layer}
@@ -126,14 +134,14 @@ function HoverZoom({ img, priority, onOpen }: { img: ProductImage; priority: boo
           active ? "opacity-0" : "opacity-100"
         }`}
       >
-        {img.view}
+        {view}
       </figcaption>
       <p
         className={`label pointer-events-none absolute bottom-4 left-4 bg-paper/85 px-2 py-1 text-[10px] transition-opacity duration-300 ${
           active ? "opacity-100" : "opacity-0"
         }`}
       >
-        Clic para ver en pantalla completa
+        {t.fullscreen}
       </p>
     </figure>
   );

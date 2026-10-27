@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Close } from "@/components/icons";
+import { useLang } from "@/components/LangProvider";
+import { archiveCopy } from "@/lib/copy/archive";
 
 export type ViewerImage = { src: string; alt: string; label?: string; width?: number; height?: number };
 
@@ -28,6 +30,7 @@ export default function Lightbox({
   onClose: () => void;
   dark?: boolean;
 }) {
+  const tx = archiveCopy[useLang()];
   const [index, setIndex] = useState(start);
   const [zoomed, setZoomed] = useState(false);
   const box = useRef<HTMLDivElement>(null);
@@ -238,9 +241,9 @@ export default function Lightbox({
     <div className="pointer-events-none absolute inset-x-0 top-0 flex items-center justify-between p-3">
       <span className={`label pointer-events-auto px-3 py-2 text-[10px] ${chip}`}>
         {img.label ? `${img.label} · ` : ""}
-        {index + 1} / {images.length}
+        {tx.counter(index + 1, images.length)}
       </span>
-      <button autoFocus={!wide} onClick={onClose} className={`pointer-events-auto grid h-12 w-12 place-items-center ${chip}`} aria-label="Cerrar">
+      <button autoFocus={!wide} onClick={onClose} className={`pointer-events-auto grid h-12 w-12 place-items-center ${chip}`} aria-label={tx.close}>
         <Close />
       </button>
     </div>
@@ -250,7 +253,7 @@ export default function Lightbox({
     <>
       <button
         onClick={() => go(-1)}
-        aria-label="Foto anterior"
+        aria-label={tx.prevPhoto}
         className={`absolute left-3 top-1/2 hidden h-12 w-12 -translate-y-1/2 place-items-center sm:grid ${chip}`}
       >
         <svg viewBox="0 0 10 16" className="h-4 w-2.5" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
@@ -259,7 +262,7 @@ export default function Lightbox({
       </button>
       <button
         onClick={() => go(1)}
-        aria-label="Foto siguiente"
+        aria-label={tx.nextPhoto}
         className={`absolute right-3 top-1/2 hidden h-12 w-12 -translate-y-1/2 place-items-center sm:grid ${chip}`}
       >
         <svg viewBox="0 0 10 16" className="h-4 w-2.5" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
@@ -271,7 +274,7 @@ export default function Lightbox({
 
   if (wide) {
     return (
-      <div role="dialog" aria-modal="true" aria-label="Foto ampliada" className={`fixed inset-0 z-[70] ${tone}`}>
+      <div role="dialog" aria-modal="true" aria-label={tx.viewer} className={`fixed inset-0 z-[70] ${tone}`}>
         <div ref={scroller} tabIndex={0} className="absolute inset-0 overflow-auto overscroll-contain outline-none">
           <div className="mx-auto flex min-h-full items-center" style={{ width: `${wideZoom ? WIDE_BASE * WIDE_ZOOM : WIDE_BASE}%` }}>
             <div
@@ -298,7 +301,7 @@ export default function Lightbox({
         {arrows}
         <p className="pointer-events-none absolute inset-x-0 bottom-5 flex justify-center">
           <span className={`label px-3 py-2 text-[10px] ${chip}`}>
-            {wideZoom ? "Clic para alejar" : "Baja para ver toda la foto · clic para acercar"}
+            {wideZoom ? tx.wideZoomOut : tx.wideHint}
           </span>
         </p>
       </div>
@@ -306,7 +309,7 @@ export default function Lightbox({
   }
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="Foto ampliada" className={`fixed inset-0 z-[70] ${tone}`}>
+    <div role="dialog" aria-modal="true" aria-label={tx.viewer} className={`fixed inset-0 z-[70] ${tone}`}>
       <div
         ref={box}
         className={`absolute inset-0 touch-none select-none overflow-hidden ${zoomed ? "cursor-zoom-out" : "cursor-zoom-in"}`}
@@ -334,8 +337,8 @@ export default function Lightbox({
       {arrows}
 
       <p className={`label pointer-events-none absolute inset-x-0 bottom-5 text-center text-[10px] ${dark ? "text-white/60" : "text-ink/55"}`}>
-        <span className="hidden sm:inline">{zoomed ? "Mueve el mouse para recorrer · clic para alejar" : "Clic para acercar"}</span>
-        <span className="sm:hidden">{zoomed ? "Arrastra para recorrer · doble toque para alejar" : "Pellizca o toca dos veces para acercar"}</span>
+        <span className="hidden sm:inline">{zoomed ? tx.mouseZoomed : tx.mouseHint}</span>
+        <span className="sm:hidden">{zoomed ? tx.touchZoomed : tx.touchHint}</span>
       </p>
     </div>
   );

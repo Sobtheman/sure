@@ -2,63 +2,54 @@ import type { Metadata } from "next";
 import Prose from "@/components/Prose";
 import { shipping, store, whatsappLink } from "@/lib/config";
 import { formatCOP } from "@/lib/format";
+import { langOf } from "@/lib/i18n";
+import { pagesCopy } from "@/lib/copy/pages";
 
-export const metadata: Metadata = { title: "Envíos y cambios" };
+type Props = { params: { lang: string } };
 
-export default function Envios() {
+export function generateMetadata({ params }: Props): Metadata {
+  return { title: pagesCopy[langOf(params)].shipping.metaTitle };
+}
+
+export default function Envios({ params }: Props) {
+  const lang = langOf(params);
+  const t = pagesCopy[lang].shipping;
   return (
-    <Prose eyebrow="Ayuda" title="Envíos y cambios">
+    <Prose eyebrow={t.eyebrow} title={t.title}>
       <section>
-        <h2>Envíos</h2>
+        <h2>{t.shippingHeading}</h2>
         <p>
-          Enviamos a toda Colombia. <b>El envío es gratis en compras desde {formatCOP(shipping.freeFrom)}</b>; en compras
-          menores cuesta {formatCOP(shipping.fee)}, a cualquier ciudad.
+          {t.nationwide} <b>{t.freeFrom(formatCOP(shipping.freeFrom, lang))}</b>
+          {t.fee(formatCOP(shipping.fee, lang))}
         </p>
-        <p>
-          Tu pedido llega en {shipping.deliveryDays} días hábiles o menos. Apenas sale, te mandamos el número de guía por
-          WhatsApp para que lo sigas.
-        </p>
+        <p>{t.delivery(shipping.deliveryDays)}</p>
       </section>
       <section>
-        <h2>Pago</h2>
-        <p>
-          Puedes pagar contra entrega: pagas cuando el pedido llega a tu puerta. Si prefieres, te confirmamos el pago por
-          WhatsApp antes del envío.
-        </p>
+        <h2>{t.paymentHeading}</h2>
+        <p>{t.payment}</p>
       </section>
       <section>
-        <h2>Cambios de talla</h2>
+        <h2>{t.exchangeHeading}</h2>
+        <p>{t.exchange(shipping.exchangeDays)}</p>
         <p>
-          ¿No te quedó? Cambias la talla dentro de los {shipping.exchangeDays} días siguientes a la entrega. La prenda debe
-          estar sin uso, sin lavar y con sus etiquetas, y el cambio depende de que haya la talla que necesitas.
-        </p>
-        <p>
-          Escríbenos por{" "}
-          <a href={whatsappLink("Hola SURE, vengo de la página y quiero cambiar una talla.")} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">
+          {t.exchangeContactBefore}{" "}
+          <a href={whatsappLink(t.exchangeWhatsapp)} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">
             WhatsApp
           </a>{" "}
-          o{" "}
+          {t.exchangeContactOr}{" "}
           <a href={store.instagramDM} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">
             Instagram
           </a>{" "}
-          con tu número de pedido y lo coordinamos.
+          {t.exchangeContactAfter}
         </p>
       </section>
       <section>
-        <h2>Derecho de retracto</h2>
-        <p>
-          Como compraste en línea, tienes derecho a retractarte de la compra dentro de los cinco (5) días hábiles
-          siguientes a la entrega, según el artículo 47 de la Ley 1480 de 2011 (Estatuto del Consumidor). La prenda
-          debe devolverse en el mismo estado en que la recibiste; los costos de transporte de la devolución corren por tu
-          cuenta. Te reintegramos el dinero dentro de los treinta (30) días calendario siguientes.
-        </p>
+        <h2>{t.withdrawalHeading}</h2>
+        <p>{t.withdrawal}</p>
       </section>
       <section>
-        <h2>Garantía</h2>
-        <p>
-          Si tu prenda llega con un defecto de fabricación, escríbenos con fotos y la reponemos o te devolvemos el
-          dinero.
-        </p>
+        <h2>{t.warrantyHeading}</h2>
+        <p>{t.warranty}</p>
       </section>
     </Prose>
   );

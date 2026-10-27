@@ -4,8 +4,11 @@ import { useEffect, useRef } from "react";
 import type { Product } from "@/lib/catalog";
 import { SIZES } from "@/lib/catalog";
 import { Close } from "@/components/icons";
+import { useLang } from "@/components/LangProvider";
+import { shop } from "@/lib/copy/shop";
 
 export default function SizeGuide({ product, open, onClose }: { product: Product; open: boolean; onClose: () => void }) {
+  const t = shop[useLang()].sizeGuide;
   const ref = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -23,23 +26,23 @@ export default function SizeGuide({ product, open, onClose }: { product: Product
       onClose={onClose}
       onClick={(e) => e.target === ref.current && onClose()}
       className="m-0 ml-auto h-full max-h-none w-full max-w-[520px] bg-paper p-0 text-ink backdrop:bg-ink/50"
-      aria-label="Guía de medidas"
+      aria-label={t.title}
     >
       <div className="flex h-16 items-center justify-between border-b border-line px-5">
-        <p className="label">Guía de medidas</p>
-        <button onClick={onClose} className="-mr-2 grid h-11 w-11 place-items-center" aria-label="Cerrar guía">
+        <p className="label">{t.title}</p>
+        <button onClick={onClose} className="-mr-2 grid h-11 w-11 place-items-center" aria-label={t.close}>
           <Close />
         </button>
       </div>
       <div className="px-5 py-7">
         <h2 className="display text-3xl uppercase">{product.name}</h2>
-        <p className="mt-2 text-[14px] text-muted">Medidas de la prenda en centímetros, tomadas en plano.</p>
+        <p className="mt-2 text-[14px] text-muted">{t.intro}</p>
 
         <div className="mt-6 overflow-x-auto">
           <table className="w-full border-collapse text-[13px] sm:text-[14px]">
             <thead>
               <tr className="border-b border-ink">
-                <th className="label py-3 text-left">Medida</th>
+                <th className="label py-3 text-left">{t.measure}</th>
                 {SIZES.map((s) => (
                   <th key={s} className="w-10 py-3 text-right font-bold sm:w-12">
                     {s}
@@ -70,18 +73,14 @@ export default function SizeGuide({ product, open, onClose }: { product: Product
         <Diagram hoodie={hoodie} />
 
         <ol className="mt-6 space-y-2 text-[14px] leading-relaxed">
-          <li>
-            <b>A. Ancho de pecho:</b> de costura a costura, 2 cm debajo de la sisa.
-          </li>
-          <li>
-            <b>B. Largo total:</b> desde el punto más alto del hombro hasta el ruedo.
-          </li>
-          <li>
-            <b>C. Largo de manga:</b> desde la costura del hombro hasta el final de la manga.
-          </li>
+          {t.steps.map((step) => (
+            <li key={step.term}>
+              <b>{step.term}</b> {step.text}
+            </li>
+          ))}
         </ol>
         <p className="mt-6 bg-mist p-4 text-[14px]">
-          {product.fitNote} Compara con una prenda tuya que te quede bien, medida igual sobre una superficie plana.
+          {product.fitNote} {t.compare}
         </p>
       </div>
     </dialog>

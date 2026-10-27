@@ -69,6 +69,7 @@ export default function Header() {
               href={localePath(lang === "es" ? "en" : "es", path)}
               className={`${item} opacity-70`}
               hrefLang={lang === "es" ? "en" : "es"}
+              lang={lang === "es" ? "en" : "es"}
               aria-label={t.switchLabel}
             >
               {t.switchTo}

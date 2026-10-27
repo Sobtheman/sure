@@ -1,29 +1,34 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getProduct, products } from "@/lib/catalog";
+import { getProduct, products, productsFor } from "@/lib/catalog";
 import ProductGallery from "@/components/ProductGallery";
 import PurchasePanel from "@/components/PurchasePanel";
 import ProductCard from "@/components/ProductCard";
 import { formatCOP } from "@/lib/format";
+import { langOf } from "@/lib/i18n";
+import { shop } from "@/lib/copy/shop";
 
 export function generateStaticParams() {
   return products.map((p) => ({ slug: p.slug }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const p = getProduct(params.slug);
+export function generateMetadata({ params }: { params: { lang: string; slug: string } }): Metadata {
+  const lang = langOf(params);
+  const p = getProduct(params.slug, lang);
   if (!p) return {};
   return {
     title: p.name,
-    description: `${p.name}, ${p.color.toLowerCase()}. ${formatCOP(p.price)}. ${p.description}`,
+    description: `${p.name}, ${p.color.toLowerCase()}. ${formatCOP(p.price, lang)}. ${p.description}`,
     openGraph: { images: [{ url: p.images[0].src }] },
   };
 }
 
-export default function ProductPage({ params }: { params: { slug: string } }) {
-  const product = getProduct(params.slug);
+export default function ProductPage({ params }: { params: { lang: string; slug: string } }) {
+  const lang = langOf(params);
+  const t = shop[lang].productPage;
+  const product = getProduct(params.slug, lang);
   if (!product) notFound();
-  const others = products.filter((p) => p.slug !== product.slug);
+  const others = productsFor(lang).filter((p) => p.slug !== product.slug);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -60,11 +65,11 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
 
       <section className="wrap mt-20 border-t border-line pb-20 pt-10 sm:mt-28" aria-labelledby="tambien">
         <h2 id="tambien" className="label text-muted">
-          También en {product.collection}
+          {t.alsoIn(product.collection)}
         </h2>
         <div className="mt-6 grid gap-5 sm:grid-cols-2">
           {others.map((p) => (
-            <ProductCard key={p.slug} product={p} />
+            <ProductCard key={p.slug} product={p} lang={lang} />
           ))}
         </div>
       </section>

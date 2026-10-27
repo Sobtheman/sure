@@ -21,10 +21,11 @@ export function localePath(lang: Lang, path: string) {
   return path === "/" ? "/en" : `/en${path}`;
 }
 
-// Separa el idioma de una ruta visible: "/en/tienda" -> { lang: "en", path: "/tienda" }
+// Separa el idioma de una ruta: "/en/tienda" -> { lang: "en", path: "/tienda" }.
+// En el servidor la ruta llega reescrita con /es ("/es/tienda"); en el navegador sin prefijo ("/tienda"). Las dos dan lo mismo.
 export function splitPath(pathname: string): { lang: Lang; path: string } {
-  if (pathname === "/en" || pathname === "/en/") return { lang: "en", path: "/" };
-  if (pathname.startsWith("/en/")) return { lang: "en", path: pathname.slice(3) };
+  const m = /^\/(en|es)(\/.*)?$/.exec(pathname || "/");
+  if (m) return { lang: m[1] as Lang, path: m[2] && m[2] !== "/" ? m[2] : "/" };
   return { lang: "es", path: pathname || "/" };
 }
 

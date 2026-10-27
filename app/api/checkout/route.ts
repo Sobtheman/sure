@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { activeProvider, newReference, paymentUrl } from "@/lib/payments";
 import { parseOrder } from "@/lib/order";
+import { isLang, localePath } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 
 // Pago en línea: el pedido se recalcula en el servidor y se manda a la pasarela.
 export async function POST(req: Request) {
-  let body: { lines?: unknown; buyer?: Record<string, unknown> };
+  let body: { lines?: unknown; buyer?: Record<string, unknown>; lang?: string };
   try {
     body = await req.json();
   } catch {
@@ -23,7 +24,9 @@ export async function POST(req: Request) {
 
   const origin = process.env.NEXT_PUBLIC_SITE_URL || new URL(req.url).origin;
   try {
-    const url = await paymentUrl(order, `${origin}/pedido?ref=${encodeURIComponent(order.reference)}`);
+    // El comprador vuelve a la página del pedido en su idioma
+    const back = localePath(isLang(body.lang) ? body.lang : "es", "/pedido");
+    const url = await paymentUrl(order, `${origin}${back}?ref=${encodeURIComponent(order.reference)}`);
     return NextResponse.json({ mode: "redirect", url, reference: order.reference });
   } catch {
     return NextResponse.json({ error: "No pudimos conectar con la pasarela de pago. Intenta de nuevo." }, { status: 502 });

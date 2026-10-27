@@ -1,13 +1,16 @@
 import { shipping } from "@/lib/config";
 import { formatCOP } from "@/lib/format";
+import type { Lang } from "@/lib/i18n";
+import { shop } from "@/lib/copy/shop";
 
 // Lo que hace fácil comprar: envío, pago, tiempo y cambios
-export default function SellingPoints({ className = "" }: { className?: string }) {
+export default function SellingPoints({ lang, className = "" }: { lang: Lang; className?: string }) {
+  const t = shop[lang].selling;
   const points = [
-    { title: `Envío gratis desde ${formatCOP(shipping.freeFrom)}`, note: "A toda Colombia" },
-    ...(shipping.cashOnDelivery ? [{ title: "Pago contra entrega", note: "Pagas cuando te llega" }] : []),
-    { title: `Llega en ${shipping.deliveryDays} días hábiles o menos`, note: "Te mandamos la guía" },
-    { title: "Cambios de talla sin enredos", note: `Hasta ${shipping.exchangeDays} días` },
+    { title: t.freeShipping(formatCOP(shipping.freeFrom, lang)), note: t.freeShippingNote },
+    ...(shipping.cashOnDelivery ? [{ title: t.cashOnDelivery, note: t.cashOnDeliveryNote }] : []),
+    { title: t.delivery(shipping.deliveryDays), note: t.deliveryNote },
+    { title: t.exchanges, note: t.exchangesNote(shipping.exchangeDays) },
   ];
   return (
     <ul className={`grid grid-cols-2 gap-px border border-line bg-line ${className}`}>
