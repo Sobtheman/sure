@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/Link";
 import { useEffect, useState } from "react";
 import type { Product, Size } from "@/lib/catalog";
 import { LOW_STOCK, SIZES, totalStock } from "@/lib/catalog";

@@ -25,7 +25,7 @@ export function orderEmail(order: Order, payment: string, origin: string) {
       const img = p ? `${origin}${p.images[0].src}` : "";
       return `<tr>
   <td width="64" style="padding:14px 14px 14px 0;border-bottom:1px solid #e4e4e1;vertical-align:top">
-    ${img ? `<img src="${img}" width="64" height="80" alt="" style="display:block;width:64px;height:80px;object-fit:cover;border:0;background:#dcdcdb">` : ""}
+    ${img ? `<img src="${img}" width="64" height="96" alt="" style="display:block;width:64px;height:96px;border:0;background:#dcdcdb">` : ""}
   </td>
   <td style="padding:14px 0;border-bottom:1px solid #e4e4e1;vertical-align:top;font:14px/1.45 ${FONT};color:#0d0e10">
     <b style="text-transform:uppercase">${esc(l.name)}</b><br>

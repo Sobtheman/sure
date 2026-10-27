@@ -1,20 +1,30 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useRef } from "react";
+import Link from "@/components/Link";
+import { useEffect, useRef, useState } from "react";
 import { useCart } from "@/components/cart";
-import { getProduct } from "@/lib/catalog";
+import { getProduct, products, SIZES, type Size } from "@/lib/catalog";
 import { formatCOP } from "@/lib/format";
 import { shipping } from "@/lib/config";
-import { Arrow, Close } from "@/components/icons";
+import { Arrow, Close, Plus } from "@/components/icons";
 import QtyStepper from "@/components/QtyStepper";
+import { track } from "@/lib/track";
 
 export default function CartDrawer() {
   const cart = useCart();
   const closeRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLElement>(null);
   const { open, setOpen } = cart;
+  const empty = cart.lines.length === 0;
+  // Al ir a la colección desde la bolsa vacía, la foto de fondo se aclara antes de salir
+  const [clear, setClear] = useState(false);
+  useEffect(() => {
+    if (!open) {
+      const t = setTimeout(() => setClear(false), 500);
+      return () => clearTimeout(t);
+    }
+  }, [open]);
 
   // Al abrir: foco en cerrar, Tab no sale del panel, Esc cierra. Al cerrar: el foco vuelve a donde estaba.
   useEffect(() => {
@@ -66,13 +76,14 @@ export default function CartDrawer() {
         role="dialog"
         aria-modal="true"
         aria-label="Bolsa"
-        className={`absolute right-0 top-0 flex h-full w-full max-w-[440px] flex-col bg-paper text-ink transition-transform duration-500 ease-out ${
-          open ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`absolute right-0 top-0 flex h-full w-full max-w-[440px] flex-col overflow-hidden transition-transform duration-500 ease-out ${
+          empty ? "bg-ink text-paper" : "bg-paper text-ink"
+        } ${open ? "translate-x-0" : "translate-x-full"}`}
       >
-        <div className="flex h-16 items-center justify-between border-b border-line px-5">
+        {empty && <EmptyBackground clear={clear} />}
+        <div className={`relative flex h-16 items-center justify-between border-b px-5 ${empty ? "border-white/15" : "border-line"}`}>
           <p className="label">
-            Bolsa <span className="text-burgundy">({cart.count})</span>
+            Bolsa <span className={empty ? "text-burgundy-bright" : "text-burgundy"}>({cart.count})</span>
           </p>
           <button
             ref={closeRef}
@@ -85,13 +96,8 @@ export default function CartDrawer() {
           </button>
         </div>
 
-        {cart.lines.length === 0 ? (
-          <div className="flex flex-1 flex-col items-start justify-center gap-6 px-5">
-            <p className="display text-4xl">Tu bolsa está vacía.</p>
-            <Link href="/tienda" onClick={() => setOpen(false)} className="link-line text-sm" tabIndex={open ? 0 : -1}>
-              Ver la colección <Arrow className="text-burgundy" />
-            </Link>
-          </div>
+        {empty ? (
+          <EmptyBag open={open} clear={clear} onClear={() => setClear(true)} onClose={() => setOpen(false)} />
         ) : (
           <>
             <ul className="flex-1 divide-y divide-line overflow-y-auto px-5">
@@ -166,6 +172,126 @@ export default function CartDrawer() {
         )}
       </aside>
     </div>
+  );
+}
+
+// Bolsa vacía: foto de la sesión desenfocada detrás, texto claro encima
+function EmptyBackground({ clear }: { clear: boolean }) {
+  return (
+    <div className="pointer-events-none absolute inset-0" aria-hidden>
+      <Image
+        src="/img/bolsa/fondo.jpg"
+        alt=""
+        fill
+        sizes="440px"
+        className={`object-cover object-[50%_35%] transition-[filter,transform] duration-700 ease-out will-change-[filter] ${
+          clear ? "scale-100 blur-0" : "scale-110 blur-[14px]"
+        }`}
+      />
+      <div className={`absolute inset-0 bg-ink transition-opacity duration-700 ${clear ? "opacity-0" : "opacity-60"}`} />
+    </div>
+  );
+}
+
+function EmptyBag({ open, clear, onClear, onClose }: { open: boolean; clear: boolean; onClear: () => void; onClose: () => void }) {
+  const link = useRef<HTMLAnchorElement>(null);
+  const leaving = useRef(false);
+  const tab = open ? 0 : -1;
+
+  // Primer clic: se va el desenfoque; después sí navega a la colección
+  const toCollection = (e: React.MouseEvent) => {
+    if (leaving.current) {
+      leaving.current = false;
+      onClose();
+      return;
+    }
+    e.preventDefault();
+    onClear();
+    setTimeout(() => {
+      leaving.current = true;
+      link.current?.click();
+    }, 650);
+  };
+
+  return (
+    <div className={`relative flex flex-1 flex-col overflow-y-auto px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-10 transition-opacity duration-500 ${clear ? "opacity-0" : "opacity-100"}`}>
+      <p className="label text-white/70">Disidencia</p>
+      <p className="display mt-3 text-[44px]">Tu bolsa está vacía.</p>
+      <p className="mt-3 text-[15px] text-white/80">Empieza por una de estas dos.</p>
+
+      <ul className="mt-8 space-y-3">
+        {products.map((p) => (
+          <Suggestion key={p.slug} slug={p.slug} tabIndex={tab} onNavigate={onClose} />
+        ))}
+      </ul>
+
+      <Link ref={link} href="/tienda" onClick={toCollection} className="link-line label mt-auto self-start pt-10 text-paper" tabIndex={tab}>
+        Ver la colección <Arrow className="text-burgundy-bright" />
+      </Link>
+    </div>
+  );
+}
+
+// Producto sugerido: el + muestra las tallas; tocar una talla lo agrega a la bolsa
+function Suggestion({ slug, tabIndex, onNavigate }: { slug: string; tabIndex: number; onNavigate: () => void }) {
+  const cart = useCart();
+  const p = getProduct(slug)!;
+  const [picking, setPicking] = useState(false);
+  const [error, setError] = useState("");
+
+  const add = (size: Size) => {
+    const res = cart.add(p.slug, size);
+    if (!res.ok) {
+      setError(res.reason || "No se pudo agregar.");
+      return;
+    }
+    track("Agregado a la bolsa", { producto: p.name, talla: size, desde: "bolsa vacía" });
+  };
+
+  return (
+    <li className="border border-white/15 bg-white/[0.06] backdrop-blur-sm">
+      <div className="flex items-center gap-4 p-3">
+        <Link href={`/producto/${p.slug}`} onClick={onNavigate} className="relative aspect-[4/5] w-16 shrink-0 overflow-hidden bg-white/10" tabIndex={tabIndex}>
+          <Image src={p.images[0].src} alt={p.images[0].alt} fill sizes="64px" className="object-cover" />
+        </Link>
+        <div className="min-w-0 flex-1">
+          <p className="text-[13px] font-bold uppercase">{p.name}</p>
+          <p className="mt-1 text-[13px] text-white/75">{formatCOP(p.price)}</p>
+        </div>
+        <button
+          onClick={() => {
+            setPicking((v) => !v);
+            setError("");
+          }}
+          aria-expanded={picking}
+          aria-label={picking ? `Cerrar tallas de ${p.name}` : `Agregar ${p.name} a la bolsa`}
+          className="grid h-10 w-10 shrink-0 place-items-center border border-white/50 transition-colors hover:border-paper hover:bg-paper hover:text-ink"
+          tabIndex={tabIndex}
+        >
+          <Plus className={`transition-transform duration-300 ${picking ? "rotate-45" : ""}`} />
+        </button>
+      </div>
+      {picking && (
+        <div className="px-3 pb-3">
+          <p className="label text-[10px] text-white/60">Elige tu talla</p>
+          <div className="mt-2 grid grid-cols-4 gap-2">
+            {SIZES.map((s) => (
+              <button
+                key={s}
+                onClick={() => add(s)}
+                disabled={p.stock[s] === 0}
+                className="h-10 border border-white/40 text-[13px] font-semibold transition-colors hover:border-paper hover:bg-paper hover:text-ink disabled:opacity-30"
+                aria-label={`Talla ${s}`}
+                tabIndex={tabIndex}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+          {error && <p className="mt-2 text-[12px] text-burgundy-bright">{error}</p>}
+        </div>
+      )}
+    </li>
   );
 }
 

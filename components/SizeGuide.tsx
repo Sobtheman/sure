@@ -39,7 +39,7 @@ export default function SizeGuide({ product, open, onClose }: { product: Product
           <table className="w-full border-collapse text-[13px] sm:text-[14px]">
             <thead>
               <tr className="border-b border-ink">
-                <th className="label py-3 text-left font-medium">Medida</th>
+                <th className="label py-3 text-left">Medida</th>
                 {SIZES.map((s) => (
                   <th key={s} className="w-10 py-3 text-right font-bold sm:w-12">
                     {s}

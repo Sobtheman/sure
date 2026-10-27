@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/Link";
 import { notFound } from "next/navigation";
 import { archive, getCollection } from "@/lib/archive";
 import ArchiveGallery from "@/components/ArchiveGallery";
@@ -44,7 +44,7 @@ export default function Coleccion({ params }: { params: { slug: string } }) {
           <p className="label rise mt-6 text-white/60" style={{ animationDelay: "150ms" }}>
             {c.year} · Agotada
           </p>
-          <h1 className="display rise mt-3 text-[clamp(72px,18vw,200px)]" style={{ animationDelay: "280ms" }}>
+          <h1 className="display rise mt-3 text-[clamp(44px,14vw,200px)]" style={{ animationDelay: "280ms" }}>
             {c.name}
           </h1>
           <p className="rise mt-4 max-w-md text-[15px] text-white/70" style={{ animationDelay: "400ms" }}>
@@ -113,7 +113,7 @@ export default function Coleccion({ params }: { params: { slug: string } }) {
         <div className="wrap absolute inset-x-0 bottom-0 flex items-end justify-between gap-6 pb-10">
           <div>
             <p className="label text-white/60">Siguiente · {next.year}</p>
-            <p className="display mt-2 text-[clamp(48px,10vw,120px)]">{next.name}</p>
+            <p className="display mt-2 text-[clamp(40px,10vw,120px)]">{next.name}</p>
           </div>
           <Arrow className="mb-6 h-4 w-10 text-burgundy-bright transition-transform duration-500 group-hover:translate-x-2" />
         </div>

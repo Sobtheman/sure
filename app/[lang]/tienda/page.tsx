@@ -17,7 +17,7 @@ export default function Tienda() {
       <section className="wrap pb-10 pt-10 sm:pb-14 sm:pt-16">
         <p className="label text-muted">Colección</p>
         <div className="mt-3 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-          <h1 className="display text-[clamp(56px,12vw,128px)]">{hero.collection}</h1>
+          <h1 className="display text-[clamp(44px,12vw,128px)]">{hero.collection}</h1>
           <p className="max-w-sm pb-2 text-[15px] leading-relaxed text-muted">
             Camiseta y hoodie. Envíos a toda Colombia, gratis desde $100.000.
           </p>

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/Link";
 import { useEffect, useRef, useState } from "react";
 import { useCart } from "@/components/cart";
 import { getProduct } from "@/lib/catalog";
@@ -190,7 +190,7 @@ export default function CheckoutForm({ payment }: { payment: Payment }) {
     return (
       <div className="wrap flex min-h-[70svh] flex-col items-start justify-center gap-6">
         <h1 className="display text-[clamp(40px,8vw,72px)]">Tu bolsa está vacía.</h1>
-        <Link href="/tienda" className="link-line text-[14px]">
+        <Link href="/tienda" className="link-line label">
           Ver la colección <Arrow className="text-burgundy" />
         </Link>
       </div>

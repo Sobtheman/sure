@@ -7,6 +7,7 @@ import { useEffect, useRef } from "react";
 export default function ScrollTop() {
   const pathname = usePathname();
   const back = useRef(false);
+  const prev = useRef(pathname);
 
   useEffect(() => {
     const onPop = () => (back.current = true);
@@ -15,6 +16,9 @@ export default function ScrollTop() {
   }, []);
 
   useEffect(() => {
+    // Primera carga: se respeta la posición que restaura el navegador (recargar, volver, #ancla)
+    if (prev.current === pathname) return;
+    prev.current = pathname;
     if (back.current) {
       back.current = false;
       return;

@@ -17,7 +17,7 @@ export default function Contacto() {
         <p className="text-[14px] text-muted">
           WhatsApp <span className="select-all text-ink">{store.whatsappLabel}</span>
         </p>
-        <a href={store.instagramDM} target="_blank" rel="noopener noreferrer" className="link-line text-[14px]">
+        <a href={store.instagramDM} target="_blank" rel="noopener noreferrer" className="link-line label">
           Instagram {store.instagramHandle} <Arrow className="text-burgundy" />
         </a>
       </div>

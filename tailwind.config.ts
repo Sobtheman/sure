@@ -20,7 +20,7 @@ const config: Config = {
         sans: ["var(--font-archivo)", "Helvetica Neue", "Arial", "sans-serif"],
       },
       letterSpacing: {
-        label: "0.28em",
+        label: "0.16em",
       },
       transitionTimingFunction: {
         out: "cubic-bezier(0.22, 1, 0.36, 1)",

@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/Link";
 import Reveal from "@/components/Reveal";
 import { archive } from "@/lib/archive";
 import { Arrow } from "@/components/icons";
 
 export const metadata: Metadata = {
   title: "Archivo",
-  description: "Colecciones anteriores de SURE: Niebla, Intrinsic y Sure26.",
+  description: "Colecciones anteriores de SURE: Intrinsic, Niebla, Niebla x Ivy y Sure26.",
 };
 
 export default function Archivo() {
@@ -15,7 +15,7 @@ export default function Archivo() {
     <div className="min-h-screen bg-ink pt-header text-paper">
       <section className="wrap pb-12 pt-12 sm:pb-16 sm:pt-20">
         <p className="label text-white/50">Colecciones anteriores</p>
-        <h1 className="display mt-3 text-[clamp(64px,15vw,184px)] uppercase">Archivo</h1>
+        <h1 className="display mt-3 text-[clamp(48px,15vw,184px)]">Archivo</h1>
         <p className="mt-6 max-w-md text-[15px] leading-relaxed text-white/60">
           Lo que ya pasó por la calle. Estas colecciones están agotadas y no vuelven; quedan aquí con su historia.
         </p>
@@ -39,10 +39,10 @@ export default function Archivo() {
                   <p className="label text-white/85">
                     {c.year} · Agotada · {c.images.length + 1} fotos
                   </p>
-                  <h2 className="display mt-2 text-[clamp(52px,10vw,128px)]">{c.name}</h2>
+                  <h2 className="display mt-2 text-[clamp(44px,10vw,128px)]">{c.name}</h2>
                   <p className="mt-2 max-w-sm text-[14px] text-white/85">{c.note}</p>
                 </div>
-                <span className="link-line mb-2 shrink-0 text-[13px]">
+                <span className="link-line label mb-2 shrink-0">
                   Ver colección <Arrow className="text-burgundy-bright transition-transform duration-500 group-hover:translate-x-1" />
                 </span>
               </div>

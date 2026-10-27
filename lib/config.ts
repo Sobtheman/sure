@@ -12,10 +12,13 @@ export const store = {
   whatsappLabel: "320 426 2765",
 };
 
-// Todo chat de WhatsApp abre con un mensaje listo para enviar
-export const whatsappHello = "Hola SURE, vengo de la página y quiero más información.";
+// Todo chat de WhatsApp abre con un mensaje listo para enviar (según el idioma de la página)
+export const whatsappHello = {
+  es: "Hola SURE, vengo de la página y quiero más información.",
+  en: "Hi SURE, I'm coming from the website and I'd like more info.",
+};
 
-export function whatsappLink(text: string = whatsappHello) {
+export function whatsappLink(text: string = whatsappHello.es) {
   return `https://wa.me/${store.whatsapp}?text=${encodeURIComponent(text)}`;
 }
 
@@ -24,7 +27,10 @@ export const hero = {
   // Film "disidencia 02" (Drive), sin audio y recortado antes del cierre. Celular 720p, escritorio 1080p.
   film: { mobile: "/media/disidencia-720.mp4", desktop: "/media/disidencia-1080.mp4" },
   poster: "/img/hero/film-poster.jpg",
-  posterAlt: "Modelo con la camiseta Disidencia blanca y una pañoleta roja en una librería",
+  posterAlt: {
+    es: "Modelo con la camiseta Disidencia blanca y una pañoleta roja en una librería",
+    en: "Model wearing the white Disidencia tee and a red bandana in a bookstore",
+  },
 };
 
 export const shipping = {

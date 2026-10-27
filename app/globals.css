@@ -31,12 +31,15 @@
 }
 
 @layer components {
-  /* Etiqueta pequeña, mayúsculas espaciadas (DISPONIBLE AHORA) */
+  /* Tres estilos de texto en todo el sitio, todos en Archivo:
+     .display  títulos grandes, mayúsculas, extra negrita
+     .label    etiquetas, botones y enlaces de acción, mayúsculas espaciadas
+     texto normal para todo lo demás */
   .label {
-    @apply text-[11px] font-medium uppercase tracking-label;
+    @apply text-[11px] font-semibold uppercase tracking-label;
   }
   .display {
-    @apply font-extrabold leading-[0.9] tracking-[-0.035em];
+    @apply font-extrabold uppercase leading-[0.9] tracking-[-0.035em];
   }
   .wrap {
     @apply mx-auto w-full max-w-[1440px] px-4 sm:px-8 lg:px-12;
@@ -52,7 +55,7 @@
     @apply opacity-100;
   }
   .btn {
-    @apply inline-flex h-14 items-center justify-center gap-3 px-7 text-[12px] font-semibold uppercase tracking-[0.22em] transition-colors duration-300;
+    @apply inline-flex h-14 items-center justify-center gap-3 px-7 text-[12px] font-semibold uppercase tracking-label transition-colors duration-300;
   }
   .btn-dark {
     @apply btn bg-ink text-paper hover:bg-burgundy disabled:cursor-not-allowed disabled:bg-[#b9b9b7] disabled:hover:bg-[#b9b9b7];
@@ -70,25 +73,19 @@
   padding-top: calc(var(--bar-h) + var(--nav-h));
 }
 
-/* Franja de anuncios en celular: un mensaje a la vez */
-.announce {
-  animation: announce 9s infinite;
+/* Franja de anuncios: corre de derecha a izquierda; se detiene al pasar el cursor */
+.marquee {
+  animation: marquee 38s linear infinite;
 }
-@keyframes announce {
-  0%,
-  30% {
-    transform: translateY(0);
+.announce-bar:hover .marquee {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  from {
+    transform: translateX(0);
   }
-  33.3%,
-  63.3% {
-    transform: translateY(-2rem);
-  }
-  66.6%,
-  96.6% {
-    transform: translateY(-4rem);
-  }
-  100% {
-    transform: translateY(0);
+  to {
+    transform: translateX(-50%);
   }
 }
 
@@ -144,7 +141,7 @@
   .reveal,
   .hero-media,
   .rise,
-  .announce {
+  .marquee {
     animation: none !important;
     transition: none !important;
     opacity: 1 !important;

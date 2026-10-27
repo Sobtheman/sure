@@ -41,7 +41,7 @@ npm run build && npm start
 
 ## Zoom
 
-- Escritorio: al pasar el cursor por una foto de producto se acerca 2,2× y sigue al mouse. Clic abre el visor con la foto a todo el ancho: la rueda la recorre, clic acerca 2× en ese punto, otro clic aleja, flechas cambian de foto.
+- Escritorio: al pasar el cursor por una foto de producto se acerca 1,75× y sigue al mouse. Clic abre el visor con la foto al 80 % del ancho: la rueda la recorre, clic acerca 1,6× en ese punto, otro clic aleja, flechas cambian de foto.
 - Celular: tocar abre el visor; pellizcar o doble toque acerca, arrastrar recorre, deslizar cambia de foto.
 
 ## Pedidos y pagos

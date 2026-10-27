@@ -3,7 +3,7 @@ export default function Prose({ eyebrow, title, children }: { eyebrow: string; t
   return (
     <div className="wrap pb-24 pt-36 sm:pt-44">
       <p className="label text-muted">{eyebrow}</p>
-      <h1 className="display mt-3 text-[clamp(44px,9vw,88px)]">{title}</h1>
+      <h1 className="display mt-3 text-[clamp(34px,9vw,88px)]">{title}</h1>
       <div className="mt-10 max-w-2xl space-y-8 text-[15px] leading-relaxed [&_h2]:label [&_h2]:mb-3 [&_h2]:text-ink [&_p+p]:mt-3">
         {children}
       </div>

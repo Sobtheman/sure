@@ -1,12 +1,15 @@
-import { store, whatsappLink } from "@/lib/config";
+import { store, whatsappHello, whatsappLink } from "@/lib/config";
+import type { Lang } from "@/lib/i18n";
+import { nav } from "@/lib/copy/nav";
 import { Instagram, TikTok, WhatsApp } from "@/components/icons";
 
 // Instagram, TikTok y WhatsApp de SURE
-export default function SocialLinks({ className = "" }: { className?: string }) {
+export default function SocialLinks({ lang, className = "" }: { lang: Lang; className?: string }) {
+  const t = nav[lang];
   const links = [
-    { href: store.instagram, label: "Instagram de SURE", Icon: Instagram },
-    { href: store.tiktok, label: "TikTok de SURE", Icon: TikTok },
-    { href: whatsappLink(), label: `WhatsApp de SURE, ${store.whatsappLabel}`, Icon: WhatsApp },
+    { href: store.instagram, label: t.instagram, Icon: Instagram },
+    { href: store.tiktok, label: t.tiktok, Icon: TikTok },
+    { href: whatsappLink(whatsappHello[lang]), label: t.whatsapp(store.whatsappLabel), Icon: WhatsApp },
   ];
   return (
     <ul className={`flex items-center gap-2 ${className}`}>

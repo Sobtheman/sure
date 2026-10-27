@@ -7,13 +7,15 @@ import { Close } from "@/components/icons";
 export type ViewerImage = { src: string; alt: string; label?: string; width?: number; height?: number };
 
 const MAX = 4;
-const CLICK_ZOOM = 2.5;
+const CLICK_ZOOM = 2;
 
-const WIDE_ZOOM = 2;
+// Computador: la foto abre al 80 % del ancho y el clic la acerca 1,6×
+const WIDE_BASE = 80;
+const WIDE_ZOOM = 1.6;
 const WIDE_QUERY = "(min-width: 1024px) and (hover: hover) and (pointer: fine)";
 
 /* Visor a pantalla completa.
-   Computador: la foto se abre a todo el ancho y se recorre con la rueda; clic acerca en ese punto, otro clic aleja.
+   Computador: la foto se abre casi a todo el ancho y se recorre con la rueda; clic acerca en ese punto, otro clic aleja.
    Táctil: pellizcar o doble toque para acercar, arrastrar para recorrer, deslizar para cambiar de foto. */
 export default function Lightbox({
   images,
@@ -91,9 +93,10 @@ export default function Lightbox({
     [images.length, reset]
   );
 
-  // Al cambiar de foto en computador, arranca desde arriba
+  // Al abrir o cambiar de foto en computador, arranca desde arriba y el teclado puede bajar por la foto
   useLayoutEffect(() => {
     scroller.current?.scrollTo(0, 0);
+    scroller.current?.focus({ preventScroll: true });
   }, [index]);
 
   // El punto donde se hizo clic queda bajo el cursor al acercar o alejar
@@ -237,7 +240,7 @@ export default function Lightbox({
         {img.label ? `${img.label} · ` : ""}
         {index + 1} / {images.length}
       </span>
-      <button autoFocus onClick={onClose} className={`pointer-events-auto grid h-12 w-12 place-items-center ${chip}`} aria-label="Cerrar">
+      <button autoFocus={!wide} onClick={onClose} className={`pointer-events-auto grid h-12 w-12 place-items-center ${chip}`} aria-label="Cerrar">
         <Close />
       </button>
     </div>
@@ -269,8 +272,8 @@ export default function Lightbox({
   if (wide) {
     return (
       <div role="dialog" aria-modal="true" aria-label="Foto ampliada" className={`fixed inset-0 z-[70] ${tone}`}>
-        <div ref={scroller} className="absolute inset-0 overflow-auto overscroll-contain">
-          <div className="flex min-h-full items-center" style={{ width: wideZoom ? `${WIDE_ZOOM * 100}%` : "100%" }}>
+        <div ref={scroller} tabIndex={0} className="absolute inset-0 overflow-auto overscroll-contain outline-none">
+          <div className="mx-auto flex min-h-full items-center" style={{ width: `${wideZoom ? WIDE_BASE * WIDE_ZOOM : WIDE_BASE}%` }}>
             <div
               ref={photo}
               onClick={toggleWideZoom}
@@ -282,7 +285,7 @@ export default function Lightbox({
                 alt={img.alt}
                 width={img.width}
                 height={img.height}
-                sizes="100vw"
+                sizes="(min-width: 1024px) 80vw, 100vw"
                 quality={90}
                 priority
                 draggable={false}

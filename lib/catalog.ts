@@ -2,6 +2,8 @@
    Precios confirmados. Stock y tabla de medidas son provisionales: se reemplazan
    aquí cuando llegue la información real. */
 
+import type { Lang } from "@/lib/i18n";
+
 export type Size = "S" | "M" | "L" | "XL";
 
 export type ProductImage = {
@@ -115,10 +117,88 @@ export const products: Product[] = [
   },
 ];
 
-export function getProduct(slug: string) {
-  return products.find((p) => p.slug === slug);
+export function getProduct(slug: string, lang: Lang = "es") {
+  const p = products.find((x) => x.slug === slug);
+  return p && localizeProduct(p, lang);
 }
 
 export function totalStock(p: Product) {
   return SIZES.reduce((n, s) => n + p.stock[s], 0);
+}
+
+/* Inglés: mismos productos, textos traducidos. Las fotos y medidas van en el mismo orden que arriba. */
+type ProductText = Pick<Product, "name" | "short" | "color" | "description" | "details" | "care" | "fitNote"> & {
+  alts: string[];
+  measurementLabels: string[];
+};
+
+const careEn = ["Wash inside out, cold water, gentle cycle.", "No bleach, no tumble dry.", "Do not iron over the print."];
+const measurementLabelsEn = ["Chest width", "Total length", "Sleeve length"];
+
+const english: Record<string, ProductText> = {
+  "camiseta-disidencia": {
+    name: "Disidencia Tee",
+    short: "Tee",
+    color: "White",
+    description:
+      "Oversized white tee with the red eye on the chest. On the back, the halftone eye and “Watch Your Demons” in script. Dropped shoulder and a heavy collar.",
+    details: [
+      "Oversized fit, dropped shoulder",
+      "100% cotton",
+      "Red eye on the chest and “Watch Your Demons” on the hem",
+      "Back: halftone eye and “Watch Your Demons”",
+      "SURE label at the neck",
+    ],
+    care: careEn,
+    fitNote: "Oversized fit. For a closer fit, size down.",
+    alts: [
+      "Model wearing the white Disidencia tee, red eye on the chest",
+      "Back of the Disidencia tee: halftone red eye and Watch Your Demons",
+      "Couple wearing the Disidencia tee; Watch Your Demons on the hem",
+      "Two models in the white Disidencia tee",
+    ],
+    measurementLabels: measurementLabelsEn,
+  },
+  "hoodie-disidencia": {
+    name: "Disidencia Hoodie",
+    short: "Hoodie",
+    color: "Black",
+    description:
+      "Relaxed black hoodie. The S monogram on the chest, “Surewearco” on the sleeve and, on the back, a white face between “Sure” and “Demons” in red.",
+    details: [
+      "Relaxed fit, dropped shoulder",
+      "100% cotton",
+      "S monogram on the chest",
+      "“Surewearco” in script on the sleeve",
+      "Back: white face with “Sure” and “Demons” in red",
+      "Double-layer hood and kangaroo pocket",
+    ],
+    care: careEn,
+    fitNote: "Relaxed fit. For a regular fit, size down.",
+    alts: [
+      "Model wearing the black Disidencia hoodie, S monogram on the chest",
+      "Back of the Disidencia hoodie: white face with Sure and Demons in red",
+      "Model sitting on a staircase in the Disidencia hoodie; Surewearco on the sleeve",
+      "Model crouching in the Disidencia hoodie, printed sleeve in view",
+      "Model on a brick staircase in the black Disidencia hoodie",
+    ],
+    measurementLabels: measurementLabelsEn,
+  },
+};
+
+// Producto en el idioma pedido (el slug, precio, stock y fotos no cambian)
+export function localizeProduct(p: Product, lang: Lang): Product {
+  const t = lang === "en" ? english[p.slug] : undefined;
+  if (!t) return p;
+  const { alts, measurementLabels, ...text } = t;
+  return {
+    ...p,
+    ...text,
+    images: p.images.map((img, i) => ({ ...img, alt: alts[i] ?? img.alt })),
+    measurements: p.measurements.map((m, i) => ({ ...m, label: measurementLabels[i] ?? m.label })),
+  };
+}
+
+export function productsFor(lang: Lang) {
+  return products.map((p) => localizeProduct(p, lang));
 }

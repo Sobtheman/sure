@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/Link";
 import type { Product } from "@/lib/catalog";
 import { totalStock } from "@/lib/catalog";
 import { formatCOP } from "@/lib/format";
@@ -34,13 +34,13 @@ export default function ProductCard({ product, priority = false }: { product: Pr
       </div>
       <div className="mt-4 flex items-start justify-between gap-4">
         <div>
-          <h3 className="text-[14px] font-extrabold uppercase tracking-[0.01em] sm:text-[15px]">{product.name}</h3>
+          <h3 className="text-[14px] font-extrabold uppercase sm:text-[15px]">{product.name}</h3>
           <p className="mt-1 text-[13px] text-muted">
             {product.color} <span className="mx-1.5 text-line">|</span>
             <span className="text-ink">{formatCOP(product.price)}</span>
           </p>
         </div>
-        <span className="link-line shrink-0 text-[13px]">
+        <span className="link-line label shrink-0">
           Ver prenda <Arrow className="text-burgundy transition-transform duration-500 ease-out group-hover:translate-x-1" />
         </span>
       </div>

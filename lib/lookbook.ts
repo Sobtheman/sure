@@ -1,4 +1,5 @@
 import type { ArchiveImage } from "@/lib/archive";
+import type { Lang } from "@/lib/i18n";
 
 // Lookbook de Disidencia: fotos originales de la sesión
 export const lookbook: ArchiveImage[] = [
@@ -13,3 +14,22 @@ export const lookbook: ArchiveImage[] = [
   { src: "/img/lookbook/manga.jpg", alt: "Modelo con el hoodie Disidencia tapándose la cara con el brazo estampado de la manga", width: 2000, height: 1333 },
   { src: "/img/lookbook/capucha.jpg", alt: "Modelo de espaldas subiéndose la capucha del hoodie Disidencia en una escalera", width: 1333, height: 2000 },
 ];
+
+// Inglés: descripciones en el mismo orden que arriba
+const altsEn = [
+  "Group on a staircase at night in Disidencia tees and hoodies",
+  "One model from behind and one from the front in the Disidencia tee under orange light",
+  "Two models on a rug pointing at the red eye on the Disidencia tee",
+  "Six people on the staircase wearing the full Disidencia collection",
+  "Model lying on a rug in the Disidencia tee",
+  "Model sitting from behind, showing the eye and Watch Your Demons",
+  "Couple hugging from behind in the Disidencia hoodie, back print in view",
+  "Couple in Disidencia tees against an orange wall",
+  "Model covering their face with the printed sleeve of the Disidencia hoodie",
+  "Model from behind pulling up the hood of the Disidencia hoodie on a staircase",
+];
+
+export function lookbookFor(lang: Lang): ArchiveImage[] {
+  if (lang === "es") return lookbook;
+  return lookbook.map((img, i) => ({ ...img, alt: altsEn[i] ?? img.alt }));
+}

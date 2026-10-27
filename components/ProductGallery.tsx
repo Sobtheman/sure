@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import type { ProductImage } from "@/lib/catalog";
 import Lightbox from "@/components/Lightbox";
 
-const HOVER_ZOOM = 2.2;
+const HOVER_ZOOM = 1.75;
 
 // Móvil: carrusel a todo el ancho; tocar abre el visor con pellizco y doble toque.
 // Escritorio: fotos apiladas; al pasar el cursor la foto se acerca en su marco y sigue al mouse,
