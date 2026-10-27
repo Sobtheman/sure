@@ -21,9 +21,7 @@ const es = {
   sizeOption: (size: string) => `Talla ${size}`,
   addFailed: "No se pudo agregar.",
   // Barra de envío gratis: "Te faltan $10.000 para el envío gratis."
-  missingBefore: "Te faltan ",
-  missingAfter: " para el envío gratis.",
-  freeDone: "Tu envío es gratis.",
+  freeDone: "Envío gratis siempre, a toda Colombia.",
   // Motivos de cart.add() cuando no se puede agregar
   sizeSoldOut: "Talla agotada",
   allInBag: (size: string) => `Ya tienes en la bolsa todas las unidades disponibles en talla ${size}.`,
@@ -47,9 +45,7 @@ const en: typeof es = {
   pickSize: "Pick your size",
   sizeOption: (size: string) => `Size ${size}`,
   addFailed: "Couldn't add it.",
-  missingBefore: "You're ",
-  missingAfter: " away from free shipping.",
-  freeDone: "Free shipping unlocked.",
+  freeDone: "Free shipping, always, anywhere in Colombia.",
   sizeSoldOut: "Size sold out",
   allInBag: (size: string) => `Every available size ${size} is already in your bag.`,
 };

@@ -8,8 +8,7 @@ const es = {
     title: "Envíos y cambios",
     shippingHeading: "Envíos",
     nationwide: "Enviamos a toda Colombia.",
-    freeFrom: (amount: string) => `El envío es gratis en compras desde ${amount}`,
-    fee: (amount: string) => `; en compras menores cuesta ${amount}, a cualquier ciudad.`,
+    free: "El envío es gratis siempre, a cualquier ciudad.",
     delivery: (days: number) =>
       `Tu pedido llega en ${days} días hábiles o menos. Apenas sale, te mandamos el número de guía por WhatsApp para que lo sigas.`,
     paymentHeading: "Pago",
@@ -62,8 +61,7 @@ const en: typeof es = {
     title: "Shipping & exchanges",
     shippingHeading: "Shipping",
     nationwide: "We ship across Colombia.",
-    freeFrom: (amount: string) => `Shipping is free on orders over ${amount}`,
-    fee: (amount: string) => `; below that it's ${amount}, to any city.`,
+    free: "Shipping is always free, to any city.",
     delivery: (days: number) =>
       `Your order is delivered in ${days} business days or less. As soon as it ships, we send you the tracking number on WhatsApp so you can follow it.`,
     paymentHeading: "Payment",

@@ -1,7 +1,6 @@
 "use client";
 
 import { shipping } from "@/lib/config";
-import { formatCOP } from "@/lib/format";
 import { useLang } from "@/components/LangProvider";
 import { nav } from "@/lib/copy/nav";
 
@@ -12,7 +11,7 @@ export default function AnnouncementBar() {
   const lang = useLang();
   const t = nav[lang];
   const items = [
-    t.freeShipping(formatCOP(shipping.freeFrom, lang)),
+    t.freeShipping,
     ...(shipping.cashOnDelivery ? [t.cashOnDelivery] : []),
     t.nationwide,
     t.delivery(shipping.deliveryDays),

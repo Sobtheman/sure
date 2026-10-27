@@ -20,9 +20,9 @@ const es = {
   // Página de la tienda
   shopPage: {
     metaTitle: "Tienda",
-    metaDescription: "Colección Disidencia de SURE: camiseta blanca y hoodie negro. Envío gratis desde $100.000 y pago contra entrega.",
+    metaDescription: "Colección Disidencia de SURE: camiseta blanca y hoodie negro. Envío gratis siempre y pago contra entrega.",
     kicker: "Colección",
-    intro: "Camiseta y hoodie. Envíos a toda Colombia, gratis desde $100.000.",
+    intro: "Camiseta y hoodie. Envío gratis a toda Colombia, siempre.",
     piecesLabel: "Prendas",
     lookbook: "Lookbook",
     tapToZoom: "Toca una foto para ampliar",
@@ -70,8 +70,8 @@ const es = {
     description: "Descripción",
     detailsCare: "Detalles y cuidado",
     shippingTitle: "Envíos y cambios",
-    shippingText: (free: string, fee: string, days: number) =>
-      `Envío gratis en compras desde ${free}; en compras menores, ${fee} a cualquier ciudad de Colombia. Pagas contra entrega o te confirmamos el pago por WhatsApp. Te llega en ${days} días hábiles o menos.`,
+    shippingText: (days: number) =>
+      `Envío gratis siempre, a cualquier ciudad de Colombia. Pagas contra entrega o te confirmamos el pago por WhatsApp. Te llega en ${days} días hábiles o menos.`,
     exchangeText: (days: number) =>
       `¿No te quedó? Cambias la talla dentro de los ${days} días siguientes a la entrega, con la prenda sin uso y con sus etiquetas.`,
     shippingLink: "Ver envíos y cambios",
@@ -91,7 +91,7 @@ const es = {
   },
   // Lo que hace fácil comprar
   selling: {
-    freeShipping: (amount: string) => `Envío gratis desde ${amount}`,
+    freeShipping: "Envío gratis siempre",
     freeShippingNote: "A toda Colombia",
     cashOnDelivery: "Pago contra entrega",
     cashOnDeliveryNote: "Pagas cuando te llega",
@@ -122,9 +122,9 @@ const en: typeof es = {
   shopPage: {
     metaTitle: "Shop",
     metaDescription:
-      "The SURE Disidencia collection: white tee and black hoodie. Free shipping over $100.000 COP and cash on delivery.",
+      "The SURE Disidencia collection: white tee and black hoodie. Free shipping, always, and cash on delivery.",
     kicker: "Collection",
-    intro: "Tee and hoodie. Shipping across Colombia, free over $100.000 COP.",
+    intro: "Tee and hoodie. Free shipping across Colombia, always.",
     piecesLabel: "Pieces",
     lookbook: "Lookbook",
     tapToZoom: "Tap a photo to zoom in",
@@ -167,8 +167,8 @@ const en: typeof es = {
     description: "Description",
     detailsCare: "Details & care",
     shippingTitle: "Shipping & exchanges",
-    shippingText: (free: string, fee: string, days: number) =>
-      `Free shipping on orders over ${free}; below that, ${fee} to any city in Colombia. Pay cash on delivery or confirm your payment with us on WhatsApp. Delivered in ${days} business days or less.`,
+    shippingText: (days: number) =>
+      `Free shipping, always, to any city in Colombia. Pay cash on delivery or confirm your payment with us on WhatsApp. Delivered in ${days} business days or less.`,
     exchangeText: (days: number) =>
       `Didn't fit? Exchange your size within ${days} days of delivery, unworn and with the tags on.`,
     shippingLink: "See shipping & exchanges",
@@ -186,7 +186,7 @@ const en: typeof es = {
     compare: "Compare it with a piece of yours that fits well, measured the same way on a flat surface.",
   },
   selling: {
-    freeShipping: (amount: string) => `Free shipping over ${amount}`,
+    freeShipping: "Free shipping, always",
     freeShippingNote: "Across Colombia",
     cashOnDelivery: "Cash on delivery",
     cashOnDeliveryNote: "Pay when it arrives",

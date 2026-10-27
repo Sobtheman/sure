@@ -34,15 +34,13 @@ export const hero = {
 };
 
 export const shipping = {
-  fee: 15000, // COP, tarifa nacional
-  freeFrom: 100000, // envío gratis desde este subtotal
+  free: true, // envío gratis siempre, a toda Colombia (todas las prendas pasan de $100.000)
   deliveryDays: 4, // "Llega en 4 días hábiles o menos"
   exchangeDays: 15, // días para cambio de talla después de la entrega
   cashOnDelivery: true, // pago contra entrega
 };
 
-// Costo de envío para un subtotal. Lo usan la bolsa y el servidor.
-export function shippingFor(subtotal: number) {
-  if (subtotal <= 0) return 0;
-  return subtotal >= shipping.freeFrom ? 0 : shipping.fee;
+// Costo de envío para un subtotal. Lo usan la bolsa y el servidor. Hoy siempre es gratis.
+export function shippingFor(_subtotal: number) {
+  return 0;
 }

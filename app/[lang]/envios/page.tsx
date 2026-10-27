@@ -10,5 +10,5 @@ export function generateMetadata({ params }: Props): Metadata {
 }
 
 export default function Envios({ params }: Props) {
-  return <ShippingPage lang={langOf(params)} variant="promesas" />;
+  return <ShippingPage lang={langOf(params)} />;
 }

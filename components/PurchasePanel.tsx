@@ -137,7 +137,7 @@ export default function PurchasePanel({ product }: { product: Product }) {
         </Section>
         <Section title={t.shippingTitle}>
           <p>
-            {t.shippingText(formatCOP(shipping.freeFrom, lang), formatCOP(shipping.fee, lang), shipping.deliveryDays)}
+            {t.shippingText(shipping.deliveryDays)}
           </p>
           <p className="mt-3">
             {t.exchangeText(shipping.exchangeDays)}{" "}

@@ -26,14 +26,14 @@ npm run build && npm start
 | Qué | Archivo |
 |---|---|
 | Precios, stock por talla, tabla de medidas, textos y fotos de cada prenda | `lib/catalog.ts` |
-| Envío (tarifa, gratis desde, días), pago contra entrega, WhatsApp, Instagram, TikTok, film | `lib/config.ts` |
+| Envío (gratis siempre, días), pago contra entrega, WhatsApp, Instagram, TikTok, film | `lib/config.ts` |
 | Colecciones del archivo (año, texto, piezas, fotos) | `lib/archive.ts` |
 | Fotos del lookbook | `lib/lookbook.ts` |
 | Fotos | `public/img/` (el sitio las sirve en AVIF/WebP al tamaño de cada pantalla) |
 | Film del inicio | `public/media/` |
 
 - **Stock:** cada talla tiene 20 unidades provisionales. Con stock real, poner `LOW_STOCK` (en `lib/catalog.ts`) en 3 para mostrar "Últimas unidades". Una talla en 0 se muestra agotada.
-- **Envío gratis:** `shipping.freeFrom` en `lib/config.ts`. Lo usan la bolsa, el checkout y el servidor (`shippingFor`).
+- **Envío gratis siempre:** `shipping.free` y `shippingFor` en `lib/config.ts` (hoy siempre $0). Lo usan la bolsa, el checkout y el servidor.
 
 ## Film del inicio
 

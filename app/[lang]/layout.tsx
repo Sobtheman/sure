@@ -24,12 +24,12 @@ const siteUrl =
 const meta = {
   es: {
     title: "SURE — Disidencia",
-    description: "SURE, streetwear colombiano. Colección Disidencia: camiseta y hoodie. Envío gratis desde $100.000 y pago contra entrega en toda Colombia.",
+    description: "SURE, streetwear colombiano. Colección Disidencia: camiseta y hoodie. Envío gratis siempre y pago contra entrega en toda Colombia.",
     ogDescription: "Streetwear colombiano. Colección Disidencia: camiseta y hoodie, envíos a toda Colombia.",
   },
   en: {
     title: "SURE — Disidencia",
-    description: "SURE, streetwear from Colombia. The Disidencia collection: tee and hoodie. Free shipping over $100.000 COP and cash on delivery across Colombia.",
+    description: "SURE, streetwear from Colombia. The Disidencia collection: tee and hoodie. Free shipping, always, and cash on delivery across Colombia.",
     ogDescription: "Streetwear from Colombia. The Disidencia collection: tee and hoodie, shipped across Colombia.",
   },
 };

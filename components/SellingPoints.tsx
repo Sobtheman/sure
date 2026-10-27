@@ -1,5 +1,4 @@
 import { shipping } from "@/lib/config";
-import { formatCOP } from "@/lib/format";
 import type { Lang } from "@/lib/i18n";
 import { shop } from "@/lib/copy/shop";
 
@@ -7,7 +6,7 @@ import { shop } from "@/lib/copy/shop";
 export default function SellingPoints({ lang, className = "" }: { lang: Lang; className?: string }) {
   const t = shop[lang].selling;
   const points = [
-    { title: t.freeShipping(formatCOP(shipping.freeFrom, lang)), note: t.freeShippingNote },
+    { title: t.freeShipping, note: t.freeShippingNote },
     ...(shipping.cashOnDelivery ? [{ title: t.cashOnDelivery, note: t.cashOnDeliveryNote }] : []),
     { title: t.delivery(shipping.deliveryDays), note: t.deliveryNote },
     { title: t.exchanges, note: t.exchangesNote(shipping.exchangeDays) },

@@ -56,7 +56,7 @@ export const products: Product[] = [
     name: "Camiseta Disidencia",
     short: "Camiseta",
     color: "Blanco",
-    price: 90000,
+    price: 110000,
     collection: "Disidencia",
     description:
       "Camiseta blanca oversize con el ojo rojo al pecho. En la espalda, el ojo en semitono y “Watch Your Demons” en caligrafía. Hombro caído y cuello grueso.",
@@ -87,7 +87,7 @@ export const products: Product[] = [
     name: "Hoodie Disidencia",
     short: "Hoodie",
     color: "Negro",
-    price: 130000,
+    price: 160000,
     collection: "Disidencia",
     description:
       "Hoodie negro de corte amplio. El monograma S al pecho, “Surewearco” en la manga y, en la espalda, un rostro en blanco entre “Sure” y “Demons” en rojo.",

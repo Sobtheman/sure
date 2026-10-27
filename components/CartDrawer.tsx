@@ -303,28 +303,8 @@ function Suggestion({ slug, tabIndex, onNavigate }: { slug: string; tabIndex: nu
   );
 }
 
-// Barra de envío gratis: cuánto falta o confirmación
-export function FreeShipping({ subtotal }: { subtotal: number }) {
-  const lang = useLang();
-  const t = cartCopy[lang];
-  const missing = shipping.freeFrom - subtotal;
-  const pct = Math.min(100, Math.round((subtotal / shipping.freeFrom) * 100));
-  return (
-    <div>
-      <p className="text-[13px]">
-        {missing > 0 ? (
-          <>
-            {t.missingBefore}
-            <b>{formatCOP(missing, lang)}</b>
-            {t.missingAfter}
-          </>
-        ) : (
-          <b className="text-burgundy">{t.freeDone}</b>
-        )}
-      </p>
-      <div className="mt-2 h-[3px] w-full bg-line" aria-hidden>
-        <div className="h-full bg-burgundy transition-[width] duration-500 ease-out" style={{ width: `${pct}%` }} />
-      </div>
-    </div>
-  );
+// Aviso de envío gratis (siempre gratis, sin mínimo)
+export function FreeShipping(_props: { subtotal: number }) {
+  const t = cartCopy[useLang()];
+  return <p className="text-[13px] font-semibold text-burgundy">{t.freeDone}</p>;
 }
