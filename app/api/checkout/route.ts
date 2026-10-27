@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getProduct, SIZES, type Size } from "@/lib/catalog";
-import { shipping } from "@/lib/config";
+import { shippingFor } from "@/lib/config";
 import { activeProvider, newReference, paymentUrl, type Buyer, type Order } from "@/lib/payments";
 
 export const dynamic = "force-dynamic";
@@ -25,9 +25,10 @@ export async function POST(req: Request) {
     if (!p || !SIZES.includes(size) || !Number.isInteger(qty) || qty < 1) {
       return NextResponse.json({ error: "Hay un producto inválido en la bolsa." }, { status: 400 });
     }
-    if (qty > p.stock[size]) {
+    const already = lines.filter((x) => x.slug === p.slug && x.size === size).reduce((n, x) => n + x.qty, 0);
+    if (already + qty > p.stock[size]) {
       return NextResponse.json(
-        { error: `${p.name} talla ${size}: ${p.stock[size] === 0 ? "agotada" : `solo quedan ${p.stock[size]}`}.` },
+        { error: `${p.name} talla ${size}: ${p.stock[size] === 0 ? "agotada" : "no hay suficientes unidades"}.` },
         { status: 409 }
       );
     }
@@ -38,9 +39,9 @@ export async function POST(req: Request) {
   const b = body.buyer || {};
   const buyer: Buyer = {
     name: clean(b.name, 80),
-    legalId: clean(b.legalId, 12).replace(/\D/g, ""),
+    legalId: clean(b.legalId, 40).replace(/\D/g, "").slice(0, 11),
     email: clean(b.email, 120).toLowerCase(),
-    phone: clean(b.phone, 15).replace(/\D/g, ""),
+    phone: clean(b.phone, 40).replace(/\D/g, "").replace(/^57(?=3\d{9}$)/, ""),
     region: clean(b.region, 60),
     city: clean(b.city, 60),
     address: clean(b.address, 160),
@@ -61,8 +62,8 @@ export async function POST(req: Request) {
     reference: newReference(),
     lines,
     subtotal,
-    shipping: shipping.fee,
-    total: subtotal + shipping.fee,
+    shipping: shippingFor(subtotal),
+    total: subtotal + shippingFor(subtotal),
     buyer,
   };
 

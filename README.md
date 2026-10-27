@@ -1,6 +1,6 @@
 # SURE — tienda en línea
 
-Next.js 14 (App Router) + Tailwind. Sitio en español, precios en COP, pensado primero para móvil.
+Next.js 14 (App Router) + Tailwind. Sitio en español, precios en COP, pensado primero para celular.
 
 ```
 npm install
@@ -12,44 +12,51 @@ npm run build && npm start
 
 | Ruta | Qué tiene |
 |---|---|
-| `/` | Hero de campaña, Disponible ahora, Archivo, pie |
-| `/tienda` | La colección Dissidencia |
-| `/producto/[slug]` | Galería con zoom, tallas con stock, guía de medidas, envíos, agregar a la bolsa |
-| `/archivo` | Las tres colecciones anteriores (agotadas) |
-| `/archivo/[slug]` | Una colección: portada, historia, galería con zoom, piezas y la siguiente colección |
-| `/checkout` | Datos de envío, resumen y pago |
-| `/pedido` | Regreso de la pasarela: consulta el estado real del pago con el proveedor |
+| `/` | Film de Disidencia, Disponible ahora, Archivo, pie |
+| `/tienda` | La colección Disidencia y su lookbook |
+| `/producto/[slug]` | Galería con zoom, tallas, guía de medidas, envíos, agregar a la bolsa |
+| `/archivo` | Colecciones anteriores por año (agotadas) |
+| `/archivo/[slug]` | Una colección: portada, texto, fotos con zoom, piezas y la siguiente |
+| `/checkout` | Datos de envío, forma de pago y pedido por WhatsApp |
+| `/pedido` | Regreso de la pasarela de pago (cuando se active) |
 | `/envios`, `/contacto`, `/privacidad` | Políticas y contacto |
 
 ## Dónde se cambia cada cosa
 
-- `lib/catalog.ts`: productos, precios, stock por talla, medidas, composición y fotos
-- `lib/config.ts`: Instagram, tarifa y tiempos de envío, días de cambio, foto del hero
-- `lib/archive.ts`: colecciones del archivo: historia, cita, piezas y fotos
-- `public/img/`: fotos (Next las sirve en AVIF/WebP al tamaño de cada pantalla)
-- `public/brand/sure-logo.svg`, `components/Logo.tsx`: logo vectorizado
+| Qué | Archivo |
+|---|---|
+| Precios, stock por talla, tabla de medidas, textos y fotos de cada prenda | `lib/catalog.ts` |
+| Envío (tarifa, gratis desde, días), pago contra entrega, WhatsApp, Instagram, TikTok, film | `lib/config.ts` |
+| Colecciones del archivo (año, texto, piezas, fotos) | `lib/archive.ts` |
+| Fotos del lookbook | `lib/lookbook.ts` |
+| Fotos | `public/img/` (el sitio las sirve en AVIF/WebP al tamaño de cada pantalla) |
+| Film del inicio | `public/media/` |
 
-Todo lo marcado `POR CONFIRMAR` en esos archivos es un valor de demo.
+- **Stock:** cada talla tiene 20 unidades provisionales. Con stock real, poner `LOW_STOCK` (en `lib/catalog.ts`) en 3 para mostrar "Últimas unidades". Una talla en 0 se muestra agotada.
+- **Envío gratis:** `shipping.freeFrom` en `lib/config.ts`. Lo usan la bolsa, el checkout y el servidor (`shippingFor`).
+
+## Film del inicio
+
+`disidencia-720.mp4` (celular) y `disidencia-1080.mp4` (escritorio), sacados de "disidencia 02.mp4" del Drive, sin audio y cortados antes del cierre. Arrancan solos en bucle; con movimiento reducido o ahorro de datos queda el póster con botón de reproducir.
 
 ## Zoom
 
-- Escritorio: al pasar el cursor por una foto de producto se acerca 2,2× dentro de su marco y sigue al mouse. Clic abre el visor a pantalla completa: clic acerca en ese punto, mover el mouse recorre, otro clic aleja, flechas del teclado cambian de foto.
-- Móvil: tocar abre el visor; pellizcar o doble toque acerca, arrastrar recorre, deslizar cambia de foto.
-- El visor (`components/Lightbox.tsx`) se usa también en las galerías del archivo.
+- Escritorio: al pasar el cursor por una foto de producto se acerca 2,2× y sigue al mouse. Clic abre el visor: clic acerca, mover recorre, otro clic aleja, flechas cambian de foto.
+- Celular: tocar abre el visor; pellizcar o doble toque acerca, arrastrar recorre, deslizar cambia de foto.
 
-## Pagos
+## Pedidos y pagos
 
-Sin variables de entorno, el checkout dice que los pagos en línea no están activos y deja el pedido listo para enviarlo por Instagram. **Nada se cobra en ese modo.**
+Hoy el checkout termina en **WhatsApp** (320 426 2765) con el pedido completo: prendas, tallas, total, datos de envío y forma de pago (contra entrega o confirmar el pago). Nada se cobra en el sitio.
 
-Para activar una pasarela (en Vercel → Settings → Environment Variables):
+Para activar pago en línea (Vercel → Settings → Environment Variables):
 
 | Pasarela | Variables |
 |---|---|
 | Wompi | `PAYMENT_PROVIDER=wompi`, `WOMPI_PUBLIC_KEY`, `WOMPI_INTEGRITY_SECRET` |
 | Mercado Pago | `PAYMENT_PROVIDER=mercadopago`, `MP_ACCESS_TOKEN` |
 
-Y `NEXT_PUBLIC_SITE_URL` con el dominio final (para la URL de regreso).
+Más `NEXT_PUBLIC_SITE_URL` con el dominio final. Con llaves activas aparece la opción "Pagar en línea" junto a contra entrega. Antes de cobrar de verdad: compra de prueba aprobada, rechazada y pendiente.
 
-Las llaves de prueba (`pub_test_…` en Wompi, `TEST-…` en Mercado Pago) muestran "Modo de prueba" en el checkout. Antes de cobrar de verdad: hacer una compra de prueba completa (aprobada, rechazada y pendiente) y revisar que `/pedido` muestre cada estado.
+## Estadísticas
 
-Pendiente para producción: el stock vive en `lib/catalog.ts` y no se descuenta solo. Falta un webhook de la pasarela que confirme el pago, guarde el pedido y descuente el stock.
+Vercel Web Analytics (activar en el proyecto de Vercel → Analytics). Eventos: "Producto visto", "Agregado a la bolsa", "Pedido enviado por WhatsApp". En local no cuenta nada.

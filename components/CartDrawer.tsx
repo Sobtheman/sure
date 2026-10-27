@@ -6,25 +6,52 @@ import { useEffect, useRef } from "react";
 import { useCart } from "@/components/cart";
 import { getProduct } from "@/lib/catalog";
 import { formatCOP } from "@/lib/format";
+import { shipping } from "@/lib/config";
 import { Arrow, Close } from "@/components/icons";
 import QtyStepper from "@/components/QtyStepper";
 
 export default function CartDrawer() {
   const cart = useCart();
   const closeRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLElement>(null);
   const { open, setOpen } = cart;
 
+  // Al abrir: foco en cerrar, Tab no sale del panel, Esc cierra. Al cerrar: el foco vuelve a donde estaba.
   useEffect(() => {
     if (!open) return;
+    const before = document.activeElement as HTMLElement | null;
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const t = setTimeout(() => closeRef.current?.focus(), 50);
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+        return;
+      }
+      if (e.key !== "Tab" || !panelRef.current) return;
+      const items = Array.from(
+        panelRef.current.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), input, [tabindex]:not([tabindex="-1"])')
+      ).filter((el) => el.offsetParent !== null);
+      if (!items.length) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      } else if (!panelRef.current.contains(document.activeElement)) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
     window.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = prevOverflow;
       clearTimeout(t);
       window.removeEventListener("keydown", onKey);
+      if (before && document.contains(before)) before.focus();
     };
   }, [open, setOpen]);
 
@@ -35,6 +62,7 @@ export default function CartDrawer() {
         onClick={() => setOpen(false)}
       />
       <aside
+        ref={panelRef}
         role="dialog"
         aria-modal="true"
         aria-label="Bolsa"
@@ -43,7 +71,9 @@ export default function CartDrawer() {
         }`}
       >
         <div className="flex h-16 items-center justify-between border-b border-line px-5">
-          <p className="label">Bolsa ({cart.count})</p>
+          <p className="label">
+            Bolsa <span className="text-burgundy">({cart.count})</span>
+          </p>
           <button
             ref={closeRef}
             onClick={() => setOpen(false)}
@@ -108,14 +138,15 @@ export default function CartDrawer() {
               })}
             </ul>
             <div className="border-t border-line px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-5">
-              <dl className="space-y-2 text-[14px]">
+              <FreeShipping subtotal={cart.subtotal} />
+              <dl className="mt-4 space-y-2 text-[14px]">
                 <div className="flex justify-between">
                   <dt className="text-muted">Subtotal</dt>
                   <dd>{formatCOP(cart.subtotal)}</dd>
                 </div>
                 <div className="flex justify-between">
-                  <dt className="text-muted">Envío nacional</dt>
-                  <dd>{formatCOP(cart.shippingFee)}</dd>
+                  <dt className="text-muted">Envío</dt>
+                  <dd>{cart.shippingFee === 0 ? "Gratis" : formatCOP(cart.shippingFee)}</dd>
                 </div>
                 <div className="flex justify-between pt-2 text-[16px] font-bold">
                   <dt>Total</dt>
@@ -134,6 +165,28 @@ export default function CartDrawer() {
           </>
         )}
       </aside>
+    </div>
+  );
+}
+
+// Barra de envío gratis: cuánto falta o confirmación
+export function FreeShipping({ subtotal }: { subtotal: number }) {
+  const missing = shipping.freeFrom - subtotal;
+  const pct = Math.min(100, Math.round((subtotal / shipping.freeFrom) * 100));
+  return (
+    <div>
+      <p className="text-[13px]">
+        {missing > 0 ? (
+          <>
+            Te faltan <b>{formatCOP(missing)}</b> para el envío gratis.
+          </>
+        ) : (
+          <b className="text-burgundy">Tu envío es gratis.</b>
+        )}
+      </p>
+      <div className="mt-2 h-[3px] w-full bg-line" aria-hidden>
+        <div className="h-full bg-burgundy transition-[width] duration-500 ease-out" style={{ width: `${pct}%` }} />
+      </div>
     </div>
   );
 }

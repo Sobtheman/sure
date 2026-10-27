@@ -2,12 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useCart } from "@/components/cart";
 import { getProduct } from "@/lib/catalog";
-import { store } from "@/lib/config";
+import { store, whatsappLink } from "@/lib/config";
 import { formatCOP } from "@/lib/format";
-import { Arrow } from "@/components/icons";
+import { Arrow, WhatsApp } from "@/components/icons";
+import { FreeShipping } from "@/components/CartDrawer";
+import { track } from "@/lib/track";
 
 const REGIONS = [
   "Bogotá D.C.", "Amazonas", "Antioquia", "Arauca", "Atlántico", "Bolívar", "Boyacá", "Caldas", "Caquetá",
@@ -17,6 +19,12 @@ const REGIONS = [
 ];
 
 type Payment = { name: string; methods: string; test: boolean } | null;
+type Method = "online" | "contraentrega" | "confirmar";
+
+const METHOD_TEXT: Record<Exclude<Method, "online">, string> = {
+  contraentrega: "Contra entrega",
+  confirmar: "Que me confirmen el pago por WhatsApp",
+};
 type Buyer = { name: string; legalId: string; email: string; phone: string; region: string; city: string; address: string; notes: string };
 
 const empty: Buyer = { name: "", legalId: "", email: "", phone: "", region: "", city: "", address: "", notes: "" };
@@ -40,8 +48,15 @@ export default function CheckoutForm({ payment }: { payment: Payment }) {
   const [accepted, setAccepted] = useState(false);
   const [busy, setBusy] = useState(false);
   const [serverError, setServerError] = useState("");
+  const [method, setMethod] = useState<Method>(payment ? "online" : "contraentrega");
   const [manual, setManual] = useState<{ reference: string; text: string; copied: boolean } | null>(null);
   const [summaryOpen, setSummaryOpen] = useState(false);
+  const doneRef = useRef<HTMLHeadingElement>(null);
+
+  // Al confirmar el pedido, el foco va al título para que se anuncie
+  useEffect(() => {
+    if (manual) doneRef.current?.focus();
+  }, [manual]);
 
   const set = (k: keyof Buyer) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setBuyer((b) => ({ ...b, [k]: e.target.value }));
@@ -52,8 +67,9 @@ export default function CheckoutForm({ payment }: { payment: Payment }) {
     e.preventDefault();
     const v = validate(buyer);
     setErrors(v);
-    if (Object.keys(v).length) {
-      document.getElementById(`f-${Object.keys(v)[0]}`)?.focus();
+    const firstInvalid = (["email", "phone", "legalId", "name", "region", "city", "address"] as const).find((k) => v[k]);
+    if (firstInvalid) {
+      document.getElementById(`f-${firstInvalid}`)?.focus();
       return;
     }
     if (!accepted) {
@@ -61,16 +77,17 @@ export default function CheckoutForm({ payment }: { payment: Payment }) {
       return;
     }
     setServerError("");
-    // Sin pasarela: el pedido se arma aquí y se envía por Instagram. Nada se cobra.
-    if (!payment) {
-      const reference = `SURE-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(16).slice(2, 6).toUpperCase()}`;
-      const text = orderText(reference);
-      let copied = false;
-      try {
-        await navigator.clipboard.writeText(text);
-        copied = true;
-      } catch {}
-      setManual({ reference, text, copied });
+    // Pedido por WhatsApp: se arma aquí y se abre el chat con todo el detalle.
+    if (method !== "online") {
+      const reference = `SURE-${Date.now().toString(36).toUpperCase()}`;
+      const text = orderText(reference, METHOD_TEXT[method]);
+      window.open(whatsappLink(text), "_blank", "noopener");
+      track("Pedido enviado por WhatsApp", { total: cart.total, pago: METHOD_TEXT[method] });
+      setManual({ reference, text, copied: false });
+      navigator.clipboard?.writeText(text).then(
+        () => setManual((m) => (m ? { ...m, copied: true } : m)),
+        () => {}
+      );
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
@@ -81,26 +98,35 @@ export default function CheckoutForm({ payment }: { payment: Payment }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ lines: cart.lines, buyer }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "No se pudo procesar el pedido.");
-      if (data.mode !== "redirect") throw new Error("Los pagos en línea no están disponibles en este momento.");
-      window.location.href = data.url;
+      let data: { error?: string; mode?: string; url?: string } = {};
+      try {
+        data = await res.json();
+      } catch {}
+      if (!res.ok) throw new Error(data.error || "No pudimos conectar con el pago en línea. Elige pago contra entrega o inténtalo de nuevo.");
+      if (data.mode !== "redirect") throw new Error("No pudimos conectar con el pago en línea. Elige pago contra entrega o inténtalo de nuevo.");
+      window.location.href = data.url!;
     } catch (err) {
-      setServerError(err instanceof Error ? err.message : "No se pudo procesar el pedido.");
+      // Los errores propios vienen en español; los de red (TypeError) no.
+      setServerError(
+        err instanceof Error && !(err instanceof TypeError)
+          ? err.message
+          : "No pudimos conectar con el pago en línea. Revisa tu conexión o elige pago contra entrega."
+      );
     } finally {
       setBusy(false);
     }
   };
 
-  const orderText = (ref: string) =>
+  const orderText = (ref: string, paymentText: string) =>
     [
       `Hola SURE, quiero hacer este pedido (${ref}):`,
       ...cart.lines.map((l) => {
         const p = getProduct(l.slug)!;
         return `• ${p.name} · Talla ${l.size} × ${l.qty} — ${formatCOP(p.price * l.qty)}`;
       }),
-      `Envío: ${formatCOP(cart.shippingFee)}`,
+      `Envío: ${cart.shippingFee === 0 ? "Gratis" : formatCOP(cart.shippingFee)}`,
       `Total: ${formatCOP(cart.total)}`,
+      `Pago: ${paymentText}`,
       "",
       `${buyer.name} · CC ${buyer.legalId}`,
       `${buyer.email} · ${buyer.phone}`,
@@ -116,31 +142,39 @@ export default function CheckoutForm({ payment }: { payment: Payment }) {
     return (
       <div className="wrap max-w-2xl pb-24 pt-12 sm:pt-20">
         <p className="label text-muted">Pedido {manual.reference}</p>
-        <h1 className="display mt-3 text-[clamp(40px,8vw,72px)]">Casi listo.</h1>
+        <h1 ref={doneRef} tabIndex={-1} className="display mt-3 text-[clamp(40px,8vw,72px)] outline-none">
+          Pedido listo.
+        </h1>
         <p className="mt-6 text-[15px] leading-relaxed">
-          Los pagos en línea todavía no están activos, así que <b>aún no se ha cobrado nada</b>. Envíanos este pedido
-          por mensaje directo en Instagram y te respondemos con las opciones de pago.
-          {manual.copied ? " Ya lo copiamos: solo pégalo en el chat." : ""}
+          Te abrimos WhatsApp con tu pedido. Envíalo y te confirmamos disponibilidad, envío y pago.
+          {manual.copied ? " También lo copiamos, por si lo quieres pegar." : ""}
         </p>
         <pre className="mt-6 whitespace-pre-wrap border border-line bg-paper p-5 font-sans text-[14px] leading-relaxed">
           {manual.text}
         </pre>
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-          <a href={store.instagramDM} target="_blank" rel="noopener noreferrer" className="btn-dark">
-            Abrir Instagram <Arrow />
+          <a href={whatsappLink(manual.text)} target="_blank" rel="noopener noreferrer" className="btn-dark">
+            <WhatsApp className="h-4 w-4" /> Abrir WhatsApp
           </a>
           <button
             className="btn-ghost"
-            onClick={async () => {
-              try {
-                await navigator.clipboard.writeText(manual.text);
-                setManual({ ...manual, copied: true });
-              } catch {}
+            onClick={() => {
+              navigator.clipboard?.writeText(manual.text).then(
+                () => setManual({ ...manual, copied: true }),
+                () => {}
+              );
             }}
           >
             {manual.copied ? "Copiado" : "Copiar pedido"}
           </button>
         </div>
+        <p className="mt-6 text-[13px] text-muted">
+          ¿Prefieres Instagram?{" "}
+          <a href={store.instagramDM} target="_blank" rel="noopener noreferrer" className="text-ink underline underline-offset-4">
+            Escríbenos a {store.instagramHandle}
+          </a>{" "}
+          y pega el pedido.
+        </p>
       </div>
     );
   }
@@ -158,7 +192,8 @@ export default function CheckoutForm({ payment }: { payment: Payment }) {
 
   const summary = (
     <div>
-      <ul className="divide-y divide-line">
+      <FreeShipping subtotal={cart.subtotal} />
+      <ul className="mt-2 divide-y divide-line">
         {cart.lines.map((l) => {
           const p = getProduct(l.slug)!;
           return (
@@ -188,8 +223,8 @@ export default function CheckoutForm({ payment }: { payment: Payment }) {
           <dd>{formatCOP(cart.subtotal)}</dd>
         </div>
         <div className="flex justify-between">
-          <dt className="text-muted">Envío nacional</dt>
-          <dd>{formatCOP(cart.shippingFee)}</dd>
+          <dt className="text-muted">Envío</dt>
+          <dd>{cart.shippingFee === 0 ? "Gratis" : formatCOP(cart.shippingFee)}</dd>
         </div>
         <div className="flex justify-between border-t border-line pt-3 text-[17px] font-bold">
           <dt>Total</dt>
@@ -289,24 +324,39 @@ export default function CheckoutForm({ payment }: { payment: Payment }) {
 
           <fieldset>
             <legend className="label mb-4">Pago</legend>
-            {payment ? (
-              <div className="border border-line bg-paper p-5 text-[14px] leading-relaxed">
-                <p>
-                  Al continuar te llevamos a <b>{payment.name}</b> para pagar de forma segura ({payment.methods}). Los
-                  datos de tu tarjeta o banco no pasan por este sitio.
-                </p>
-                {payment.test && (
-                  <p className="mt-3 text-burgundy">Modo de prueba: no se realizan cobros reales.</p>
-                )}
-              </div>
-            ) : (
-              <div className="border border-burgundy/30 bg-paper p-5 text-[14px] leading-relaxed">
-                <p className="font-bold text-burgundy">Los pagos en línea todavía no están activos.</p>
-                <p className="mt-2">
-                  Puedes dejar tu pedido listo: lo copiamos y nos lo envías por Instagram para coordinar el pago. No se
-                  cobra nada en este paso.
-                </p>
-              </div>
+            <div className="grid gap-2">
+              {(
+                [
+                  ...(payment
+                    ? [{ id: "online", title: `Pagar en línea con ${payment.name}`, note: payment.methods }]
+                    : []),
+                  { id: "contraentrega", title: "Pago contra entrega", note: "Pagas cuando el pedido llega a tu puerta." },
+                  { id: "confirmar", title: "Te confirmamos el pago", note: "Te escribimos por WhatsApp con las opciones." },
+                ] as { id: Method; title: string; note: string }[]
+              ).map((o) => (
+                <label
+                  key={o.id}
+                  className={`flex cursor-pointer items-start gap-3 border bg-paper p-4 transition-colors ${
+                    method === o.id ? "border-burgundy" : "border-line hover:border-ink"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="pago"
+                    value={o.id}
+                    checked={method === o.id}
+                    onChange={() => setMethod(o.id)}
+                    className="mt-1 h-4 w-4 shrink-0 accent-burgundy"
+                  />
+                  <span>
+                    <span className="block text-[14px] font-semibold">{o.title}</span>
+                    <span className="mt-0.5 block text-[13px] text-muted">{o.note}</span>
+                  </span>
+                </label>
+              ))}
+            </div>
+            {method === "online" && payment?.test && (
+              <p className="mt-3 text-[13px] text-burgundy">Modo de prueba: no se realizan cobros reales.</p>
             )}
           </fieldset>
 
@@ -335,12 +385,17 @@ export default function CheckoutForm({ payment }: { payment: Payment }) {
 
           <div>
             <button type="submit" disabled={busy} className="btn-dark w-full">
-              {busy
-                ? "Procesando…"
-                : payment
-                  ? `Pagar ${formatCOP(cart.total)} con ${payment.name}`
-                  : "Enviar pedido por Instagram"}
-              {!busy && <Arrow />}
+              {busy ? (
+                "Procesando…"
+              ) : method === "online" && payment ? (
+                <>
+                  Pagar {formatCOP(cart.total)} con {payment.name} <Arrow />
+                </>
+              ) : (
+                <>
+                  <WhatsApp className="h-4 w-4" /> Enviar pedido por WhatsApp
+                </>
+              )}
             </button>
             <p className="mt-3 min-h-[20px] text-[13px] text-burgundy" aria-live="polite">
               {serverError}
@@ -349,7 +404,7 @@ export default function CheckoutForm({ payment }: { payment: Payment }) {
         </form>
 
         <aside className="hidden lg:col-span-5 lg:block">
-          <div className="sticky top-28 bg-paper p-6">
+          <div className="sticky top-[136px] bg-paper p-6">
             <p className="label mb-2">Resumen</p>
             {summary}
           </div>

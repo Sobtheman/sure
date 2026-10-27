@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Logo from "@/components/Logo";
 import { useCart } from "@/components/cart";
+import AnnouncementBar from "@/components/AnnouncementBar";
 
 // Sobre el hero de inicio la barra es transparente y el logo blanco;
 // al pasar el hero se vuelve sólida. En el archivo es negra, en el resto blanca.
@@ -40,8 +41,9 @@ export default function Header() {
       </a>
       <header className={`fixed inset-x-0 top-0 z-50 transition-colors duration-500 ${bar}`}>
         {transparent && (
-          <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-36 bg-gradient-to-b from-black/55 to-transparent" />
+          <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-44 bg-gradient-to-b from-black/55 to-transparent" />
         )}
+        <AnnouncementBar />
         <nav className="wrap grid h-16 grid-cols-[1fr_auto_1fr] items-center sm:h-[72px]" aria-label="Principal">
           <div className="flex items-center gap-4 sm:gap-10">
             <Link href="/tienda" className={item} aria-current={pathname.startsWith("/tienda") ? "page" : undefined}>
@@ -59,8 +61,11 @@ export default function Header() {
             />
           </Link>
           <div className="flex justify-end">
-            <button onClick={() => cart.setOpen(true)} className={item} aria-label={`Bolsa, ${cart.count} artículos`}>
-              Bolsa <span className="tabular-nums">({cart.ready ? cart.count : 0})</span>
+            <button onClick={() => cart.setOpen(true)} className={item} aria-label={`Bolsa, ${cart.count} ${cart.count === 1 ? "artículo" : "artículos"}`}>
+              Bolsa{" "}
+              <span className={`tabular-nums ${cart.count > 0 ? (transparent || darkPage ? "text-burgundy-bright" : "text-burgundy") : ""}`}>
+                ({cart.ready ? cart.count : 0})
+              </span>
             </button>
           </div>
         </nav>

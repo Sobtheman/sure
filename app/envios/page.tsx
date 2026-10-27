@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Prose from "@/components/Prose";
-import { shipping, store } from "@/lib/config";
+import { shipping, store, whatsappLink } from "@/lib/config";
 import { formatCOP } from "@/lib/format";
 
 export const metadata: Metadata = { title: "Envíos y cambios" };
@@ -11,26 +11,37 @@ export default function Envios() {
       <section>
         <h2>Envíos</h2>
         <p>
-          Enviamos a todo Colombia por una tarifa única de {formatCOP(shipping.fee)}.
+          Enviamos a toda Colombia. <b>El envío es gratis en compras desde {formatCOP(shipping.freeFrom)}</b>; en compras
+          menores cuesta {formatCOP(shipping.fee)}, a cualquier ciudad.
         </p>
         <p>
-          Despachamos en {shipping.dispatch} desde que se confirma el pago. La entrega tarda {shipping.delivery}. Cuando
-          sale tu pedido te escribimos con el número de guía.
+          Tu pedido llega en {shipping.deliveryDays} días hábiles o menos. Apenas sale, te mandamos el número de guía por
+          WhatsApp para que lo sigas.
+        </p>
+      </section>
+      <section>
+        <h2>Pago</h2>
+        <p>
+          Puedes pagar contra entrega: pagas cuando el pedido llega a tu puerta. Si prefieres, te confirmamos el pago por
+          WhatsApp antes del envío.
         </p>
       </section>
       <section>
         <h2>Cambios de talla</h2>
         <p>
-          Si la talla no te quedó, puedes cambiarla dentro de los {shipping.exchangeDays} días siguientes a la entrega.
-          La prenda debe estar sin uso, sin lavar y con sus etiquetas. El cambio está sujeto a disponibilidad de la talla
-          que necesitas.
+          ¿No te quedó? Cambias la talla dentro de los {shipping.exchangeDays} días siguientes a la entrega. La prenda debe
+          estar sin uso, sin lavar y con sus etiquetas, y el cambio depende de que haya la talla que necesitas.
         </p>
         <p>
           Escríbenos por{" "}
+          <a href={whatsappLink("Hola SURE, quiero cambiar una talla")} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">
+            WhatsApp
+          </a>{" "}
+          o{" "}
           <a href={store.instagramDM} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">
             Instagram
           </a>{" "}
-          con tu número de pedido para coordinar el cambio.
+          con tu número de pedido y lo coordinamos.
         </p>
       </section>
       <section>

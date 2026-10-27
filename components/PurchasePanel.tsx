@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import type { Product, Size } from "@/lib/catalog";
 import { LOW_STOCK, SIZES, totalStock } from "@/lib/catalog";
 import { shipping } from "@/lib/config";
@@ -8,6 +9,8 @@ import { formatCOP } from "@/lib/format";
 import { useCart } from "@/components/cart";
 import SizeGuide from "@/components/SizeGuide";
 import { Plus } from "@/components/icons";
+import SellingPoints from "@/components/SellingPoints";
+import { track } from "@/lib/track";
 
 export default function PurchasePanel({ product }: { product: Product }) {
   const cart = useCart();
@@ -16,6 +19,10 @@ export default function PurchasePanel({ product }: { product: Product }) {
   const [guide, setGuide] = useState(false);
   const soldOut = totalStock(product) === 0;
   const left = size ? product.stock[size] : 0;
+
+  useEffect(() => {
+    track("Producto visto", { producto: product.name });
+  }, [product.name]);
 
   const add = () => {
     if (!size) {
@@ -28,6 +35,7 @@ export default function PurchasePanel({ product }: { product: Product }) {
       return;
     }
     setError("");
+    track("Agregado a la bolsa", { producto: product.name, talla: size });
     cart.setOpen(true);
   };
 
@@ -41,8 +49,11 @@ export default function PurchasePanel({ product }: { product: Product }) {
       </div>
 
       <fieldset className="mt-8">
+        <legend className="sr-only">Talla</legend>
         <div className="flex items-center justify-between">
-          <legend className="label">Talla</legend>
+          <span className="label" aria-hidden>
+            Talla
+          </span>
           <button onClick={() => setGuide(true)} className="text-[13px] underline underline-offset-4 hover:text-burgundy">
             Guía de medidas
           </button>
@@ -65,7 +76,7 @@ export default function PurchasePanel({ product }: { product: Product }) {
                 aria-label={out ? `Talla ${s}, agotada` : `Talla ${s}`}
                 className={`relative h-12 border text-[14px] font-semibold transition-colors ${
                   active
-                    ? "border-ink bg-ink text-paper"
+                    ? "border-burgundy bg-burgundy text-paper"
                     : out
                       ? "cursor-not-allowed border-line text-[#b5b5b3]"
                       : "border-line hover:border-ink"
@@ -87,7 +98,7 @@ export default function PurchasePanel({ product }: { product: Product }) {
             <span className="text-burgundy">{error}</span>
           ) : soldOut ? (
             <span className="text-muted">Agotado en todas las tallas.</span>
-          ) : size && left <= LOW_STOCK ? (
+          ) : size && LOW_STOCK > 0 && left <= LOW_STOCK ? (
             <span className="text-burgundy">
               Últimas {left} {left === 1 ? "unidad" : "unidades"} en talla {size}.
             </span>
@@ -101,10 +112,7 @@ export default function PurchasePanel({ product }: { product: Product }) {
         {soldOut ? "Agotado" : size ? `Agregar a la bolsa · ${formatCOP(product.price)}` : "Agregar a la bolsa"}
       </button>
 
-      <ul className="mt-5 space-y-1.5 text-[13px] text-muted">
-        <li>Envío a todo Colombia por {formatCOP(shipping.fee)}.</li>
-        <li>Cambios de talla hasta {shipping.exchangeDays} días después de recibir.</li>
-      </ul>
+      <SellingPoints className="mt-6" />
 
       <div className="mt-8 border-t border-line">
         <Section title="Descripción" open>
@@ -125,15 +133,16 @@ export default function PurchasePanel({ product }: { product: Product }) {
         </Section>
         <Section title="Envíos y cambios">
           <p>
-            Envío nacional: {formatCOP(shipping.fee)}. Despachamos en {shipping.dispatch} y la entrega tarda{" "}
-            {shipping.delivery}.
+            Envío gratis en compras desde {formatCOP(shipping.freeFrom)}; en compras menores, {formatCOP(shipping.fee)} a
+            cualquier ciudad de Colombia. Pagas contra entrega o te confirmamos el pago por WhatsApp. Te llega en{" "}
+            {shipping.deliveryDays} días hábiles o menos.
           </p>
           <p className="mt-3">
-            Puedes cambiar la talla dentro de los {shipping.exchangeDays} días siguientes a la entrega, con la prenda sin
-            uso y con sus etiquetas.{" "}
-            <a href="/envios" className="underline underline-offset-4">
-              Ver políticas
-            </a>
+            ¿No te quedó? Cambias la talla dentro de los {shipping.exchangeDays} días siguientes a la entrega, con la
+            prenda sin uso y con sus etiquetas.{" "}
+            <Link href="/envios" className="underline underline-offset-4">
+              Ver envíos y cambios
+            </Link>
           </p>
         </Section>
       </div>

@@ -9,7 +9,7 @@ export default function Home() {
     <>
       <Hero />
 
-      <section id="disponible" className="scroll-mt-16 bg-paper py-12 sm:scroll-mt-20 sm:py-16" aria-labelledby="disponible-titulo">
+      <section id="disponible" className="bg-paper py-12 sm:py-16" aria-labelledby="disponible-titulo">
         <div className="wrap">
           <h2 id="disponible-titulo" className="label text-muted">
             Disponible ahora

@@ -46,19 +46,22 @@ export default function ProductGallery({ images }: { images: ProductImage[] }) {
             </button>
           ))}
         </div>
-        <div className="pointer-events-none absolute inset-x-0 bottom-4 flex items-center justify-between px-4">
-          <span className="label bg-paper/85 px-2 py-1 text-[10px]">
-            {images[index]?.view} · Toca para ampliar
+        <div className="pointer-events-none absolute inset-x-0 bottom-3 flex items-center justify-between gap-3 px-4">
+          <span className="label whitespace-nowrap bg-paper/90 px-2 py-1 text-[10px]">
+            {images[index]?.view} · Ampliar
           </span>
           {images.length > 1 && (
-            <div className="pointer-events-auto flex gap-1.5">
+            <div className="pointer-events-auto flex bg-paper/90 px-1">
               {images.map((img, i) => (
                 <button
                   key={img.src}
                   onClick={() => go(i)}
                   aria-label={`Ver foto ${i + 1}: ${img.view}`}
-                  className={`h-[3px] w-6 transition-colors ${i === index ? "bg-ink" : "bg-ink/25"}`}
-                />
+                  aria-current={i === index ? "true" : undefined}
+                  className="grid h-8 w-7 place-items-center"
+                >
+                  <span className={`block h-[3px] w-5 transition-colors ${i === index ? "bg-ink" : "bg-ink/25"}`} />
+                </button>
               ))}
             </div>
           )}

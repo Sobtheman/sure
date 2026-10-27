@@ -2,7 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { getProduct, type Size } from "@/lib/catalog";
-import { shipping } from "@/lib/config";
+import { shippingFor } from "@/lib/config";
 
 export type CartLine = { slug: string; size: Size; qty: number };
 
@@ -28,9 +28,16 @@ function stockOf(slug: string, size: Size) {
   return getProduct(slug)?.stock[size] ?? 0;
 }
 
+// Slugs de versiones anteriores del sitio
+const LEGACY: Record<string, string> = {
+  "camiseta-dissidencia": "camiseta-disidencia",
+  "hoodie-dissidencia": "hoodie-disidencia",
+};
+
 // Quita líneas de productos que ya no existen y ajusta cantidades al stock
 function sanitize(lines: CartLine[]): CartLine[] {
   return lines
+    .map((l) => (LEGACY[l.slug] ? { ...l, slug: LEGACY[l.slug] } : l))
     .filter((l) => getProduct(l.slug) && Number.isInteger(l.qty) && l.qty > 0)
     .map((l) => ({ ...l, qty: Math.min(l.qty, stockOf(l.slug, l.size)) }))
     .filter((l) => l.qty > 0);
@@ -61,7 +68,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       const max = stockOf(slug, size);
       const current = lines.find((l) => l.slug === slug && l.size === size)?.qty ?? 0;
       if (max <= 0) return { ok: false, reason: "Talla agotada" };
-      if (current + qty > max) return { ok: false, reason: `Solo quedan ${max} en talla ${size}` };
+      if (current + qty > max) return { ok: false, reason: `Ya tienes en la bolsa todas las unidades disponibles en talla ${size}.` };
       setLines((prev) => {
         const found = prev.find((l) => l.slug === slug && l.size === size);
         if (found) return prev.map((l) => (l === found ? { ...l, qty: l.qty + qty } : l));
@@ -90,7 +97,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const value = useMemo<CartState>(() => {
     const count = lines.reduce((n, l) => n + l.qty, 0);
     const subtotal = lines.reduce((n, l) => n + (getProduct(l.slug)?.price ?? 0) * l.qty, 0);
-    const shippingFee = count > 0 ? shipping.fee : 0;
+    const shippingFee = shippingFor(subtotal);
     return {
       lines,
       ready,

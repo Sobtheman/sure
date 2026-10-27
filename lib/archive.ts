@@ -1,121 +1,91 @@
-/* Archivo editorial: colecciones anteriores, ya no disponibles.
-   Las historias son un borrador de marca: POR CONFIRMAR con SURE.
-   La única cita literal es la de Pink × Niebla, tomada de su afiche. */
+/* Archivo: colecciones anteriores, ya agotadas. Orden cronológico.
+   Fotos originales de las sesiones de SURE (máximo 8 por colección). */
 
 export type ArchiveImage = { src: string; alt: string; width: number; height: number };
 
 export type ArchiveCollection = {
   slug: string;
-  number: string;
+  year: number;
   name: string;
   note: string;
   story: string[];
-  quote?: { text: string; source: string };
   pieces: { name: string; detail: string }[];
   cover: ArchiveImage;
   images: ArchiveImage[];
 };
 
+const v = (src: string, alt: string): ArchiveImage => ({ src: `/img/archivo/${src}.jpg`, alt, width: 1500, height: 2000 });
+const h = (src: string, alt: string): ArchiveImage => ({ src: `/img/archivo/${src}.jpg`, alt, width: 2000, height: 1500 });
+
 export const archive: ArchiveCollection[] = [
   {
-    slug: "niebla",
-    number: "01",
-    name: "Niebla",
-    note: "Lavado ácido, letras infladas y cielo gris.",
+    slug: "intrinsic",
+    year: 2025,
+    name: "Intrinsic",
+    note: "Blanco, negro y el logo al pecho.",
     story: [
-      "Niebla salió del gris: ese cielo que no se decide y se queda encima de la ciudad toda la tarde. Cada camiseta pasó por lavado ácido, así que ninguna quedó igual a la otra. Atrás, las letras de SURE infladas como nubes; adelante, apenas el nombre.",
-      "Después vino el Vol. 02, Pink × Niebla. La misma niebla en rosa y vino tinto, cortada a la cintura, con un corazón al pecho y una frase escrita en el afiche.",
+      "La primera colección de SURE. Dos camisetas, blanco y negro, con el logo al pecho.",
+      "Se fotografió en la calle, contra grafiti, en puertas viejas del centro y de noche. Así empezó todo.",
     ],
-    quote: { text: "No tienes que ser perfecta. Solo tienes que ser tú.", source: "Pink × Niebla, Vol. 02" },
     pieces: [
-      { name: "Camiseta Niebla", detail: "Gris, lavado ácido, SURE en letras infladas a la espalda" },
-      { name: "Crop top Pink × Niebla", detail: "Rosa y vino tinto, lavado ácido, corazón SURE al pecho" },
+      { name: "Camiseta Intrinsic blanca", detail: "Logo S negro al pecho, “Sure” a la espalda" },
+      { name: "Camiseta Intrinsic negra", detail: "Logo S blanco al pecho" },
     ],
-    cover: {
-      src: "/img/archivo/niebla-espaldas.jpg",
-      alt: "Tres personas de espaldas con las camisetas grises de Niebla y las letras SURE infladas",
-      width: 1156,
-      height: 1395,
-    },
+    cover: v("intrinsic-grafiti", "Pareja frente a un muro de grafiti con las camisetas Intrinsic blanca y negra"),
     images: [
-      {
-        src: "/img/archivo/niebla-afiche.jpg",
-        alt: "Afiche de Niebla: camiseta gris con lavado ácido y letras SURE infladas entre nubes",
-        width: 1179,
-        height: 1252,
-      },
-      {
-        src: "/img/archivo/niebla-muro.jpg",
-        alt: "Tres personas con camisetas grises de Niebla frente a una puerta con grafiti en blanco y negro",
-        width: 1156,
-        height: 1395,
-      },
-      {
-        src: "/img/archivo/niebla-pink-afiche.jpg",
-        alt: "Afiche Pink × Niebla Vol. 02: modelo con crop top rosa y la frase No tienes que ser perfecta, solo tienes que ser tú",
-        width: 1156,
-        height: 1468,
-      },
-      {
-        src: "/img/archivo/niebla-pink-duo.jpg",
-        alt: "Dos modelos con crop tops vino tinto de Pink × Niebla y el corazón SURE al pecho",
-        width: 1179,
-        height: 1431,
-      },
-      {
-        src: "/img/archivo/niebla-crop.jpg",
-        alt: "Modelo con crop top vino tinto de lavado ácido y jean cargo",
-        width: 940,
-        height: 1395,
-      },
+      v("intrinsic-puerta", "Dos personas en la escalera de una casa antigua con las camisetas Intrinsic"),
+      v("intrinsic-calle", "Modelo con la camiseta Intrinsic blanca y pantalón café en una calle con grafiti"),
+      v("intrinsic-sofa", "Pareja en un sofá verde de cuero con la camiseta Intrinsic negra"),
+      v("intrinsic-pared", "Modelo con la camiseta Intrinsic blanca frente a una pared negra"),
+      v("intrinsic-logo", "Detalle del logo S negro al pecho de la camiseta Intrinsic blanca"),
+      v("intrinsic-espalda", "Espalda de la camiseta Intrinsic blanca con “Sure” bajo el cuello"),
+      v("intrinsic-grupo", "Cuatro personas frente a una pared negra con las camisetas Intrinsic"),
     ],
   },
   {
-    slug: "intrinsic",
-    number: "02",
-    name: "Intrinsic",
-    note: "Blanco y negro, contra la pared.",
+    slug: "niebla",
+    year: 2026,
+    name: "Niebla",
+    note: "Lavado ácido y las letras SURE infladas.",
     story: [
-      "Intrinsic es lo que llevas por dentro y no se negocia. Blanco y negro, sin nada que sobre: el nombre pequeño a la espalda, la S al pecho.",
-      "Se fotografió donde se usa: contra muros pintados, en la calle, sin estudio. Ropa que no tiene que gritar para que se note.",
+      "Camisetas con lavado ácido, cada una distinta a la otra. Atrás, SURE en letras infladas a todo lo ancho de la espalda.",
+      "Salió en gris y negro, y después en crop: rosa, vino tinto y negro.",
     ],
     pieces: [
-      { name: "Camiseta Intrinsic blanca", detail: "Logo SURE pequeño a la espalda" },
-      { name: "Camiseta Intrinsic negra", detail: "Monograma S al pecho" },
+      { name: "Camiseta Niebla", detail: "Gris o negra, lavado ácido, SURE inflado a la espalda" },
+      { name: "Crop Niebla", detail: "Rosa, vino tinto o negro, corte a la cintura, corazón SURE al pecho" },
     ],
-    cover: {
-      src: "/img/archivo/intrinsic-calle.jpg",
-      alt: "Pareja frente a un muro de grafiti con camisetas Intrinsic blanca y negra",
-      width: 1164,
-      height: 1196,
-    },
+    cover: v("niebla-espaldas", "Tres personas de espaldas con las camisetas Niebla y las letras SURE infladas"),
     images: [
-      {
-        // POR CONFIRMAR: colección
-        src: "/img/archivo/intrinsic-bogota.jpg",
-        alt: "Modelo sonriendo en una calle con camiseta blanca y el monograma S",
-        width: 1067,
-        height: 1348,
-      },
+      v("niebla-plano", "Camiseta Niebla gris sobre el piso, vista de espalda con las letras SURE"),
+      v("niebla-caminando", "Modelo caminando de espaldas con la camiseta Niebla gris"),
+      v("niebla-grafiti", "Tres personas con camisetas Niebla frente a una puerta con grafiti"),
+      v("niebla-espalda", "Modelo de espaldas contra una pared de concreto con la camiseta Niebla"),
+      v("niebla-fit", "Modelo de cuerpo entero con la camiseta Niebla gris como vestido"),
+      h("niebla-pink-escalera", "Tres modelos en una escalera con los crops Niebla rosa y negro"),
+      h("niebla-pink-noche", "Cuatro modelos frente a un mural con los crops Niebla"),
     ],
   },
   {
     slug: "sure26",
-    number: "03",
+    year: 2026,
     name: "Sure26",
-    note: "Camiseta de fútbol. Made in Sure Land.",
-    story: [
-      "Sure26 es la camiseta de un equipo que no juega en ninguna liga. Negra, a rayas finas, con cuello de polo y el 10 grande a la espalda.",
-      "Arriba, en letra corrida, la firma: Made in Sure Land. Hecha para la calle, no para la cancha.",
-    ],
+    note: "La camiseta de fútbol de SURE.",
+    story: ["Camiseta de fútbol negra a rayas finas, con cuello de polo, SURE al pecho y el 10 en la espalda."],
     pieces: [{ name: "Camiseta Sure26", detail: "Negra a rayas, cuello de polo, número 10 a la espalda" }],
     cover: {
-      src: "/img/archivo/sure26-camisetas.jpg",
-      alt: "Dos personas con la camiseta de fútbol Sure26 negra, una de espaldas con el número 10",
-      width: 1179,
-      height: 1348,
+      src: "/img/archivo/sure26-mural.jpg",
+      alt: "Modelo con la camiseta Sure26 frente a un mural con el logo SURE",
+      width: 993,
+      height: 1251,
     },
-    images: [],
+    images: [
+      { src: "/img/archivo/sure26-museo.jpg", alt: "Modelo de espaldas en un museo con la camiseta Sure26 y el número 10", width: 1041, height: 1221 },
+      { src: "/img/archivo/sure26-camisetas.jpg", alt: "Dos personas con la camiseta Sure26, una de espaldas con el número 10", width: 1179, height: 1348 },
+      { src: "/img/archivo/sure26-pareja.jpg", alt: "Pareja en la calle con la camiseta Sure26", width: 1018, height: 1269 },
+      { src: "/img/archivo/sure26-terraza.jpg", alt: "Modelo de cuerpo entero con la camiseta Sure26 en una terraza", width: 978, height: 1239 },
+      { src: "/img/archivo/sure26-balon.jpg", alt: "Modelo celebrando con un balón y la camiseta Sure26", width: 1036, height: 1236 },
+    ],
   },
 ];
 

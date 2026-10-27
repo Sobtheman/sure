@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Logo from "@/components/Logo";
-import { store } from "@/lib/config";
+import SocialLinks from "@/components/SocialLinks";
 
 export default function Footer() {
   return (
@@ -9,16 +9,17 @@ export default function Footer() {
         <Link href="/" aria-label="SURE, inicio">
           <Logo className="w-[104px]" />
         </Link>
-        <nav aria-label="Pie de página" className="flex flex-col gap-4 sm:flex-row sm:gap-12">
-          <a href={store.instagram} target="_blank" rel="noopener noreferrer" className="label hover:opacity-60">
-            Instagram
-          </a>
+        <nav aria-label="Pie de página" className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-12">
+          <Link href="/tienda" className="label hover:opacity-60">
+            Tienda
+          </Link>
           <Link href="/contacto" className="label hover:opacity-60">
             Contacto
           </Link>
           <Link href="/envios" className="label hover:opacity-60">
             Envíos y cambios
           </Link>
+          <SocialLinks className="-ml-3 sm:ml-0" />
         </nav>
       </div>
       <div className="wrap flex flex-col gap-2 border-t border-white/10 py-6 text-[11px] text-white/45 sm:flex-row sm:justify-between">

@@ -26,7 +26,8 @@ export default function Coleccion({ params }: { params: { slug: string } }) {
   if (!c) notFound();
   const i = archive.indexOf(c);
   const next = archive[(i + 1) % archive.length];
-  const gallery = [c.cover, ...c.images];
+  // La portada ya está arriba; la galería muestra el resto (o la portada si no hay más).
+  const gallery = c.images.length ? c.images : [c.cover];
 
   return (
     <div className="bg-ink text-paper">
@@ -41,7 +42,7 @@ export default function Coleccion({ params }: { params: { slug: string } }) {
             <Arrow className="rotate-180" /> Archivo
           </Link>
           <p className="label rise mt-6 text-white/60" style={{ animationDelay: "150ms" }}>
-            {c.number} · Agotada
+            {c.year} · Agotada
           </p>
           <h1 className="display rise mt-3 text-[clamp(72px,18vw,200px)]" style={{ animationDelay: "280ms" }}>
             {c.name}
@@ -63,14 +64,6 @@ export default function Coleccion({ params }: { params: { slug: string } }) {
               <p>{p}</p>
             </Reveal>
           ))}
-          {c.quote && (
-            <Reveal>
-              <blockquote className="border-l-2 border-burgundy-bright pl-5 pt-2 sm:pl-8">
-                <p className="display text-[30px] leading-[1.05] text-paper sm:text-[44px]">“{c.quote.text}”</p>
-                <footer className="label mt-4 text-white/45">{c.quote.source}</footer>
-              </blockquote>
-            </Reveal>
-          )}
         </div>
       </section>
 
@@ -119,7 +112,7 @@ export default function Coleccion({ params }: { params: { slug: string } }) {
         />
         <div className="wrap absolute inset-x-0 bottom-0 flex items-end justify-between gap-6 pb-10">
           <div>
-            <p className="label text-white/60">Siguiente · {next.number}</p>
+            <p className="label text-white/60">Siguiente · {next.year}</p>
             <p className="display mt-2 text-[clamp(48px,10vw,120px)]">{next.name}</p>
           </div>
           <Arrow className="mb-6 h-4 w-10 text-burgundy-bright transition-transform duration-500 group-hover:translate-x-2" />

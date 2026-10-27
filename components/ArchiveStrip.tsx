@@ -35,7 +35,7 @@ export default function ArchiveStrip() {
               </div>
               <div className="mt-3 flex items-baseline justify-between">
                 <h3 className="text-[15px] font-extrabold">{c.name}</h3>
-                <span className="label text-[10px] text-white/45">Archivo</span>
+                <span className="label text-[10px] text-white/45">{c.year}</span>
               </div>
             </Link>
           </Reveal>

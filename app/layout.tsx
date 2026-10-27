@@ -5,6 +5,7 @@ import { CartProvider } from "@/components/cart";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
+import { Analytics } from "@vercel/analytics/react";
 
 const archivo = Archivo({
   subsets: ["latin"],
@@ -16,12 +17,12 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: { default: "SURE — Dissidencia", template: "%s — SURE" },
-  description: "SURE, streetwear colombiano. Colección Dissidencia: camiseta y hoodie, envíos a todo Colombia.",
+  title: { default: "SURE — Disidencia", template: "%s — SURE" },
+  description: "SURE, streetwear colombiano. Colección Disidencia: camiseta y hoodie. Envío gratis desde $100.000 y pago contra entrega en toda Colombia.",
   openGraph: {
-    title: "SURE — Dissidencia",
-    description: "Streetwear colombiano. Colección Dissidencia disponible ahora.",
-    images: [{ url: "/img/hero/dissidencia.jpg", width: 1638, height: 1048 }],
+    title: "SURE — Disidencia",
+    description: "Streetwear colombiano. Colección Disidencia: camiseta y hoodie, envíos a toda Colombia.",
+    images: [{ url: "/img/hero/film-poster.jpg", width: 1920, height: 1080 }],
     locale: "es_CO",
     type: "website",
   },
@@ -46,6 +47,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <main id="contenido">{children}</main>
           <Footer />
           <CartDrawer />
+          {process.env.NEXT_PUBLIC_VERCEL_ENV && <Analytics />}
         </CartProvider>
       </body>
     </html>
