@@ -1,6 +1,10 @@
 # SURE — tienda en línea
 
-Next.js 14 (App Router) + Tailwind. Sitio en español, precios en COP, pensado primero para celular.
+Next.js 14 (App Router) + Tailwind. Sitio en español (raíz) e inglés (`/en`), precios en COP, pensado primero para celular. En vivo en https://surewear.co (Vercel, proyecto `sure`).
+
+- Textos en los dos idiomas: `lib/copy/*.ts` (mismas claves en `es` y `en`); prendas y archivo en inglés dentro de `lib/catalog.ts`, `lib/archive.ts` y `lib/lookbook.ts`.
+- Las páginas viven en `app/[lang]/`; `middleware.ts` sirve el español sin prefijo y el inglés en `/en`.
+- Publicar: `vercel deploy --prod` desde esta carpeta (variables `RESEND_API_KEY`, `ORDER_EMAIL_FROM` y `NEXT_PUBLIC_SITE_URL` ya están en Vercel).
 
 ```
 npm install
