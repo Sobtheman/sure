@@ -26,8 +26,8 @@ export default function Coleccion({ params }: { params: { slug: string } }) {
   if (!c) notFound();
   const i = archive.indexOf(c);
   const next = archive[(i + 1) % archive.length];
-  // La portada ya está arriba; la galería muestra el resto (o la portada si no hay más).
-  const gallery = c.images.length ? c.images : [c.cover];
+  // La galería incluye la portada: así todas las colecciones quedan en número par.
+  const gallery = [c.cover, ...c.images];
 
   return (
     <div className="bg-ink text-paper">

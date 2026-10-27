@@ -48,7 +48,7 @@ export default async function Pedido({ searchParams }: { searchParams: Record<st
           </Link>
         )}
         <a
-          href={whatsappLink(`Hola SURE, tengo una pregunta sobre mi pedido${ref ? ` ${ref}` : ""}`)}
+          href={whatsappLink(`Hola SURE, vengo de la página y tengo una pregunta sobre mi pedido${ref ? ` ${ref}` : ""}.`)}
           target="_blank"
           rel="noopener noreferrer"
           className="btn-ghost"

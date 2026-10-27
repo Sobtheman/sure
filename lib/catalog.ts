@@ -22,7 +22,7 @@ export type Product = {
   description: string;
   details: string[];
   care: string[];
-  // La primera foto es la principal; la segunda aparece al pasar el cursor en la tienda (la espalda).
+  // Solo fotos originales de la sesión. La primera es la principal; la segunda aparece al pasar el cursor en la tienda (la espalda).
   images: ProductImage[];
   stock: Record<Size, number>;
   measurements: { label: string; values: Record<Size, number> }[]; // cm
@@ -67,12 +67,10 @@ export const products: Product[] = [
     ],
     care,
     images: [
-      photo("camiseta-frente", "Camiseta Disidencia blanca de frente, con el ojo rojo al pecho y Watch Your Demons en el ruedo", "Frente", 792, 990),
+      photo("camiseta-frente-modelo", "Modelo de frente con la camiseta Disidencia blanca y el ojo rojo al pecho", "Frente"),
       photo("camiseta-espalda", "Espalda de la camiseta Disidencia: ojo rojo en semitono y Watch Your Demons", "Espalda"),
-      photo("camiseta-frente-modelo", "Modelo de frente con la camiseta Disidencia blanca", "En modelo"),
       photo("camiseta-pareja", "Pareja con la camiseta Disidencia; se ve Watch Your Demons en el ruedo", "En modelo"),
       photo("camiseta-duo", "Dos modelos con la camiseta Disidencia blanca", "En modelo"),
-      photo("camiseta-modelo", "Dos modelos con la camiseta Disidencia blanca en un sofá de cuero", "En modelo", 960, 720),
     ],
     stock: { S: 20, M: 20, L: 20, XL: 20 },
     measurements: [
@@ -101,9 +99,8 @@ export const products: Product[] = [
     ],
     care,
     images: [
-      photo("hoodie-frente", "Hoodie Disidencia negro de frente, con el monograma S al pecho y la manga estampada", "Frente", 808, 1010),
+      photo("hoodie-frente-modelo", "Modelo de frente con el hoodie Disidencia negro y el monograma S al pecho", "Frente"),
       photo("hoodie-espalda", "Espalda del hoodie Disidencia: rostro en blanco con Sure y Demons en rojo", "Espalda"),
-      photo("hoodie-frente-modelo", "Modelo de frente con el hoodie Disidencia negro", "En modelo"),
       photo("hoodie-manga", "Modelo sentada en una escalera con el hoodie Disidencia; se ve Surewearco en la manga", "En modelo"),
       photo("hoodie-modelo", "Modelo agachado con el hoodie Disidencia; se ve la manga estampada", "En modelo"),
       photo("hoodie-escalera", "Modelo en una escalera de ladrillo con el hoodie Disidencia negro", "En modelo"),

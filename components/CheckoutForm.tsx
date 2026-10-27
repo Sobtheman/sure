@@ -82,6 +82,13 @@ export default function CheckoutForm({ payment }: { payment: Payment }) {
       const reference = `SURE-${Date.now().toString(36).toUpperCase()}`;
       const text = orderText(reference, METHOD_TEXT[method]);
       window.open(whatsappLink(text), "_blank", "noopener");
+      // Copia al correo de SURE; si falla, el pedido sigue en WhatsApp
+      fetch("/api/order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lines: cart.lines, buyer, reference, method }),
+        keepalive: true,
+      }).catch(() => {});
       track("Pedido enviado por WhatsApp", { total: cart.total, pago: METHOD_TEXT[method] });
       setManual({ reference, text, copied: false });
       navigator.clipboard?.writeText(text).then(
@@ -119,7 +126,7 @@ export default function CheckoutForm({ payment }: { payment: Payment }) {
 
   const orderText = (ref: string, paymentText: string) =>
     [
-      `Hola SURE, quiero hacer este pedido (${ref}):`,
+      `Hola SURE, vengo de la página y quiero hacer este pedido (${ref}):`,
       ...cart.lines.map((l) => {
         const p = getProduct(l.slug)!;
         return `• ${p.name} · Talla ${l.size} × ${l.qty} — ${formatCOP(p.price * l.qty)}`;

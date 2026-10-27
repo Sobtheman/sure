@@ -37,16 +37,24 @@ npm run build && npm start
 
 ## Film del inicio
 
-`disidencia-720.mp4` (celular) y `disidencia-1080.mp4` (escritorio), sacados de "disidencia 02.mp4" del Drive, sin audio y cortados antes del cierre. Arrancan solos en bucle; con movimiento reducido o ahorro de datos queda el póster con botón de reproducir.
+`disidencia-720.mp4` (celular) y `disidencia-1080.mp4` (escritorio), sacados de "disidencia 02.mp4" del Drive, sin audio y cortados antes del cierre. Arrancan solos en bucle desde el HTML, sin botón de play. Si el navegador bloquea el autoplay (iPhone en bajo consumo), el film arranca con el primer toque o scroll. Hay un botón discreto de pausa.
 
 ## Zoom
 
-- Escritorio: al pasar el cursor por una foto de producto se acerca 2,2× y sigue al mouse. Clic abre el visor: clic acerca, mover recorre, otro clic aleja, flechas cambian de foto.
+- Escritorio: al pasar el cursor por una foto de producto se acerca 2,2× y sigue al mouse. Clic abre el visor con la foto a todo el ancho: la rueda la recorre, clic acerca 2× en ese punto, otro clic aleja, flechas cambian de foto.
 - Celular: tocar abre el visor; pellizcar o doble toque acerca, arrastrar recorre, deslizar cambia de foto.
 
 ## Pedidos y pagos
 
-Hoy el checkout termina en **WhatsApp** (320 426 2765) con el pedido completo: prendas, tallas, total, datos de envío y forma de pago (contra entrega o confirmar el pago). Nada se cobra en el sitio.
+Hoy el checkout termina en **WhatsApp** (320 426 2765) con el pedido completo: prendas, tallas, total, datos de envío y forma de pago (contra entrega o confirmar el pago). Nada se cobra en el sitio. Todos los enlaces de WhatsApp abren con un mensaje listo ("Hola SURE, vengo de la página…").
+
+Además, cada pedido llega como copia al correo **sureweareco@gmail.com** (logo, foto de fondo, prendas, total, datos del cliente y botón para escribirle por WhatsApp). Se envía con [Resend](https://resend.com):
+
+1. Crear la cuenta de Resend con sureweareco@gmail.com y agregar el dominio `surewear.co` (Resend da 3 registros DNS para GoDaddy).
+2. Crear una API key y ponerla en Vercel como `RESEND_API_KEY`.
+3. Opcional: `ORDER_EMAIL_TO` (otro destino) y `ORDER_EMAIL_FROM` (por defecto `SURE Pedidos <pedidos@surewear.co>`).
+
+Sin `RESEND_API_KEY` no se envía correo y el pedido sigue normal por WhatsApp.
 
 Para activar pago en línea (Vercel → Settings → Environment Variables):
 

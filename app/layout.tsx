@@ -5,6 +5,7 @@ import { CartProvider } from "@/components/cart";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
+import ScrollTop from "@/components/ScrollTop";
 import { Analytics } from "@vercel/analytics/react";
 
 const archivo = Archivo({
@@ -43,6 +44,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       </head>
       <body className="font-sans">
         <CartProvider>
+          <ScrollTop />
           <Header />
           <main id="contenido">{children}</main>
           <Footer />

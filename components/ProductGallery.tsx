@@ -77,7 +77,7 @@ export default function ProductGallery({ images }: { images: ProductImage[] }) {
 
       {viewer !== null && (
         <Lightbox
-          images={images.map((i) => ({ src: i.src, alt: i.alt, label: i.view }))}
+          images={images.map((i) => ({ src: i.src, alt: i.alt, width: i.width, height: i.height, label: i.view }))}
           start={viewer}
           onClose={() => setViewer(null)}
         />

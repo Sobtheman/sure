@@ -34,7 +34,7 @@ export default function Envios() {
         </p>
         <p>
           Escríbenos por{" "}
-          <a href={whatsappLink("Hola SURE, quiero cambiar una talla")} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">
+          <a href={whatsappLink("Hola SURE, vengo de la página y quiero cambiar una talla.")} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">
             WhatsApp
           </a>{" "}
           o{" "}

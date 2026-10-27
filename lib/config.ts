@@ -12,8 +12,11 @@ export const store = {
   whatsappLabel: "320 426 2765",
 };
 
-export function whatsappLink(text?: string) {
-  return `https://wa.me/${store.whatsapp}${text ? `?text=${encodeURIComponent(text)}` : ""}`;
+// Todo chat de WhatsApp abre con un mensaje listo para enviar
+export const whatsappHello = "Hola SURE, vengo de la página y quiero más información.";
+
+export function whatsappLink(text: string = whatsappHello) {
+  return `https://wa.me/${store.whatsapp}?text=${encodeURIComponent(text)}`;
 }
 
 export const hero = {

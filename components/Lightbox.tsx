@@ -1,16 +1,19 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Close } from "@/components/icons";
 
-export type ViewerImage = { src: string; alt: string; label?: string };
+export type ViewerImage = { src: string; alt: string; label?: string; width?: number; height?: number };
 
 const MAX = 4;
 const CLICK_ZOOM = 2.5;
 
+const WIDE_ZOOM = 2;
+const WIDE_QUERY = "(min-width: 1024px) and (hover: hover) and (pointer: fine)";
+
 /* Visor a pantalla completa.
-   Escritorio: clic acerca en ese punto, mover el mouse recorre la prenda, otro clic aleja.
+   Computador: la foto se abre a todo el ancho y se recorre con la rueda; clic acerca en ese punto, otro clic aleja.
    Táctil: pellizcar o doble toque para acercar, arrastrar para recorrer, deslizar para cambiar de foto. */
 export default function Lightbox({
   images,
@@ -32,6 +35,12 @@ export default function Lightbox({
   const gesture = useRef({ startDist: 0, startS: 1, startX: 0, startY: 0, midX: 0, midY: 0, downX: 0, downY: 0, downT: 0, moved: false, swipe: 0 });
   const lastTap = useRef(0);
   const animate = useRef(true);
+  // Computador: foto a todo el ancho con scroll
+  const [wide] = useState(() => images.every((i) => i.width && i.height) && window.matchMedia(WIDE_QUERY).matches);
+  const [wideZoom, setWideZoom] = useState(false);
+  const scroller = useRef<HTMLDivElement>(null);
+  const photo = useRef<HTMLDivElement>(null);
+  const anchor = useRef<{ fx: number; fy: number; cx: number; cy: number } | null>(null);
 
   const apply = useCallback(() => {
     const el = layer.current;
@@ -76,10 +85,33 @@ export default function Lightbox({
   const go = useCallback(
     (d: number) => {
       reset();
+      setWideZoom(false);
       setIndex((i) => (i + d + images.length) % images.length);
     },
     [images.length, reset]
   );
+
+  // Al cambiar de foto en computador, arranca desde arriba
+  useLayoutEffect(() => {
+    scroller.current?.scrollTo(0, 0);
+  }, [index]);
+
+  // El punto donde se hizo clic queda bajo el cursor al acercar o alejar
+  useLayoutEffect(() => {
+    const a = anchor.current;
+    const el = scroller.current;
+    const r = photo.current?.getBoundingClientRect();
+    if (!a || !el || !r) return;
+    anchor.current = null;
+    el.scrollLeft += r.left + a.fx * r.width - a.cx;
+    el.scrollTop += r.top + a.fy * r.height - a.cy;
+  }, [wideZoom]);
+
+  const toggleWideZoom = (e: React.MouseEvent) => {
+    const r = photo.current!.getBoundingClientRect();
+    anchor.current = { fx: (e.clientX - r.left) / r.width, fy: (e.clientY - r.top) / r.height, cx: e.clientX, cy: e.clientY };
+    setWideZoom((z) => !z);
+  };
 
   useEffect(() => {
     const prev = document.body.style.overflow;
@@ -197,7 +229,78 @@ export default function Lightbox({
 
   const img = images[index];
   const tone = dark ? "bg-ink text-paper" : "bg-frame text-ink";
-  const chip = dark ? "bg-white/10 text-paper" : "bg-paper text-ink";
+  const chip = dark ? "bg-ink/80 text-paper" : "bg-paper text-ink";
+
+  const bar = (
+    <div className="pointer-events-none absolute inset-x-0 top-0 flex items-center justify-between p-3">
+      <span className={`label pointer-events-auto px-3 py-2 text-[10px] ${chip}`}>
+        {img.label ? `${img.label} · ` : ""}
+        {index + 1} / {images.length}
+      </span>
+      <button autoFocus onClick={onClose} className={`pointer-events-auto grid h-12 w-12 place-items-center ${chip}`} aria-label="Cerrar">
+        <Close />
+      </button>
+    </div>
+  );
+
+  const arrows = images.length > 1 && (
+    <>
+      <button
+        onClick={() => go(-1)}
+        aria-label="Foto anterior"
+        className={`absolute left-3 top-1/2 hidden h-12 w-12 -translate-y-1/2 place-items-center sm:grid ${chip}`}
+      >
+        <svg viewBox="0 0 10 16" className="h-4 w-2.5" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
+          <path d="M8 1L2 8l6 7" />
+        </svg>
+      </button>
+      <button
+        onClick={() => go(1)}
+        aria-label="Foto siguiente"
+        className={`absolute right-3 top-1/2 hidden h-12 w-12 -translate-y-1/2 place-items-center sm:grid ${chip}`}
+      >
+        <svg viewBox="0 0 10 16" className="h-4 w-2.5" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
+          <path d="M2 1l6 7-6 7" />
+        </svg>
+      </button>
+    </>
+  );
+
+  if (wide) {
+    return (
+      <div role="dialog" aria-modal="true" aria-label="Foto ampliada" className={`fixed inset-0 z-[70] ${tone}`}>
+        <div ref={scroller} className="absolute inset-0 overflow-auto overscroll-contain">
+          <div className="flex min-h-full items-center" style={{ width: wideZoom ? `${WIDE_ZOOM * 100}%` : "100%" }}>
+            <div
+              ref={photo}
+              onClick={toggleWideZoom}
+              className={`w-full select-none ${wideZoom ? "cursor-zoom-out" : "cursor-zoom-in"}`}
+            >
+              <Image
+                key={img.src}
+                src={img.src}
+                alt={img.alt}
+                width={img.width}
+                height={img.height}
+                sizes="100vw"
+                quality={90}
+                priority
+                draggable={false}
+                className="block h-auto w-full"
+              />
+            </div>
+          </div>
+        </div>
+        {bar}
+        {arrows}
+        <p className="pointer-events-none absolute inset-x-0 bottom-5 flex justify-center">
+          <span className={`label px-3 py-2 text-[10px] ${chip}`}>
+            {wideZoom ? "Clic para alejar" : "Baja para ver toda la foto · clic para acercar"}
+          </span>
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div role="dialog" aria-modal="true" aria-label="Foto ampliada" className={`fixed inset-0 z-[70] ${tone}`}>
@@ -224,43 +327,8 @@ export default function Lightbox({
         </div>
       </div>
 
-      <div className="pointer-events-none absolute inset-x-0 top-0 flex items-center justify-between p-3">
-        <span className={`label pointer-events-auto px-3 py-2 text-[10px] ${chip}`}>
-          {img.label ? `${img.label} · ` : ""}
-          {index + 1} / {images.length}
-        </span>
-        <button
-          autoFocus
-          onClick={onClose}
-          className={`pointer-events-auto grid h-12 w-12 place-items-center ${chip}`}
-          aria-label="Cerrar"
-        >
-          <Close />
-        </button>
-      </div>
-
-      {images.length > 1 && (
-        <>
-          <button
-            onClick={() => go(-1)}
-            aria-label="Foto anterior"
-            className={`absolute left-3 top-1/2 hidden h-12 w-12 -translate-y-1/2 place-items-center sm:grid ${chip}`}
-          >
-            <svg viewBox="0 0 10 16" className="h-4 w-2.5" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
-              <path d="M8 1L2 8l6 7" />
-            </svg>
-          </button>
-          <button
-            onClick={() => go(1)}
-            aria-label="Foto siguiente"
-            className={`absolute right-3 top-1/2 hidden h-12 w-12 -translate-y-1/2 place-items-center sm:grid ${chip}`}
-          >
-            <svg viewBox="0 0 10 16" className="h-4 w-2.5" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
-              <path d="M2 1l6 7-6 7" />
-            </svg>
-          </button>
-        </>
-      )}
+      {bar}
+      {arrows}
 
       <p className={`label pointer-events-none absolute inset-x-0 bottom-5 text-center text-[10px] ${dark ? "text-white/60" : "text-ink/55"}`}>
         <span className="hidden sm:inline">{zoomed ? "Mueve el mouse para recorrer · clic para alejar" : "Clic para acercar"}</span>

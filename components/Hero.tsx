@@ -6,49 +6,79 @@ import { hero } from "@/lib/config";
 import { asset } from "@/lib/asset";
 import { Arrow } from "@/components/icons";
 
-// Film de la colección a pantalla completa, sin audio, con pausa y progreso.
-// Con movimiento reducido o ahorro de datos se queda en el póster con botón de reproducir.
+// Film de la colección a pantalla completa, sin audio. Arranca solo desde el HTML, sin botón de play.
+// Si el navegador bloquea el autoplay (iPhone en bajo consumo), arranca con el primer toque, tecla o scroll.
+const WAKE = ["touchend", "pointerdown", "click", "keydown", "scroll"] as const;
+
 export default function Hero() {
   const video = useRef<HTMLVideoElement>(null);
-  const [src, setSrc] = useState<string | null>(null);
-  const [playing, setPlaying] = useState(false);
+  const userPaused = useRef(false);
+  const [started, setStarted] = useState(false);
+  const [playing, setPlaying] = useState(true);
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const saveData = (navigator as any).connection?.saveData === true;
-    setSrc(asset(window.innerWidth >= 900 ? hero.film.desktop : hero.film.mobile));
-    if (reduce || saveData) return;
-    setPlaying(true);
+    const v = video.current;
+    if (!v) return;
+    v.muted = true;
+    v.setAttribute("muted", "");
+    const wake = () => {
+      if (v.paused && !userPaused.current) v.play().catch(() => {});
+    };
+    const stopWaking = () => WAKE.forEach((e) => window.removeEventListener(e, wake));
+    const onPlaying = () => {
+      setStarted(true);
+      setPlaying(true);
+      stopWaking();
+    };
+    const onPause = () => setPlaying(false);
+    v.addEventListener("playing", onPlaying);
+    v.addEventListener("pause", onPause);
+    if (!v.paused && v.currentTime > 0) onPlaying();
+    else {
+      WAKE.forEach((e) => window.addEventListener(e, wake, { passive: true }));
+      v.play().catch(() => {});
+    }
+    return () => {
+      stopWaking();
+      v.removeEventListener("playing", onPlaying);
+      v.removeEventListener("pause", onPause);
+    };
   }, []);
 
-  useEffect(() => {
+  const toggle = () => {
     const v = video.current;
-    if (!v || !src) return;
-    if (playing) v.play().catch(() => setPlaying(false));
-    else v.pause();
-  }, [playing, src]);
+    if (!v) return;
+    if (v.paused) {
+      userPaused.current = false;
+      v.play().catch(() => {});
+    } else {
+      userPaused.current = true;
+      v.pause();
+    }
+  };
 
   return (
     <section className="relative h-[100svh] min-h-[620px] w-full overflow-hidden bg-ink text-paper sm:max-h-[1000px]">
       <div className="hero-media absolute inset-0">
         <Image src={hero.poster} alt={hero.posterAlt} fill priority sizes="100vw" quality={80} className="object-cover object-[60%_40%]" />
-        {src && (
-          <video
-            ref={video}
-            src={src}
-            muted
-            loop
-            playsInline
-            preload={playing ? "auto" : "none"}
-            onTimeUpdate={(e) => {
-              const v = e.currentTarget;
-              setProgress(v.duration ? v.currentTime / v.duration : 0);
-            }}
-            className="absolute inset-0 h-full w-full object-cover object-[60%_40%]"
-            aria-label={`Film de la colección ${hero.collection}`}
-          />
-        )}
+        <video
+          ref={video}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          onTimeUpdate={(e) => {
+            const v = e.currentTarget;
+            setProgress(v.duration ? v.currentTime / v.duration : 0);
+          }}
+          className="absolute inset-0 h-full w-full object-cover object-[60%_40%]"
+          aria-label={`Film de la colección ${hero.collection}`}
+        >
+          <source src={asset(hero.film.desktop)} type="video/mp4" media="(min-width: 900px)" />
+          <source src={asset(hero.film.mobile)} type="video/mp4" />
+        </video>
       </div>
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[62%] bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
 
@@ -70,9 +100,9 @@ export default function Hero() {
           Comprar colección <Arrow className="text-burgundy-bright" />
         </a>
 
-        <div className="mt-7 flex items-center gap-4 sm:mt-9">
+        <div className={`mt-7 flex items-center gap-4 transition-opacity duration-500 sm:mt-9 ${started ? "opacity-100" : "invisible opacity-0"}`}>
           <button
-            onClick={() => setPlaying((p) => !p)}
+            onClick={toggle}
             aria-label={playing ? "Pausar film" : "Reproducir film"}
             className="-ml-2 grid h-10 w-10 place-items-center"
           >

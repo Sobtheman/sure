@@ -11,7 +11,7 @@ export default function Contacto() {
     <Prose eyebrow="Contacto" title="Hablemos.">
       <p>Pedidos, tallas, cambios o colaboraciones. Escríbenos por WhatsApp o Instagram y te respondemos directo.</p>
       <div className="flex flex-col items-start gap-4">
-        <a href={whatsappLink("Hola SURE")} target="_blank" rel="noopener noreferrer" className="btn-dark">
+        <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="btn-dark">
           Escribir por WhatsApp <Arrow />
         </a>
         <p className="text-[14px] text-muted">

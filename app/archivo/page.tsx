@@ -37,7 +37,7 @@ export default function Archivo() {
               <div className="absolute inset-x-0 bottom-0 flex flex-col items-start gap-4 p-5 sm:flex-row sm:items-end sm:justify-between sm:gap-6 sm:p-10">
                 <div>
                   <p className="label text-white/85">
-                    {c.year} · Agotada · {c.images.length || 1} {c.images.length === 1 ? "foto" : "fotos"}
+                    {c.year} · Agotada · {c.images.length + 1} fotos
                   </p>
                   <h2 className="display mt-2 text-[clamp(52px,10vw,128px)]">{c.name}</h2>
                   <p className="mt-2 max-w-sm text-[14px] text-white/85">{c.note}</p>

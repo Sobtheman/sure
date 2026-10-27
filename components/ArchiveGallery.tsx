@@ -70,7 +70,7 @@ export default function ArchiveGallery({
       {open !== null && (
         <Lightbox
           dark={dark}
-          images={tiles.map(({ img }) => ({ src: img.src, alt: img.alt, label: name }))}
+          images={tiles.map(({ img }) => ({ ...img, label: name }))}
           start={open}
           onClose={() => setOpen(null)}
         />
