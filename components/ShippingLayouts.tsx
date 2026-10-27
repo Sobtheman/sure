@@ -31,7 +31,7 @@ export function ShippingSide({ eyebrow, title, alt, children }: Props) {
 // B · Foto de fondo: la foto ocupa el encabezado y el título va encima
 export function ShippingBackdrop({ eyebrow, title, alt, children }: Props) {
   return (
-    <>
+    <div className="pt-header">
       <section className="relative h-[72svh] min-h-[480px] overflow-hidden bg-ink text-paper sm:max-h-[760px]">
         <Image src={PHOTO} alt={alt} fill priority sizes="100vw" className="object-cover object-[46%_45%]" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/30" />
@@ -41,7 +41,7 @@ export function ShippingBackdrop({ eyebrow, title, alt, children }: Props) {
         </div>
       </section>
       <div className={`wrap max-w-[calc(42rem+2rem)] pb-24 pt-12 sm:max-w-[calc(42rem+4rem)] sm:pt-16 lg:max-w-[calc(42rem+6rem)] ${text}`}>{children}</div>
-    </>
+    </div>
   );
 }
 

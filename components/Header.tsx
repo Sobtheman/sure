@@ -36,7 +36,8 @@ export default function Header() {
       ? "bg-ink/95 text-paper backdrop-blur border-b border-white/10"
       : "bg-paper/95 text-ink backdrop-blur border-b border-line";
 
-  const item = "label py-3 transition-opacity hover:opacity-60";
+  // En celular angosto, letras un poco más juntas para que el logo respire
+  const item = "label py-3 text-[10.5px] tracking-[0.04em] min-[360px]:tracking-[0.08em] transition-opacity hover:opacity-60 min-[400px]:text-[11px] min-[400px]:tracking-label";
 
   return (
     <>
@@ -49,7 +50,7 @@ export default function Header() {
         )}
         <AnnouncementBar />
         <nav className="wrap grid h-16 grid-cols-[1fr_auto_1fr] items-center sm:h-[72px]" aria-label={t.mainNav}>
-          <div className="flex items-center gap-4 sm:gap-10">
+          <div className="flex items-center gap-2 min-[360px]:gap-3 min-[400px]:gap-4 sm:gap-10">
             <Link href="/tienda" className={item} aria-current={path.startsWith("/tienda") ? "page" : undefined}>
               {t.shop}
             </Link>
@@ -59,7 +60,7 @@ export default function Header() {
           </div>
           <Link href="/" aria-label={t.home} className="block">
             <Logo
-              className={`w-[78px] transition-all duration-500 sm:w-[108px] ${
+              className={`w-[66px] transition-all duration-500 min-[400px]:w-[78px] sm:w-[108px] ${
                 transparent ? "sm:w-[150px] sm:translate-y-3 lg:w-[200px] lg:translate-y-6" : ""
               }`}
             />
