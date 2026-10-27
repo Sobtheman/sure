@@ -8,7 +8,7 @@ const es = {
   bag: "Bolsa",
   bagLabel: (n: number) => `Bolsa, ${n} ${n === 1 ? "artículo" : "artículos"}`,
   switchTo: "EN",
-  switchLabel: "View this page in English",
+  switchLabel: "Ver la página en inglés",
   announceLabel: "Envíos y pagos",
   freeShipping: "Envío gratis siempre",
   cashOnDelivery: "Pago contra entrega",

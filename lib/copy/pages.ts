@@ -63,7 +63,7 @@ const en: typeof es = {
     nationwide: "We ship across Colombia.",
     free: "Shipping is always free, to any city.",
     delivery: (days: number) =>
-      `Your order is delivered in ${days} business days or less. As soon as it ships, we send you the tracking number on WhatsApp so you can follow it.`,
+      `Your order is delivered in ${days} business days or less. As soon as it ships, we send you the tracking number on WhatsApp so you can track it.`,
     paymentHeading: "Payment",
     payment:
       "Pay cash on delivery: you pay when your order reaches your door. If you prefer, we can confirm your payment on WhatsApp before it ships.",
@@ -73,10 +73,10 @@ const en: typeof es = {
     exchangeContactBefore: "Message us on",
     exchangeContactOr: "or",
     exchangeContactAfter: "with your order number and we'll sort it out.",
-    exchangeWhatsapp: "Hi SURE, I'm coming from the website and I need to exchange a size.",
+    exchangeWhatsapp: "Hi SURE, I'm writing from your website and I need to exchange a size.",
     withdrawalHeading: "Right of withdrawal",
     withdrawal:
-      "Since you bought online, you have the right to withdraw from your purchase (derecho de retracto) within five (5) business days after delivery, under Article 47 of Ley 1480 de 2011, the Estatuto del Consumidor (Colombia's consumer protection law). The piece must be returned in the same condition you received it; return shipping is on you. We refund your money within thirty (30) calendar days.",
+      "Since you bought online, you have the right to withdraw from your purchase (derecho de retracto) within five (5) business days after delivery, under Article 47 of Law 1480 of 2011, the Estatuto del Consumidor (Colombia's consumer protection law). The piece must be returned in the same condition you received it; return shipping is on you. We refund your money within thirty (30) calendar days.",
     warrantyHeading: "Warranty",
     warranty:
       "If your piece arrives with a manufacturing defect, message us with photos and we'll replace it or refund your money.",
@@ -95,7 +95,7 @@ const en: typeof es = {
     use: (online: boolean) =>
       `When you place an order, you give us your name, ID number (cédula), email, phone number and address. Your order reaches us on WhatsApp with those details, and we use them only to confirm it, ship it and contact you about it. We don't sell them or share them with anyone other than the carrier delivering your order${online ? " and the payment gateway" : ""}.`,
     rights: (whatsapp: string, instagram: string) =>
-      `Under Ley 1581 de 2012, Colombia's personal data protection law, you can access, update, correct or ask us to delete your data at any time by messaging us on WhatsApp (${whatsapp}) or Instagram (${instagram}).`,
+      `Under Law 1581 of 2012, Colombia's personal data protection law, you can access, update, correct or ask us to delete your data at any time by messaging us on WhatsApp (${whatsapp}) or Instagram (${instagram}).`,
     gateway:
       "If you pay online, your card or bank account details never pass through this site: they go straight to the payment gateway.",
   },

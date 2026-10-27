@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { parseOrder } from "@/lib/order";
 import { sendOrderEmail } from "@/lib/orderEmail";
+import { isLang } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 
@@ -11,7 +12,7 @@ const METHODS: Record<string, string> = {
 
 // Pedido por WhatsApp: el navegador abre el chat y aquí se manda la copia al correo de SURE.
 export async function POST(req: Request) {
-  let body: { lines?: unknown; buyer?: Record<string, unknown>; reference?: unknown; method?: unknown };
+  let body: { lines?: unknown; buyer?: Record<string, unknown>; reference?: unknown; method?: unknown; lang?: string };
   try {
     body = await req.json();
   } catch {
@@ -25,7 +26,8 @@ export async function POST(req: Request) {
   if ("error" in parsed) return NextResponse.json({ error: parsed.error }, { status: parsed.status });
 
   try {
-    const result = await sendOrderEmail(parsed.order, payment, new URL(req.url).origin);
+    const lang = isLang(body.lang) ? body.lang : "es";
+    const result = await sendOrderEmail(parsed.order, payment, new URL(req.url).origin, lang);
     if (!result.sent) console.error("Correo de pedido no enviado:", result.reason);
     return NextResponse.json({ ok: true, emailed: result.sent });
   } catch (err) {

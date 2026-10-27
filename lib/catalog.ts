@@ -141,7 +141,7 @@ const english: Record<string, ProductText> = {
     short: "Tee",
     color: "White",
     description:
-      "Oversized white tee with the red eye on the chest. On the back, the halftone eye and “Watch Your Demons” in script. Dropped shoulder and a heavy collar.",
+      "Oversized white tee with the red eye on the chest. On the back, the halftone eye and “Watch Your Demons” in script. Dropped shoulder and a thick collar.",
     details: [
       "Oversized fit, dropped shoulder",
       "100% cotton",

@@ -14,6 +14,8 @@ export function middleware(req: NextRequest) {
   return NextResponse.rewrite(url);
 }
 
+// Fuera del middleware: API, archivos de Next y de Vercel, y las carpetas de /public.
+// Si se agrega un archivo suelto en la raíz de /public, hay que sumarlo aquí.
 export const config = {
-  matcher: ["/((?!api|_next|.*\\..*).*)"],
+  matcher: ["/((?!api|_next|_vercel|img|media|brand|email|icon\\.svg|favicon\\.ico|robots\\.txt|sitemap\\.xml).*)"],
 };

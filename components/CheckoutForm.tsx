@@ -90,7 +90,7 @@ export default function CheckoutForm({ payment }: { payment: Payment }) {
       fetch("/api/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lines: cart.lines, buyer, reference, method }),
+        body: JSON.stringify({ lines: cart.lines, buyer, reference, method, lang }),
         keepalive: true,
       }).catch(() => {});
       // Analítica: la forma de pago se registra siempre con el texto en español

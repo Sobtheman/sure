@@ -19,6 +19,9 @@ export default function Header() {
   const overlayPage = path === "/";
   const darkPage = path.startsWith("/archivo");
   const [pastHero, setPastHero] = useState(false);
+  // Al cambiar de idioma se conserva la consulta y el ancla (?ref= del pedido, #disponible)
+  const [extra, setExtra] = useState("");
+  useEffect(() => setExtra(window.location.search + window.location.hash), [path]);
 
   useEffect(() => {
     if (!overlayPage) return;
@@ -67,10 +70,10 @@ export default function Header() {
           </Link>
           <div className="flex items-center justify-end gap-3 sm:gap-8">
             <NextLink
-              href={localePath(lang === "es" ? "en" : "es", path)}
+              href={localePath(lang === "es" ? "en" : "es", path) + extra}
               className={`${item} opacity-70`}
               hrefLang={lang === "es" ? "en" : "es"}
-              lang={lang === "es" ? "en" : "es"}
+              lang={lang === "en" ? "es" : undefined}
               aria-label={t.switchLabel}
             >
               {t.switchTo}

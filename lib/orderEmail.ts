@@ -2,6 +2,7 @@ import "server-only";
 import { getProduct } from "@/lib/catalog";
 import { formatCOP } from "@/lib/format";
 import type { Order } from "@/lib/payments";
+import type { Lang } from "@/lib/i18n";
 
 /* Copia de cada pedido por WhatsApp al correo de SURE, con Resend.
    Variables: RESEND_API_KEY (sin ella no se envía nada), ORDER_EMAIL_TO, ORDER_EMAIL_FROM. */
@@ -13,10 +14,13 @@ const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&
 const FONT = "'Helvetica Neue',Helvetica,Arial,sans-serif";
 const LABEL = `font:700 11px/1.4 ${FONT};letter-spacing:.14em;text-transform:uppercase;color:#6e6e6c;margin:0`;
 
-export function orderEmail(order: Order, payment: string, origin: string) {
+// lang: idioma en el que compró el cliente (el correo a SURE siempre va en español)
+export function orderEmail(order: Order, payment: string, origin: string, lang: Lang = "es") {
   const { buyer } = order;
   const when = new Intl.DateTimeFormat("es-CO", { dateStyle: "long", timeStyle: "short", timeZone: "America/Bogota" }).format(new Date());
-  const chat = `https://wa.me/57${buyer.phone}?text=${encodeURIComponent(`Hola ${buyer.name.split(" ")[0]}, te escribimos de SURE por tu pedido ${order.reference}.`)}`;
+  const first = buyer.name.split(" ")[0];
+  const reply = lang === "en" ? `Hi ${first}, this is SURE about your order ${order.reference}.` : `Hola ${first}, te escribimos de SURE por tu pedido ${order.reference}.`;
+  const chat = `https://wa.me/57${buyer.phone}?text=${encodeURIComponent(reply)}`;
   const units = order.lines.reduce((n, l) => n + l.qty, 0);
 
   const rows = order.lines
@@ -53,7 +57,7 @@ export function orderEmail(order: Order, payment: string, origin: string) {
     <tr><td style="background:#ffffff;padding:32px 28px">
       <p style="${LABEL}">Nuevo pedido · ${esc(order.reference)}</p>
       <h1 style="margin:10px 0 6px;font:800 30px/1.1 ${FONT};color:#0d0e10;letter-spacing:-.01em">${esc(buyer.name)}</h1>
-      <p style="margin:0;font:14px/1.5 ${FONT};color:#6e6e6c">${esc(when)} · ${units} ${units === 1 ? "prenda" : "prendas"} · ${formatCOP(order.total)}</p>
+      <p style="margin:0;font:14px/1.5 ${FONT};color:#6e6e6c">${esc(when)} · ${units} ${units === 1 ? "prenda" : "prendas"} · ${formatCOP(order.total)}${lang === "en" ? " · Compró en inglés" : ""}</p>
 
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:22px;border-top:1px solid #e4e4e1">${rows}</table>
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px">
@@ -88,7 +92,7 @@ export function orderEmail(order: Order, payment: string, origin: string) {
 </body></html>`;
 
   const text = [
-    `Nuevo pedido ${order.reference} · ${when}`,
+    `Nuevo pedido ${order.reference} · ${when}${lang === "en" ? " · Compró en inglés" : ""}`,
     "",
     ...order.lines.map((l) => `• ${l.name} · Talla ${l.size} × ${l.qty} — ${formatCOP(l.unitPrice * l.qty)}`),
     `Envío: ${order.shipping === 0 ? "Gratis" : formatCOP(order.shipping)}`,
@@ -106,10 +110,10 @@ export function orderEmail(order: Order, payment: string, origin: string) {
   return { subject: `Nuevo pedido ${order.reference} · ${formatCOP(order.total)} · ${buyer.name}`, html, text };
 }
 
-export async function sendOrderEmail(order: Order, payment: string, origin: string) {
+export async function sendOrderEmail(order: Order, payment: string, origin: string, lang: Lang = "es") {
   const key = process.env.RESEND_API_KEY;
   if (!key) return { sent: false, reason: "sin RESEND_API_KEY" };
-  const { subject, html, text } = orderEmail(order, payment, origin);
+  const { subject, html, text } = orderEmail(order, payment, origin, lang);
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json", "Idempotency-Key": order.reference },

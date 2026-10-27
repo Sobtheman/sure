@@ -15,7 +15,7 @@ export const store = {
 // Todo chat de WhatsApp abre con un mensaje listo para enviar (según el idioma de la página)
 export const whatsappHello = {
   es: "Hola SURE, vengo de la página y quiero más información.",
-  en: "Hi SURE, I'm coming from the website and I'd like more info.",
+  en: "Hi SURE, I'm writing from your website and I'd like more info.",
 };
 
 export function whatsappLink(text: string = whatsappHello.es) {

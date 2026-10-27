@@ -16,7 +16,7 @@ const en: typeof es = {
   promises: [
     { big: "Free", small: "Shipping, always, anywhere in Colombia" },
     { big: "Cash on delivery", small: "Pay when it arrives" },
-    { big: `${shipping.deliveryDays} days`, small: "Business days or less to your door" },
+    { big: `${shipping.deliveryDays} days`, small: "Or less to your door (business days)" },
     { big: `${shipping.exchangeDays} days`, small: "To exchange your size" },
   ],
 };

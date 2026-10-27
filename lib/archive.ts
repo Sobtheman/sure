@@ -185,8 +185,8 @@ const english: Record<string, CollectionText> = {
     ],
   },
   sure26: {
-    note: "SURE's football jersey.",
-    story: ["A black pinstriped football jersey with a polo collar, SURE on the chest and the number 10 on the back."],
+    note: "SURE's soccer jersey.",
+    story: ["A black pinstriped soccer jersey with a polo collar, SURE on the chest and the number 10 on the back."],
     pieces: [{ name: "Sure26 jersey", detail: "Black pinstripes, polo collar, number 10 on the back" }],
     coverAlt: "Model in the Sure26 jersey in front of a mural with the SURE logo",
     alts: [
@@ -194,7 +194,7 @@ const english: Record<string, CollectionText> = {
       "Two people in the Sure26 jersey, one from behind showing the number 10",
       "Couple on the street wearing the Sure26 jersey",
       "Full-length shot of a model in the Sure26 jersey on a rooftop terrace",
-      "Model celebrating with a football in the Sure26 jersey",
+      "Model celebrating with a soccer ball in the Sure26 jersey",
     ],
   },
 };

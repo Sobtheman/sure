@@ -135,7 +135,7 @@ const en: typeof es = {
   errors: {
     name: "Enter your full name.",
     legalId: "ID number (cédula): 5 to 11 digits.",
-    email: "Check your email.",
+    email: "Check your email address.",
     phone: "10-digit mobile number starting with 3.",
     region: "Choose your department.",
     city: "Enter your city or town.",
@@ -152,7 +152,7 @@ const en: typeof es = {
     network: "We couldn't reach online payment. Check your connection or choose cash on delivery.",
   },
   order: {
-    greeting: (ref: string) => `Hi SURE, I'm coming from the website and I'd like to place this order (${ref}):`,
+    greeting: (ref: string) => `Hi SURE, I'm writing from your website. I'd like to place this order (${ref}):`,
     item: (name: string, size: string, qty: number, price: string) => `• ${name} · Size ${size} × ${qty} — ${price}`,
     shipping: (value: string) => `Shipping: ${value}`,
     total: (value: string) => `Total: ${value}`,
@@ -230,7 +230,7 @@ const en: typeof es = {
     retry: "Try again",
     backToShop: "Back to shop",
     whatsapp: "Message us on WhatsApp",
-    whatsappText: (ref?: string) => `Hi SURE, I'm coming from the website and I have a question about my order${ref ? ` ${ref}` : ""}.`,
+    whatsappText: (ref?: string) => `Hi SURE, I'm writing from your website with a question about my order${ref ? ` ${ref}` : ""}.`,
   },
 };
 
