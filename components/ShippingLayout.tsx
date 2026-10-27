@@ -25,8 +25,8 @@ export function ShippingPromises({ eyebrow, title, alt, promises, children }: Pr
         </div>
         <ul className="grid grid-cols-2 gap-px self-stretch border border-line bg-line lg:col-span-5">
           {promises.map((p) => (
-            <li key={p.small} className="flex flex-col justify-end bg-paper p-5 sm:p-7">
-              <span className="display text-[clamp(22px,4.4vw,40px)] leading-[0.95]">{p.big}</span>
+            <li key={p.small} className="flex flex-col justify-end bg-paper p-4 sm:p-7">
+              <span className="display text-[clamp(17px,4.4vw,40px)] leading-[0.95]">{p.big}</span>
               <span className="mt-3 text-[13px] leading-snug text-muted">{p.small}</span>
             </li>
           ))}
