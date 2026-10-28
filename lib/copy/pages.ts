@@ -13,7 +13,7 @@ const es = {
       `Tu pedido llega en ${days} días hábiles o menos. Apenas sale, te mandamos el número de guía por WhatsApp para que lo sigas.`,
     paymentHeading: "Pago",
     payment:
-      "Puedes pagar contra entrega: pagas cuando el pedido llega a tu puerta. Si prefieres, te confirmamos el pago por WhatsApp antes del envío.",
+      "Puedes pagar contra entrega: pagas cuando el pedido llega a tu puerta. También puedes transferir por Nequi o a la llave Bre-B, sin comisión. Si prefieres, te confirmamos el pago por WhatsApp antes del envío.",
     exchangeHeading: "Cambios de talla",
     exchange: (days: number) =>
       `¿No te quedó? Cambias la talla dentro de los ${days} días siguientes a la entrega. La prenda debe estar sin uso, sin lavar y con sus etiquetas, y el cambio depende de que haya la talla que necesitas.`,
@@ -42,7 +42,7 @@ const es = {
     title: "Tratamiento de datos",
     // online: hay pasarela de pago activa (activeProvider() !== null)
     use: (online: boolean) =>
-      `Cuando haces un pedido nos das tu nombre, cédula, correo, celular y dirección. El pedido nos llega por WhatsApp con esos datos, y los usamos solo para confirmarlo, despacharlo y contactarte sobre él. No los vendemos ni los compartimos con nadie distinto de la transportadora que lleva tu pedido${online ? " y la pasarela de pago" : ""}.`,
+      `Cuando haces un pedido nos das tu nombre, cédula, correo, celular y dirección. El pedido nos llega por WhatsApp con esos datos, y los usamos solo para confirmarlo, despacharlo y contactarte sobre él. No los vendemos ni los compartimos con nadie distinto de la transportadora que lleva tu pedido${online ? " y la pasarela de pago" : ""}. Si te unes a la lista de SURE, te escribimos solo para contarte de lanzamientos, y puedes darte de baja desde cualquier correo.`,
     rights: (whatsapp: string, instagram: string) =>
       `De acuerdo con la Ley 1581 de 2012, puedes conocer, actualizar, rectificar o pedir que eliminemos tus datos en cualquier momento escribiéndonos por WhatsApp (${whatsapp}) o Instagram (${instagram}).`,
     gateway:
@@ -66,7 +66,7 @@ const en: typeof es = {
       `Your order is delivered in ${days} business days or less. As soon as it ships, we send you the tracking number on WhatsApp so you can track it.`,
     paymentHeading: "Payment",
     payment:
-      "Pay cash on delivery: you pay when your order reaches your door. If you prefer, we can confirm your payment on WhatsApp before it ships.",
+      "Pay cash on delivery: you pay when your order reaches your door. You can also transfer via Nequi or to our Bre-B key, with no fees. If you prefer, we can confirm your payment on WhatsApp before it ships.",
     exchangeHeading: "Size exchanges",
     exchange: (days: number) =>
       `Didn't fit? Exchange your size within ${days} days of delivery. The piece has to be unworn, unwashed and with its tags on, and the exchange depends on your size being available.`,
@@ -93,7 +93,7 @@ const en: typeof es = {
     eyebrow: "Legal",
     title: "Privacy & data",
     use: (online: boolean) =>
-      `When you place an order, you give us your name, ID number (cédula), email, phone number and address. Your order reaches us on WhatsApp with those details, and we use them only to confirm it, ship it and contact you about it. We don't sell them or share them with anyone other than the carrier delivering your order${online ? " and the payment gateway" : ""}.`,
+      `When you place an order, you give us your name, ID number (cédula), email, phone number and address. Your order reaches us on WhatsApp with those details, and we use them only to confirm it, ship it and contact you about it. We don't sell them or share them with anyone other than the carrier delivering your order${online ? " and the payment gateway" : ""}. If you join the SURE list, we only email you about launches, and you can unsubscribe from any email.`,
     rights: (whatsapp: string, instagram: string) =>
       `Under Law 1581 of 2012, Colombia's personal data protection law, you can access, update, correct or ask us to delete your data at any time by messaging us on WhatsApp (${whatsapp}) or Instagram (${instagram}).`,
     gateway:

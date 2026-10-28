@@ -7,6 +7,7 @@ export const dynamic = "force-dynamic";
 
 const METHODS: Record<string, string> = {
   contraentrega: "Contra entrega",
+  transferencia: "Transferencia Nequi / Bre-B (pendiente de comprobante)",
   confirmar: "Confirmar el pago por WhatsApp",
 };
 

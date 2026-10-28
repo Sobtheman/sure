@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import ProductCard from "@/components/ProductCard";
 import Reveal from "@/components/Reveal";
 import { productsFor } from "@/lib/catalog";
@@ -9,11 +10,9 @@ import { langOf } from "@/lib/i18n";
 import { shop } from "@/lib/copy/shop";
 
 export function generateMetadata({ params }: { params: { lang: string } }): Metadata {
-  const t = shop[langOf(params)].shopPage;
-  return {
-    title: t.metaTitle,
-    description: t.metaDescription,
-  };
+  const lang = langOf(params);
+  const t = shop[lang].shopPage;
+  return pageMeta(lang, "/tienda", { title: t.metaTitle, description: t.metaDescription, image: productsFor(lang)[0].images[0] });
 }
 
 export default function Tienda({ params }: { params: { lang: string } }) {

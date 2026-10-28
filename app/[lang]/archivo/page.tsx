@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import Image from "next/image";
 import Link from "@/components/Link";
 import Reveal from "@/components/Reveal";
@@ -8,11 +9,9 @@ import { langOf } from "@/lib/i18n";
 import { Arrow } from "@/components/icons";
 
 export function generateMetadata({ params }: { params: { lang: string } }): Metadata {
-  const t = archiveCopy[langOf(params)];
-  return {
-    title: t.metaTitle,
-    description: t.metaDescription,
-  };
+  const lang = langOf(params);
+  const t = archiveCopy[lang];
+  return pageMeta(lang, "/archivo", { title: t.metaTitle, description: t.metaDescription, image: archiveFor(lang)[0].cover });
 }
 
 export default function Archivo({ params }: { params: { lang: string } }) {

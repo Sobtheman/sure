@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
+import { seoCopy } from "@/lib/copy/seo";
 import Prose from "@/components/Prose";
 import SocialLinks from "@/components/SocialLinks";
 import { store, whatsappHello, whatsappLink } from "@/lib/config";
@@ -9,7 +11,8 @@ import { pagesCopy } from "@/lib/copy/pages";
 type Props = { params: { lang: string } };
 
 export function generateMetadata({ params }: Props): Metadata {
-  return { title: pagesCopy[langOf(params)].contact.metaTitle };
+  const lang = langOf(params);
+  return pageMeta(lang, "/contacto", { title: pagesCopy[lang].contact.metaTitle, description: seoCopy[lang].contactDescription });
 }
 
 export default function Contacto({ params }: Props) {

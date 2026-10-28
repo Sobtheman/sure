@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
+import { seoCopy } from "@/lib/copy/seo";
 import Prose from "@/components/Prose";
 import { store } from "@/lib/config";
 import { activeProvider } from "@/lib/payments";
@@ -8,7 +10,8 @@ import { pagesCopy } from "@/lib/copy/pages";
 type Props = { params: { lang: string } };
 
 export function generateMetadata({ params }: Props): Metadata {
-  return { title: pagesCopy[langOf(params)].privacy.metaTitle };
+  const lang = langOf(params);
+  return pageMeta(lang, "/privacidad", { title: pagesCopy[lang].privacy.metaTitle, description: seoCopy[lang].privacyDescription });
 }
 
 export default function Privacidad({ params }: Props) {

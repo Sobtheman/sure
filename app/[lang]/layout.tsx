@@ -9,6 +9,9 @@ import ScrollTop from "@/components/ScrollTop";
 import { LangProvider } from "@/components/LangProvider";
 import { htmlLang, isLang, LANGS, ogLocale, pick, type Lang } from "@/lib/i18n";
 import { Analytics } from "@vercel/analytics/react";
+import { SITE, absolute } from "@/lib/seo";
+import { seoCopy } from "@/lib/copy/seo";
+import { store } from "@/lib/config";
 
 const archivo = Archivo({
   subsets: ["latin"],
@@ -16,23 +19,45 @@ const archivo = Archivo({
   display: "swap",
 });
 
-// Dominio para enlaces absolutos (Open Graph). En Vercel, sin variable, usa el dominio de producción del proyecto.
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000");
-
 const meta = {
-  es: {
-    title: "SURE — Disidencia",
-    description: "SURE, streetwear colombiano. Colección Disidencia: camiseta y hoodie. Envío gratis siempre y pago contra entrega en toda Colombia.",
-    ogDescription: "Streetwear colombiano. Colección Disidencia: camiseta y hoodie, envíos a toda Colombia.",
-  },
-  en: {
-    title: "SURE — Disidencia",
-    description: "SURE, streetwear from Colombia. The Disidencia collection: tee and hoodie. Free shipping, always, and cash on delivery across Colombia.",
-    ogDescription: "Streetwear from Colombia. The Disidencia collection: tee and hoodie, shipped across Colombia.",
-  },
+  es: { ogDescription: "Streetwear colombiano. Colección Disidencia: camiseta y hoodie, envíos a toda Colombia." },
+  en: { ogDescription: "Streetwear from Colombia. The Disidencia collection: tee and hoodie, shipped across Colombia." },
 };
+
+// Datos de la marca para Google y asistentes de IA (una sola vez en cada página)
+function brandJsonLd(lang: Lang) {
+  const site = absolute("/");
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${site}#marca`,
+        name: "SURE",
+        alternateName: "Sure Wear Co",
+        url: site,
+        logo: absolute("/brand/sure-logo.svg"),
+        description: seoCopy[lang].homeDescription,
+        sameAs: [store.instagram, store.tiktok],
+        contactPoint: {
+          "@type": "ContactPoint",
+          contactType: "customer service",
+          telephone: "+57-320-426-2765",
+          areaServed: "CO",
+          availableLanguage: ["Spanish", "English"],
+        },
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${site}#sitio`,
+        url: absolute(lang === "en" ? "/en" : "/"),
+        name: "SURE",
+        inLanguage: htmlLang[lang],
+        publisher: { "@id": `${site}#marca` },
+      },
+    ],
+  };
+}
 
 export function generateStaticParams() {
   return LANGS.map((lang) => ({ lang }));
@@ -42,12 +67,14 @@ export const dynamicParams = false;
 export function generateMetadata({ params }: { params: { lang: string } }): Metadata {
   const lang: Lang = isLang(params.lang) ? params.lang : "es";
   const m = pick(lang, meta);
+  const s = seoCopy[lang];
   return {
-    metadataBase: new URL(siteUrl),
-    title: { default: m.title, template: "%s — SURE" },
-    description: m.description,
+    metadataBase: new URL(SITE),
+    title: { default: s.homeTitle, template: "%s — SURE" },
+    description: s.homeDescription,
     openGraph: {
-      title: m.title,
+      siteName: "SURE",
+      title: s.homeTitle,
       description: m.ogDescription,
       images: [{ url: "/img/hero/film-poster.jpg", width: 1920, height: 1080 }],
       locale: ogLocale[lang],
@@ -77,6 +104,7 @@ export default function RootLayout({ children, params }: Readonly<{ children: Re
           <Header />
           <main id="contenido">{children}</main>
           <Footer lang={lang} />
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(brandJsonLd(lang)) }} />
           <CartDrawer />
           {process.env.NEXT_PUBLIC_VERCEL_ENV && <Analytics />}
         </CartProvider>

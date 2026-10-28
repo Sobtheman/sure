@@ -12,7 +12,7 @@ export default function ArchiveStrip({ lang }: { lang: Lang }) {
   const archive = archiveFor(lang);
   return (
     <section className="bg-ink pb-14 pt-12 text-paper sm:pb-20 sm:pt-16" aria-labelledby="archivo-titulo">
-      <div className="wrap flex items-end justify-between gap-6">
+      <div className="wrap flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
         <div>
           <h2 id="archivo-titulo" className="display text-[34px] uppercase sm:text-[44px]">
             {t.stripTitle}

@@ -5,7 +5,9 @@ import ProductGallery from "@/components/ProductGallery";
 import PurchasePanel from "@/components/PurchasePanel";
 import ProductCard from "@/components/ProductCard";
 import { formatCOP } from "@/lib/format";
-import { langOf } from "@/lib/i18n";
+import { langOf, localePath } from "@/lib/i18n";
+import { absolute, pageMeta } from "@/lib/seo";
+import { shipping } from "@/lib/config";
 import { shop } from "@/lib/copy/shop";
 
 export function generateStaticParams() {
@@ -16,11 +18,11 @@ export function generateMetadata({ params }: { params: { lang: string; slug: str
   const lang = langOf(params);
   const p = getProduct(params.slug, lang);
   if (!p) return {};
-  return {
+  return pageMeta(lang, `/producto/${p.slug}`, {
     title: p.name,
     description: `${p.name}, ${p.color.toLowerCase()}. ${formatCOP(p.price, lang)}. ${p.description}`,
-    openGraph: { images: [{ url: p.images[0].src }] },
-  };
+    image: p.images[0],
+  });
 }
 
 export default function ProductPage({ params }: { params: { lang: string; slug: string } }) {
@@ -30,21 +32,52 @@ export default function ProductPage({ params }: { params: { lang: string; slug: 
   if (!product) notFound();
   const others = productsFor(lang).filter((p) => p.slug !== product.slug);
 
+  // Datos del producto para Google y asistentes: precio, disponibilidad, envío gratis y cambios
+  const url = absolute(localePath(lang, `/producto/${product.slug}`));
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
+    "@id": `${url}#producto`,
+    url,
+    sku: product.slug,
     name: product.name,
     color: product.color,
+    material: lang === "en" ? "100% cotton" : "100 % algodón",
+    inLanguage: lang === "en" ? "en" : "es-CO",
     brand: { "@type": "Brand", name: "SURE" },
-    image: product.images.map((i) => i.src),
+    image: product.images.map((i) => absolute(i.src)),
     description: product.description,
     offers: {
       "@type": "Offer",
+      url,
       priceCurrency: "COP",
       price: product.price,
+      itemCondition: "https://schema.org/NewCondition",
       availability: Object.values(product.stock).some((n) => n > 0)
         ? "https://schema.org/InStock"
         : "https://schema.org/OutOfStock",
+      seller: { "@id": `${absolute("/")}#marca` },
+      shippingDetails: {
+        "@type": "OfferShippingDetails",
+        shippingRate: { "@type": "MonetaryAmount", value: 0, currency: "COP" },
+        shippingDestination: { "@type": "DefinedRegion", addressCountry: "CO" },
+        deliveryTime: {
+          "@type": "ShippingDeliveryTime",
+          handlingTime: { "@type": "QuantitativeValue", minValue: 0, maxValue: 1, unitCode: "DAY" },
+          transitTime: { "@type": "QuantitativeValue", minValue: 1, maxValue: shipping.deliveryDays - 1, unitCode: "DAY" },
+        },
+      },
+      // Devolución con reembolso = derecho de retracto (5 días hábiles, envío de vuelta por cuenta del cliente).
+      // Los cambios de talla en 15 días no son devoluciones, por eso no van aquí.
+      hasMerchantReturnPolicy: {
+        "@type": "MerchantReturnPolicy",
+        applicableCountry: "CO",
+        returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+        merchantReturnDays: 5,
+        returnMethod: "https://schema.org/ReturnByMail",
+        returnFees: "https://schema.org/ReturnFeesCustomerResponsibility",
+        refundType: "https://schema.org/FullRefund",
+      },
     },
   };
 

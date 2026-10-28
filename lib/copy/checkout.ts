@@ -2,7 +2,7 @@
 // Mismas claves en los dos idiomas. Los textos compartidos con la bolsa (subtotal, envío, total, bolsa vacía) están en lib/copy/cart.ts.
 import type { PaymentStatus, Provider } from "@/lib/payments";
 
-type Method = "contraentrega" | "confirmar";
+type Method = "contraentrega" | "transferencia" | "confirmar";
 
 const onlineErrorEs = "No pudimos conectar con el pago en línea. Elige pago contra entrega o inténtalo de nuevo.";
 const onlineErrorEn = "We couldn't reach online payment. Choose cash on delivery or try again.";
@@ -13,6 +13,7 @@ const es = {
   // Forma de pago tal como aparece en el pedido de WhatsApp
   methodText: {
     contraentrega: "Contra entrega",
+    transferencia: "Transferencia por Nequi o llave Bre-B",
     confirmar: "Que me confirmen el pago por WhatsApp",
   } as Record<Method, string>,
   // Medios de cada pasarela. Vacío: se usa el texto de lib/payments.ts tal cual.
@@ -40,6 +41,8 @@ const es = {
     payment: (value: string) => `Pago: ${value}`,
     buyer: (name: string, legalId: string) => `${name} · CC ${legalId}`,
     notes: (notes: string) => `Notas: ${notes}`,
+    // Última línea del pedido por transferencia, para que no se olvide el comprobante
+    receipt: "Ya pagué. Te mando el comprobante de la transferencia en el siguiente mensaje.",
   },
   // Pantalla de pedido listo (WhatsApp)
   done: {
@@ -53,6 +56,21 @@ const es = {
     instagramAsk: "¿Prefieres Instagram?",
     instagramLink: (handle: string) => `Escríbenos a ${handle}`,
     instagramAfter: "y pega el pedido.",
+  },
+  // Pantalla de pago por transferencia (Nequi o llave Bre-B)
+  transferDone: {
+    title: "Casi es tuyo.",
+    body: "Transfiere el total por Nequi o a la llave Bre-B y mándanos el comprobante por WhatsApp. Apenas lo vemos, confirmamos tu pedido.",
+    amount: "Total a transferir",
+    nequi: "Nequi",
+    llave: "Llave Bre-B",
+    holder: "Titular",
+    reference: "Referencia",
+    referenceNote: "Escríbela en el mensaje de la transferencia.",
+    copy: "Copiar",
+    copied: "Copiado",
+    copyLabel: (what: string) => `Copiar ${what}`,
+    sendReceipt: "Ya pagué: enviar comprobante por WhatsApp",
   },
   // Resumen
   showSummary: "Ver resumen",
@@ -79,6 +97,8 @@ const es = {
   payOnline: (provider: string) => `Pagar en línea con ${provider}`,
   cod: "Pago contra entrega",
   codNote: "Pagas cuando el pedido llega a tu puerta.",
+  transfer: "Nequi o llave Bre-B",
+  transferNote: "Transfiere sin comisión y nos mandas el comprobante.",
   confirm: "Te confirmamos el pago",
   confirmNote: "Te escribimos por WhatsApp con las opciones.",
   testMode: "Modo de prueba: no se realizan cobros reales.",
@@ -90,9 +110,11 @@ const es = {
     policies: "políticas de envíos y cambios",
     after: ".",
   },
+  newsletterOptIn: "Quiero recibir por correo los lanzamientos de SURE.",
   processing: "Procesando…",
   payButton: (amount: string, provider: string) => `Pagar ${amount} con ${provider}`,
   sendWhatsApp: "Enviar pedido por WhatsApp",
+  transferButton: "Ver datos para transferir",
   // Página de retorno de la pasarela (/pedido)
   result: {
     metaTitle: "Tu pedido",
@@ -126,6 +148,7 @@ const en: typeof es = {
   title: "Checkout",
   methodText: {
     contraentrega: "Cash on delivery",
+    transferencia: "Transfer via Nequi or Bre-B key",
     confirmar: "Confirm payment with me on WhatsApp",
   },
   providerMethods: {
@@ -159,6 +182,7 @@ const en: typeof es = {
     payment: (value: string) => `Payment: ${value}`,
     buyer: (name: string, legalId: string) => `${name} · ID ${legalId}`,
     notes: (notes: string) => `Notes: ${notes}`,
+    receipt: "I've paid. Sending the transfer receipt in my next message.",
   },
   done: {
     reference: (ref: string) => `Order ${ref}`,
@@ -171,6 +195,20 @@ const en: typeof es = {
     instagramAsk: "Prefer Instagram?",
     instagramLink: (handle: string) => `DM us at ${handle}`,
     instagramAfter: "and paste your order.",
+  },
+  transferDone: {
+    title: "Almost yours.",
+    body: "Send the total via Nequi or to the Bre-B key, then send us the receipt on WhatsApp. As soon as we see it, we'll confirm your order.",
+    amount: "Amount to send",
+    nequi: "Nequi",
+    llave: "Bre-B key",
+    holder: "Account holder",
+    reference: "Reference",
+    referenceNote: "Add it to the transfer message.",
+    copy: "Copy",
+    copied: "Copied",
+    copyLabel: (what: string) => `Copy ${what}`,
+    sendReceipt: "I've paid: send receipt on WhatsApp",
   },
   showSummary: "Show summary",
   hideSummary: "Hide summary",
@@ -194,6 +232,8 @@ const en: typeof es = {
   payOnline: (provider: string) => `Pay online with ${provider}`,
   cod: "Cash on delivery",
   codNote: "Pay when your order shows up at your door.",
+  transfer: "Nequi or Bre-B key",
+  transferNote: "Transfer with no fees and send us the receipt.",
   confirm: "We'll confirm payment with you",
   confirmNote: "We'll message you on WhatsApp with the options.",
   testMode: "Test mode: no real charges are made.",
@@ -204,9 +244,11 @@ const en: typeof es = {
     policies: "shipping & exchange policies",
     after: ".",
   },
+  newsletterOptIn: "Email me about new SURE drops.",
   processing: "Processing…",
   payButton: (amount: string, provider: string) => `Pay ${amount} with ${provider}`,
   sendWhatsApp: "Send order on WhatsApp",
+  transferButton: "Get transfer details",
   result: {
     metaTitle: "Your order",
     status: {

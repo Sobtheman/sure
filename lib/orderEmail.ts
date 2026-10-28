@@ -22,6 +22,7 @@ export function orderEmail(order: Order, payment: string, origin: string, lang: 
   const reply = lang === "en" ? `Hi ${first}, this is SURE about your order ${order.reference}.` : `Hola ${first}, te escribimos de SURE por tu pedido ${order.reference}.`;
   const chat = `https://wa.me/57${buyer.phone}?text=${encodeURIComponent(reply)}`;
   const units = order.lines.reduce((n, l) => n + l.qty, 0);
+  const transfer = payment.startsWith("Transferencia");
 
   const rows = order.lines
     .map((l) => {
@@ -84,7 +85,9 @@ export function orderEmail(order: Order, payment: string, origin: string, lang: 
       </tr></table>
     </td></tr>
     <tr><td style="padding:22px 4px 0;font:13px/1.55 ${FONT};color:#d8d8d6">
-      El cliente abrió WhatsApp con este pedido para enviarlo. Si en un rato no te llega el mensaje, escríbele tú con el botón de arriba.
+      ${transfer
+        ? `El cliente va a pagar por Nequi o llave Bre-B y mandar el comprobante por WhatsApp con la referencia ${esc(order.reference)}. Revisa que el pago entró en Nequi antes de despachar.`
+        : "El cliente abrió WhatsApp con este pedido para enviarlo. Si en un rato no te llega el mensaje, escríbele tú con el botón de arriba."}
     </td></tr>
   </table>
 </td></tr>

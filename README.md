@@ -30,7 +30,7 @@ npm run build && npm start
 | Qué | Archivo |
 |---|---|
 | Precios, stock por talla, tabla de medidas, textos y fotos de cada prenda | `lib/catalog.ts` |
-| Envío (gratis siempre, días), pago contra entrega, WhatsApp, Instagram, TikTok, film | `lib/config.ts` |
+| Envío (gratis siempre, días), pago contra entrega, Nequi / llave Bre-B, WhatsApp, Instagram, TikTok, film | `lib/config.ts` |
 | Colecciones del archivo (año, texto, piezas, fotos) | `lib/archive.ts` |
 | Fotos del lookbook | `lib/lookbook.ts` |
 | Fotos | `public/img/` (el sitio las sirve en AVIF/WebP al tamaño de cada pantalla) |
@@ -50,7 +50,7 @@ npm run build && npm start
 
 ## Pedidos y pagos
 
-Hoy el checkout termina en **WhatsApp** (320 426 2765) con el pedido completo: prendas, tallas, total, datos de envío y forma de pago (contra entrega o confirmar el pago). Nada se cobra en el sitio. Todos los enlaces de WhatsApp abren con un mensaje listo ("Hola SURE, vengo de la página…").
+Hoy el checkout termina en **WhatsApp** (320 426 2765) con el pedido completo: prendas, tallas, total, datos de envío y forma de pago (contra entrega, transferencia por Nequi o llave Bre-B, o confirmar el pago). Nada se cobra en el sitio. Todos los enlaces de WhatsApp abren con un mensaje listo ("Hola SURE, vengo de la página…").
 
 Además, cada pedido llega como copia al correo **sureweareco@gmail.com** (logo, foto de fondo, prendas, total, datos del cliente y botón para escribirle por WhatsApp). Se envía con [Resend](https://resend.com):
 
@@ -68,6 +68,20 @@ Para activar pago en línea (Vercel → Settings → Environment Variables):
 | Mercado Pago | `PAYMENT_PROVIDER=mercadopago`, `MP_ACCESS_TOKEN` |
 
 Más `NEXT_PUBLIC_SITE_URL` con el dominio final. Con llaves activas aparece la opción "Pagar en línea" junto a contra entrega. Antes de cobrar de verdad: compra de prueba aprobada, rechazada y pendiente.
+
+### Transferencia (Nequi o llave Bre-B)
+
+Gratis y con confirmación manual. Al elegirla, el checkout no abre WhatsApp de una vez: muestra el total, el Nequi y la llave Bre-B (cada uno con botón de copiar), el titular si está puesto y la referencia SURE-XXXX para escribir en el mensaje de la transferencia. El botón "Ya pagué: enviar comprobante por WhatsApp" abre el chat con el pedido y una línea que avisa del comprobante. El correo a SURE llega con "Pago: Transferencia Nequi / Bre-B (pendiente de comprobante)": se despacha solo cuando el comprobante llegue y el dinero esté en la cuenta.
+
+- Número, llave y titular: `store.transfer` en `lib/config.ts` (`holder` vacío = no se muestra).
+
+## Lista de lanzamientos (newsletter)
+
+El pie de página tiene un formulario de correo y el checkout una casilla (sin marcar) "Quiero recibir por correo los lanzamientos de SURE". Los dos llaman a `/api/newsletter`, que guarda el correo como contacto de Resend dentro del segmento **Newsletter SURE** (Resend cambió las Audiences por Segments). Si el correo ya existe, igual queda en el segmento. Un campo oculto frena bots.
+
+- Variables en Vercel: `RESEND_API_KEY` (la misma de los pedidos) y `RESEND_NEWSLETTER_SEGMENT_ID=04b9d162-9e36-4b7f-9748-1f8fe9429b7f` (id del segmento "Newsletter SURE"). Sin alguna de las dos el formulario responde normal pero no guarda nada.
+- Para escribirles: Resend → Broadcasts → enviar al segmento "Newsletter SURE", con el enlace de baja de Resend (`{{{RESEND_UNSUBSCRIBE_URL}}}`) en el pie del correo.
+- Código: `lib/newsletter.ts`, `app/api/newsletter/route.ts`, `components/NewsletterForm.tsx`; textos en `lib/copy/newsletter.ts`.
 
 ## Estadísticas
 

@@ -1,5 +1,8 @@
 /* SURE — datos del negocio. Se cambian aquí y se actualizan en todo el sitio. */
 
+// WhatsApp de pedidos (sin indicativo). Nequi y la llave Bre-B son este mismo número.
+const PHONE = "3204262765";
+
 export const store = {
   name: "SURE",
   instagram: "https://www.instagram.com/surewearco/",
@@ -8,9 +11,20 @@ export const store = {
   instagramDM: "https://ig.me/m/surewearco",
   tiktok: "https://www.tiktok.com/@surewearco",
   // WhatsApp de pedidos, con indicativo y sin espacios
-  whatsapp: "573204262765",
-  whatsappLabel: "320 426 2765",
+  whatsapp: `57${PHONE}`,
+  whatsappLabel: readableKey(PHONE),
+  // Pago por transferencia (Nequi o llave Bre-B), sin comisión. holder: titular, se muestra solo si no está vacío.
+  transfer: {
+    nequi: PHONE,
+    llave: PHONE,
+    holder: "",
+  },
 };
+
+// Número o llave en grupos legibles: 3204262765 -> 320 426 2765
+export function readableKey(value: string) {
+  return /^\d{10}$/.test(value) ? value.replace(/(\d{3})(\d{3})(\d{4})/, "$1 $2 $3") : value;
+}
 
 // Todo chat de WhatsApp abre con un mensaje listo para enviar (según el idioma de la página)
 export const whatsappHello = {

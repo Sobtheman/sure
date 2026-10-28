@@ -5,6 +5,14 @@ import Reveal from "@/components/Reveal";
 import { productsFor } from "@/lib/catalog";
 import { langOf } from "@/lib/i18n";
 import { shop } from "@/lib/copy/shop";
+import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
+import { seoCopy } from "@/lib/copy/seo";
+
+export function generateMetadata({ params }: { params: { lang: string } }): Metadata {
+  const lang = langOf(params);
+  return pageMeta(lang, "/", { fullTitle: seoCopy[lang].homeTitle, description: seoCopy[lang].homeDescription });
+}
 
 export default function Home({ params }: { params: { lang: string } }) {
   const lang = langOf(params);

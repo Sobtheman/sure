@@ -71,7 +71,7 @@ const es = {
     detailsCare: "Detalles y cuidado",
     shippingTitle: "Envíos y cambios",
     shippingText: (days: number) =>
-      `Envío gratis siempre, a cualquier ciudad de Colombia. Pagas contra entrega o te confirmamos el pago por WhatsApp. Te llega en ${days} días hábiles o menos.`,
+      `Envío gratis siempre, a cualquier ciudad de Colombia. Pagas contra entrega, por Nequi o llave Bre-B, o te confirmamos el pago por WhatsApp. Te llega en ${days} días hábiles o menos.`,
     exchangeText: (days: number) =>
       `¿No te quedó? Cambias la talla dentro de los ${days} días siguientes a la entrega, con la prenda sin uso y con sus etiquetas.`,
     shippingLink: "Ver envíos y cambios",
@@ -168,7 +168,7 @@ const en: typeof es = {
     detailsCare: "Details & care",
     shippingTitle: "Shipping & exchanges",
     shippingText: (days: number) =>
-      `Free shipping, always, to any city in Colombia. Pay cash on delivery or confirm your payment with us on WhatsApp. Delivered in ${days} business days or less.`,
+      `Free shipping, always, to any city in Colombia. Pay cash on delivery, via Nequi or Bre-B key, or confirm your payment with us on WhatsApp. Delivered in ${days} business days or less.`,
     exchangeText: (days: number) =>
       `Didn't fit? Exchange your size within ${days} days of delivery, unworn and with the tags on.`,
     shippingLink: "See shipping & exchanges",

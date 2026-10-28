@@ -5,7 +5,7 @@ import Link from "@/components/Link";
 import { useEffect, useRef, useState } from "react";
 import { useCart } from "@/components/cart";
 import { getProduct } from "@/lib/catalog";
-import { store, whatsappLink } from "@/lib/config";
+import { readableKey, store, whatsappLink } from "@/lib/config";
 import { formatCOP } from "@/lib/format";
 import { Arrow, WhatsApp } from "@/components/icons";
 import { FreeShipping } from "@/components/CartDrawer";
@@ -23,7 +23,7 @@ const REGIONS = [
 ];
 
 type Payment = { name: string; methods: string; test: boolean } | null;
-type Method = "online" | "contraentrega" | "confirmar";
+type Method = "online" | "contraentrega" | "transferencia" | "confirmar";
 
 type Buyer = { name: string; legalId: string; email: string; phone: string; region: string; city: string; address: string; notes: string };
 
@@ -53,18 +53,42 @@ export default function CheckoutForm({ payment }: { payment: Payment }) {
   const [busy, setBusy] = useState(false);
   const [serverError, setServerError] = useState("");
   const [method, setMethod] = useState<Method>(payment ? "online" : "contraentrega");
-  const [manual, setManual] = useState<{ reference: string; text: string; copied: boolean } | null>(null);
+  const [manual, setManual] = useState<{ reference: string; text: string; copied: boolean; transfer?: { total: number } } | null>(null);
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [newsletter, setNewsletter] = useState(false);
   const [summaryOpen, setSummaryOpen] = useState(false);
   const doneRef = useRef<HTMLHeadingElement>(null);
 
   // Al confirmar el pedido, el foco va al título para que se anuncie
+  // (depende de la referencia, no del objeto: copiar el pedido no debe devolver la página arriba)
+  const doneKey = manual?.reference;
   useEffect(() => {
-    if (manual) doneRef.current?.focus();
-  }, [manual]);
+    if (doneKey) doneRef.current?.focus();
+  }, [doneKey]);
 
   const set = (k: keyof Buyer) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setBuyer((b) => ({ ...b, [k]: e.target.value }));
     if (errors[k]) setErrors((x) => ({ ...x, [k]: undefined }));
+  };
+
+  // Lista de lanzamientos: solo si marcó la casilla. Va aparte (keepalive) y nunca frena ni rompe el pedido.
+  const joinNewsletter = () => {
+    if (!newsletter) return;
+    try {
+      fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: buyer.email.trim(), lang, website: "" }),
+        keepalive: true,
+      }).catch(() => {});
+    } catch {}
+  };
+
+  const copyValue = (id: string, value: string) => {
+    navigator.clipboard?.writeText(value).then(
+      () => setCopiedKey(id),
+      () => {}
+    );
   };
 
   const submit = async (e: React.FormEvent) => {
@@ -81,6 +105,24 @@ export default function CheckoutForm({ payment }: { payment: Payment }) {
       return;
     }
     setServerError("");
+    // Transferencia: no se abre WhatsApp todavía; primero se muestran los datos para pagar
+    // y el chat se abre desde ahí, con el pedido y el aviso del comprobante.
+    if (method === "transferencia") {
+      const reference = `SURE-${Date.now().toString(36).toUpperCase()}`;
+      const text = `${orderText(reference, t.methodText.transferencia).trimEnd()}\n\n${t.order.receipt}`;
+      fetch("/api/order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lines: cart.lines, buyer, reference, method, lang }),
+        keepalive: true,
+      }).catch(() => {});
+      track("Pedido enviado por WhatsApp", { total: cart.total, pago: checkoutCopy.es.methodText.transferencia });
+      joinNewsletter();
+      setCopiedKey(null);
+      setManual({ reference, text, copied: false, transfer: { total: cart.total } });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
     // Pedido por WhatsApp: se arma aquí y se abre el chat con todo el detalle.
     if (method !== "online") {
       const reference = `SURE-${Date.now().toString(36).toUpperCase()}`;
@@ -95,6 +137,7 @@ export default function CheckoutForm({ payment }: { payment: Payment }) {
       }).catch(() => {});
       // Analítica: la forma de pago se registra siempre con el texto en español
       track("Pedido enviado por WhatsApp", { total: cart.total, pago: checkoutCopy.es.methodText[method] });
+      joinNewsletter();
       setManual({ reference, text, copied: false });
       navigator.clipboard?.writeText(text).then(
         () => setManual((m) => (m ? { ...m, copied: true } : m)),
@@ -116,6 +159,7 @@ export default function CheckoutForm({ payment }: { payment: Payment }) {
       } catch {}
       if (!res.ok) throw new Error(t.errors.api(data.error, res.status));
       if (data.mode !== "redirect") throw new Error(t.errors.online);
+      joinNewsletter();
       window.location.href = data.url!;
     } catch (err) {
       // Los errores propios ya vienen en el idioma de la página; los de red (TypeError) no.
@@ -149,6 +193,95 @@ export default function CheckoutForm({ payment }: { payment: Payment }) {
       .join("\n");
 
   if (!cart.ready) return <div className="min-h-[70svh]" />;
+
+  // Pago por transferencia: total, Nequi, llave Bre-B y referencia para copiar; después, el comprobante por WhatsApp
+  if (manual?.transfer) {
+    const p = t.transferDone;
+    const { nequi, llave, holder } = store.transfer;
+    const rows = [
+      { id: "nequi", label: p.nequi, value: nequi, shown: readableKey(nequi) },
+      { id: "llave", label: p.llave, value: llave, shown: readableKey(llave) },
+    ];
+    const copyButton = (id: string, label: string, value: string) => (
+      <button
+        type="button"
+        onClick={() => copyValue(id, value)}
+        aria-label={copiedKey === id ? undefined : p.copyLabel(label)}
+        className="label -my-3 -mr-3 inline-flex h-11 shrink-0 items-center px-3 underline underline-offset-4 hover:text-burgundy"
+      >
+        {copiedKey === id ? p.copied : p.copy}
+      </button>
+    );
+    return (
+      <div className="wrap max-w-2xl pb-24 pt-12 sm:pt-20">
+        <p className="label text-muted">{t.done.reference(manual.reference)}</p>
+        <h1 ref={doneRef} tabIndex={-1} className="display mt-3 text-[clamp(40px,8vw,72px)] outline-none">
+          {p.title}
+        </h1>
+        <p className="mt-6 text-[15px] leading-relaxed">{p.body}</p>
+        <dl className="mt-6 divide-y divide-line border border-line bg-paper">
+          <div className="flex items-baseline justify-between gap-4 p-5">
+            <dt className="text-[13px] text-muted">{p.amount}</dt>
+            <dd className="text-[22px] font-bold">{formatCOP(manual.transfer.total, lang)}</dd>
+          </div>
+          {rows.map((r) => (
+            <div key={r.id} className="p-5">
+              <dt className="text-[13px] text-muted">{r.label}</dt>
+              <dd className="mt-0.5 flex items-center justify-between gap-4">
+                <span className="text-[17px] font-semibold">{r.shown}</span>
+                {copyButton(r.id, r.label, r.value)}
+              </dd>
+            </div>
+          ))}
+          {holder && (
+            <div className="p-5">
+              <dt className="text-[13px] text-muted">{p.holder}</dt>
+              <dd className="mt-0.5 text-[15px] font-semibold">{holder}</dd>
+            </div>
+          )}
+          <div className="p-5">
+            <dt className="text-[13px] text-muted">{p.reference}</dt>
+            <dd className="mt-0.5 flex items-center justify-between gap-4">
+              <span className="text-[17px] font-semibold">{manual.reference}</span>
+              {copyButton("ref", p.reference, manual.reference)}
+            </dd>
+            <dd className="mt-1 text-[13px] text-burgundy">{p.referenceNote}</dd>
+          </div>
+        </dl>
+        <p className="sr-only" aria-live="polite">
+          {copiedKey ? p.copied : ""}
+        </p>
+        <div className="mt-6 flex flex-col gap-3">
+          <a
+            href={whatsappLink(manual.text)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-dark h-auto min-h-[56px] py-3 text-center"
+          >
+            <WhatsApp className="h-4 w-4 shrink-0" /> {p.sendReceipt}
+          </a>
+          <button
+            className="btn-ghost"
+            onClick={() => {
+              navigator.clipboard?.writeText(manual.text).then(
+                () => setManual({ ...manual, copied: true }),
+                () => {}
+              );
+            }}
+          >
+            {manual.copied ? t.done.copied : t.done.copy}
+          </button>
+        </div>
+        <p className="mt-6 text-[13px] text-muted">
+          {t.done.instagramAsk}{" "}
+          <a href={store.instagramDM} target="_blank" rel="noopener noreferrer" className="text-ink underline underline-offset-4">
+            {t.done.instagramLink(store.instagramHandle)}
+          </a>{" "}
+          {t.done.instagramAfter}
+        </p>
+      </div>
+    );
+  }
 
   if (manual) {
     return (
@@ -343,6 +476,7 @@ export default function CheckoutForm({ payment }: { payment: Payment }) {
                     ? [{ id: "online", title: t.payOnline(payment.name), note: payment.methods }]
                     : []),
                   { id: "contraentrega", title: t.cod, note: t.codNote },
+                  { id: "transferencia", title: t.transfer, note: t.transferNote },
                   { id: "confirmar", title: t.confirm, note: t.confirmNote },
                 ] as { id: Method; title: string; note: string }[]
               ).map((o) => (
@@ -372,28 +506,40 @@ export default function CheckoutForm({ payment }: { payment: Payment }) {
             )}
           </fieldset>
 
-          <label className="flex items-start gap-3 text-[13px] leading-relaxed">
-            <input
-              type="checkbox"
-              checked={accepted}
-              onChange={(e) => {
-                setAccepted(e.target.checked);
-                setServerError("");
-              }}
-              className="mt-0.5 h-4 w-4 shrink-0 accent-ink"
-            />
-            <span>
-              {t.consent.before}{" "}
-              <Link href="/privacidad" target="_blank" className="underline underline-offset-4">
-                {t.consent.data}
-              </Link>{" "}
-              {t.consent.middle}{" "}
-              <Link href="/envios" target="_blank" className="underline underline-offset-4">
-                {t.consent.policies}
-              </Link>
-              {t.consent.after}
-            </span>
-          </label>
+          <div className="space-y-3">
+            <label className="flex items-start gap-3 text-[13px] leading-relaxed">
+              <input
+                type="checkbox"
+                checked={accepted}
+                onChange={(e) => {
+                  setAccepted(e.target.checked);
+                  setServerError("");
+                }}
+                className="mt-0.5 h-4 w-4 shrink-0 accent-ink"
+              />
+              <span>
+                {t.consent.before}{" "}
+                <Link href="/privacidad" target="_blank" className="underline underline-offset-4">
+                  {t.consent.data}
+                </Link>{" "}
+                {t.consent.middle}{" "}
+                <Link href="/envios" target="_blank" className="underline underline-offset-4">
+                  {t.consent.policies}
+                </Link>
+                {t.consent.after}
+              </span>
+            </label>
+
+            <label className="flex items-start gap-3 text-[13px] leading-relaxed">
+              <input
+                type="checkbox"
+                checked={newsletter}
+                onChange={(e) => setNewsletter(e.target.checked)}
+                className="mt-0.5 h-4 w-4 shrink-0 accent-ink"
+              />
+              <span>{t.newsletterOptIn}</span>
+            </label>
+          </div>
 
           <div>
             <button type="submit" disabled={busy} className="btn-dark w-full">
@@ -402,6 +548,10 @@ export default function CheckoutForm({ payment }: { payment: Payment }) {
               ) : method === "online" && payment ? (
                 <>
                   {t.payButton(formatCOP(cart.total, lang), payment.name)} <Arrow />
+                </>
+              ) : method === "transferencia" ? (
+                <>
+                  {t.transferButton} <Arrow />
                 </>
               ) : (
                 <>

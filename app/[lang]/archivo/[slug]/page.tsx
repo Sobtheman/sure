@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import Image from "next/image";
 import Link from "@/components/Link";
 import { notFound } from "next/navigation";
@@ -18,11 +19,11 @@ export function generateMetadata({ params }: { params: { lang: string; slug: str
   const t = archiveCopy[lang];
   const c = getCollection(params.slug, lang);
   if (!c) return {};
-  return {
+  return pageMeta(lang, `/archivo/${c.slug}`, {
     title: t.collectionMetaTitle(c.name),
     description: t.collectionMetaDescription(c.name, c.note),
-    openGraph: { images: [{ url: c.cover.src }] },
-  };
+    image: c.cover,
+  });
 }
 
 export default function Coleccion({ params }: { params: { lang: string; slug: string } }) {

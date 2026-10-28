@@ -1,13 +1,24 @@
 import Link from "@/components/Link";
 import Logo from "@/components/Logo";
 import SocialLinks from "@/components/SocialLinks";
+import NewsletterForm from "@/components/NewsletterForm";
 import type { Lang } from "@/lib/i18n";
 import { nav } from "@/lib/copy/nav";
+import { newsletterCopy } from "@/lib/copy/newsletter";
 
 export default function Footer({ lang }: { lang: Lang }) {
   const t = nav[lang];
+  const n = newsletterCopy[lang];
   return (
     <footer className="border-t border-white/10 bg-ink text-paper">
+      {/* Lista de lanzamientos */}
+      <div className="wrap grid gap-6 border-b border-white/10 py-12 sm:grid-cols-2 sm:items-end sm:gap-12 sm:py-14">
+        <div>
+          <h2 className="display text-[clamp(28px,4vw,44px)]">{n.heading}</h2>
+          <p className="mt-3 max-w-md text-[14px] leading-relaxed text-white/60">{n.body}</p>
+        </div>
+        <NewsletterForm />
+      </div>
       <div className="wrap flex flex-col gap-10 py-12 sm:flex-row sm:items-end sm:justify-between sm:py-14">
         <Link href="/" aria-label={t.home}>
           <Logo className="w-[104px]" />
