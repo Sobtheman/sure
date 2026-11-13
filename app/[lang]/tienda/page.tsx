@@ -40,6 +40,22 @@ export default function Tienda({ params }: { params: { lang: string } }) {
         </div>
       </section>
 
+      <section className="wrap grid gap-6 border-t border-line py-14 sm:py-20 lg:grid-cols-12 lg:gap-12" aria-labelledby="historia">
+        <h2 id="historia" className="label text-muted lg:col-span-3">
+          {t.storyLabel}
+        </h2>
+        <div className="lg:col-span-8">
+          <p className="display text-[clamp(32px,6vw,64px)]">{t.storyTagline}</p>
+          <div className="mt-8 space-y-5 text-[17px] leading-[1.6] sm:text-[19px]">
+            {t.story.map((p, k) => (
+              <Reveal key={k} delay={k * 100}>
+                <p>{p}</p>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="wrap border-t border-line pb-20 pt-12 sm:pb-28 sm:pt-16" aria-labelledby="lookbook">
         <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
           <h2 id="lookbook" className="display text-[34px] uppercase sm:text-[44px]">

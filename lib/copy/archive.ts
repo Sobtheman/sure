@@ -2,7 +2,7 @@
 const es = {
   // Listado /archivo
   metaTitle: "Archivo",
-  metaDescription: "Colecciones anteriores de SURE: Intrinsic, Niebla, Niebla x Ivy y Sure26.",
+  metaDescription: "Colecciones anteriores de SURE: Intrinsic, Niebla, Niebla x Ivy y SURE26.",
   eyebrow: "Colecciones anteriores",
   title: "Archivo",
   intro: "Lo que ya pasó por la calle. Estas colecciones están agotadas y no vuelven; quedan aquí con su historia.",
@@ -12,8 +12,6 @@ const es = {
   shopCta: "Ver Disidencia",
 
   // Colección /archivo/[slug]
-  collectionMetaTitle: (name: string) => `${name} · Archivo`,
-  collectionMetaDescription: (name: string, note: string) => `${name}, colección anterior de SURE. ${note}`,
   back: "Archivo",
   soldOut: (year: number) => `${year} · Agotada`,
   story: "La historia",
@@ -50,7 +48,7 @@ const es = {
 
 const en: typeof es = {
   metaTitle: "Archive",
-  metaDescription: "Past SURE collections: Intrinsic, Niebla, Niebla x Ivy and Sure26.",
+  metaDescription: "Past SURE collections: Intrinsic, Niebla, Niebla x Ivy and SURE26.",
   eyebrow: "Past collections",
   title: "Archive",
   intro: "What already hit the streets. These collections are sold out and they're not coming back. Their story stays here.",
@@ -59,8 +57,6 @@ const en: typeof es = {
   available: "What's available now.",
   shopCta: "Shop Disidencia",
 
-  collectionMetaTitle: (name: string) => `${name} · Archive`,
-  collectionMetaDescription: (name: string, note: string) => `${name}, a past SURE collection. ${note}`,
   back: "Archive",
   soldOut: (year: number) => `${year} · Sold out`,
   story: "The story",

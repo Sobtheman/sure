@@ -22,6 +22,8 @@ export function GET() {
         `- [${p.name}](${absolute(`/producto/${p.slug}`)}): ${p.color.toLowerCase()}, ${formatCOP(p.price)} COP, tallas ${SIZES.join(", ")}. ${p.description}`
     ),
     "",
+    "- Historia de Disidencia: “Watch your demons.” Reconocer la propia sombra (la camiseta blanca con el ojo rojo) y cargar con ella para crecer (el hoodie negro).",
+    "",
     "## Comprar",
     `- [Tienda](${absolute("/tienda")}): toda la colección y el lookbook.`,
     `- Envío gratis siempre a cualquier ciudad de Colombia. Llega en ${shipping.deliveryDays} días hábiles o menos.`,
@@ -29,7 +31,7 @@ export function GET() {
     `- Cambios de talla dentro de los ${shipping.exchangeDays} días siguientes a la entrega. [Envíos y cambios](${absolute("/envios")})`,
     "",
     "## Archivo (colecciones anteriores, agotadas)",
-    ...archive.map((c) => `- [${c.name} (${c.year})](${absolute(`/archivo/${c.slug}`)}): ${c.note}`),
+    ...archive.map((c) => `- [${c.name} (${c.year})](${absolute(`/archivo/${c.slug}`)}): ${c.seoDescription}`),
     "",
     "## Contacto",
     `- WhatsApp: +57 ${store.whatsappLabel} (https://wa.me/${store.whatsapp})`,

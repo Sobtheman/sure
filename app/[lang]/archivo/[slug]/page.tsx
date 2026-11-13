@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { pageMeta } from "@/lib/seo";
+import { absolute, pageMeta } from "@/lib/seo";
 import Image from "next/image";
 import Link from "@/components/Link";
 import { notFound } from "next/navigation";
 import { archive, archiveFor, getCollection } from "@/lib/archive";
 import { archiveCopy } from "@/lib/copy/archive";
-import { langOf } from "@/lib/i18n";
+import { langOf, localePath } from "@/lib/i18n";
 import ArchiveGallery from "@/components/ArchiveGallery";
 import Reveal from "@/components/Reveal";
 import { Arrow } from "@/components/icons";
@@ -19,11 +19,7 @@ export function generateMetadata({ params }: { params: { lang: string; slug: str
   const t = archiveCopy[lang];
   const c = getCollection(params.slug, lang);
   if (!c) return {};
-  return pageMeta(lang, `/archivo/${c.slug}`, {
-    title: t.collectionMetaTitle(c.name),
-    description: t.collectionMetaDescription(c.name, c.note),
-    image: c.cover,
-  });
+  return pageMeta(lang, `/archivo/${c.slug}`, { fullTitle: c.seoTitle, description: c.seoDescription, image: c.cover });
 }
 
 export default function Coleccion({ params }: { params: { lang: string; slug: string } }) {
@@ -36,9 +32,20 @@ export default function Coleccion({ params }: { params: { lang: string; slug: st
   const next = list[(i + 1) % list.length];
   // La galería incluye la portada: así todas las colecciones quedan en número par.
   const gallery = [c.cover, ...c.images];
+  // Inicio › Archivo › Colección, para Google
+  const breadcrumbs = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "SURE", item: absolute(localePath(lang, "/")) },
+      { "@type": "ListItem", position: 2, name: t.title, item: absolute(localePath(lang, "/archivo")) },
+      { "@type": "ListItem", position: 3, name: c.name, item: absolute(localePath(lang, `/archivo/${c.slug}`)) },
+    ],
+  };
 
   return (
     <div className="bg-ink text-paper">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }} />
       {/* Portada */}
       <section className="relative h-[92svh] min-h-[560px] overflow-hidden sm:max-h-[980px]">
         <div className="hero-media absolute inset-0">
@@ -67,6 +74,7 @@ export default function Coleccion({ params }: { params: { lang: string; slug: st
           {t.story}
         </h2>
         <div className="space-y-6 text-[18px] leading-[1.6] text-white/85 sm:text-[21px] lg:col-span-8">
+          {c.tagline && <p className="display pb-2 text-[clamp(32px,6vw,64px)] text-paper">{c.tagline}</p>}
           {c.story.map((p, k) => (
             <Reveal key={k} delay={k * 100}>
               <p>{p}</p>

@@ -26,6 +26,13 @@ const es = {
     piecesLabel: "Prendas",
     lookbook: "Lookbook",
     tapToZoom: "Toca una foto para ampliar",
+    storyLabel: "La historia",
+    storyTagline: "Watch your demons.",
+    story: [
+      "Todos tenemos una parte que no siempre mostramos. Nuestros miedos, malos hábitos, frustraciones y sombras también hacen parte de quienes somos.",
+      "DISIDENCIA nace de la importancia de reconocer esa oscuridad, aceptarla y aprender a convivir con ella. Porque conocernos por completo también significa mirar aquello que preferimos esconder.",
+      "Una camiseta blanca con un ojo rojo representa el primer paso: reconocer nuestra sombra. Un hoodie negro representa el siguiente: llevar nuestros demonios con nosotros y convertir ese reconocimiento en una oportunidad para crecer.",
+    ],
   },
   // Página de producto
   productPage: {
@@ -128,6 +135,13 @@ const en: typeof es = {
     piecesLabel: "Pieces",
     lookbook: "Lookbook",
     tapToZoom: "Tap a photo to zoom in",
+    storyLabel: "The story",
+    storyTagline: "Watch your demons.",
+    story: [
+      "We all have a side we don't always show. Our fears, bad habits, frustrations and shadows are part of who we are too.",
+      "DISIDENCIA comes from the importance of recognizing that darkness, accepting it and learning to live with it. Because knowing ourselves completely also means looking at what we'd rather hide.",
+      "A white tee with a red eye stands for the first step: recognizing our shadow. A black hoodie stands for the next one: carrying our demons with us and turning that recognition into a chance to grow.",
+    ],
   },
   productPage: {
     alsoIn: (collection: string) => `More from ${collection}`,
