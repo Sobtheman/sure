@@ -1,13 +1,11 @@
 import Hero from "@/components/Hero";
-import ProductCard from "@/components/ProductCard";
 import ArchiveStrip from "@/components/ArchiveStrip";
 import TikTokVideo from "@/components/TikTokVideo";
 import Link from "@/components/Link";
 import { Arrow } from "@/components/icons";
 import { storyCopy } from "@/lib/copy/story";
-import Reveal from "@/components/Reveal";
 import { productsFor } from "@/lib/catalog";
-import { productGrid } from "@/components/ProductCard";
+import ProductGrid from "@/components/ProductGrid";
 import { langOf } from "@/lib/i18n";
 import { shop } from "@/lib/copy/shop";
 import type { Metadata } from "next";
@@ -32,12 +30,8 @@ export default function Home({ params }: { params: { lang: string } }) {
           <h2 id="disponible-titulo" className="label text-muted">
             {t.available}
           </h2>
-          <div className={`mt-6 grid gap-x-5 gap-y-12 sm:mt-8 ${productGrid(productsFor(lang).length)}`}>
-            {productsFor(lang).map((p, i) => (
-              <Reveal key={p.slug} delay={i * 120}>
-                <ProductCard product={p} lang={lang} priority={i === 0} />
-              </Reveal>
-            ))}
+          <div className="mt-6 sm:mt-8">
+            <ProductGrid products={productsFor(lang)} lang={lang} />
           </div>
         </div>
       </section>

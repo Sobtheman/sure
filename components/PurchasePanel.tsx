@@ -48,7 +48,7 @@ export default function PurchasePanel({ product }: { product: Product }) {
   return (
     <div>
       <p className="label text-muted">{product.collection}</p>
-      <h1 className="display mt-3 text-[40px] uppercase sm:text-[52px]">{product.short}</h1>
+      <h1 className="display mt-3 text-[clamp(30px,9vw,40px)] uppercase sm:text-[48px]">{product.name}</h1>
       <div className="mt-3 flex items-baseline justify-between gap-4">
         <p className="text-[15px] text-muted">{product.color}</p>
         <p className="text-[18px] font-bold">{formatCOP(product.price, lang)}</p>

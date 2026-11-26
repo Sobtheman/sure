@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
-import ProductCard from "@/components/ProductCard";
 import Reveal from "@/components/Reveal";
 import { productsFor } from "@/lib/catalog";
-import { productGrid } from "@/components/ProductCard";
+import ProductGrid from "@/components/ProductGrid";
 import { hero } from "@/lib/config";
 import { lookbookFor } from "@/lib/lookbook";
 import ArchiveGallery from "@/components/ArchiveGallery";
@@ -34,13 +33,7 @@ export default function Tienda({ params }: { params: { lang: string } }) {
       </section>
 
       <section className="wrap pb-16 sm:pb-24" aria-label={t.piecesLabel}>
-        <div className={`grid gap-x-5 gap-y-12 ${productGrid(productsFor(lang).length)}`}>
-          {productsFor(lang).map((p, i) => (
-            <Reveal key={p.slug} delay={i * 120}>
-              <ProductCard product={p} lang={lang} priority />
-            </Reveal>
-          ))}
-        </div>
+        <ProductGrid products={productsFor(lang)} lang={lang} priorityAll />
       </section>
 
       <section className="wrap grid gap-6 border-t border-line py-14 sm:py-20 lg:grid-cols-12 lg:gap-12" aria-labelledby="historia">

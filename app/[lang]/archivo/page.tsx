@@ -26,19 +26,17 @@ export default function Archivo({ params }: { params: { lang: string } }) {
 
   return (
     <div className="min-h-screen bg-ink pt-header text-paper">
-      <section className="wrap grid gap-10 pb-14 pt-12 sm:pb-20 sm:pt-20 lg:grid-cols-12 lg:items-end lg:gap-12">
-        <div className="lg:col-span-7">
+      <section className="wrap flex flex-col items-center gap-10 pb-14 pt-12 text-center sm:pb-20 sm:pt-20">
+        <div className="max-w-4xl">
           <p className="label text-white/50">{t.title}</p>
-          <h1 className="display mt-3 text-[clamp(40px,8vw,104px)]">{s.introTitle}</h1>
-          <div className="mt-8 max-w-xl space-y-5 text-[17px] leading-[1.6] text-white/75 sm:text-[19px]">
+          <h1 className="display mt-3 text-balance text-[clamp(40px,8vw,104px)]">{s.introTitle}</h1>
+          <div className="mx-auto mt-8 max-w-xl space-y-5 text-[17px] leading-[1.6] text-white/75 sm:text-[19px]">
             {s.intro.map((p, k) => (
               <p key={k}>{p}</p>
             ))}
           </div>
         </div>
-        <div className="lg:col-span-4 lg:col-start-9">
-          <TikTokVideo className="mx-auto max-w-[320px] lg:max-w-none" />
-        </div>
+        <TikTokVideo className="max-w-[340px] text-left" />
       </section>
 
       <ul className="wrap space-y-4 pb-4 sm:space-y-6 sm:pb-6">

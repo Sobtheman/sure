@@ -8,19 +8,24 @@ import type { Lang } from "@/lib/i18n";
 import { shop } from "@/lib/copy/shop";
 
 // product llega ya traducido (productsFor / getProduct con el idioma)
-export default function ProductCard({ product, lang, priority = false }: { product: Product; lang: Lang; priority?: boolean }) {
+// Con cardImage la tarjeta toma la proporción de esa foto, para mostrarla entera.
+export default function ProductCard({ product, lang, priority = false, wide = false }: { product: Product; lang: Lang; priority?: boolean; wide?: boolean }) {
   const t = shop[lang].card;
-  const [front, second] = product.images;
+  const front = product.cardImage ?? product.images[0];
+  const second = product.cardImage ? undefined : product.images[1];
   const soldOut = totalStock(product) === 0;
   return (
     <Link href={`/producto/${product.slug}`} className="group block">
-      <div className="relative aspect-[4/5] overflow-hidden bg-frame">
+      <div
+        className={`relative overflow-hidden bg-frame ${product.cardImage ? "" : "aspect-[4/5]"}`}
+        style={product.cardImage ? { aspectRatio: `${front.width} / ${front.height}` } : undefined}
+      >
         <Image
           src={front.src}
           alt={front.alt}
           fill
           priority={priority}
-          sizes="(min-width: 640px) 50vw, 100vw"
+          sizes={wide ? "(min-width: 1440px) 1344px, 100vw" : "(min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"}
           className={`object-cover transition-[transform,opacity] duration-[1200ms] ease-out group-hover:scale-[1.03] ${
             second ? "group-hover:opacity-0" : ""
           }`}
