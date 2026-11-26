@@ -30,7 +30,6 @@ export type Product = {
   measurements: { label: string; values: Record<Size, number> }[]; // cm
   fitNote: string;
   video?: string; // clip corto que abre la galería del producto (sin audio)
-  cardImage?: ProductImage; // foto de la tarjeta de la tienda con su proporción real (sin recortar); si no hay, la primera de images
   featured?: boolean; // prenda destacada: va primero en la tienda
   hidden?: boolean; // listo en el catálogo pero fuera de la tienda (p. ej. mientras llegan las fotos)
 };
@@ -105,7 +104,7 @@ const catalog: Product[] = [
     ],
     care,
     images: [
-      photo("disidencia-gris-ella-frente", "Modelo de frente con la camiseta Disidencia gris y el logo Sure al pecho", "Frente", 1032, 1290),
+      photo("disidencia-gris-ella-cerca", "Modelo de frente con la camiseta Disidencia gris y el logo Sure al pecho", "Frente", 840, 1050),
       photo("disidencia-gris-ella-atras", "Espalda de la camiseta Disidencia gris con las costuras marcadas", "Espalda", 963, 1204),
       photo("disidencia-gris-el-calle", "Modelo en la calle con la camiseta Disidencia gris y el logo Sure al pecho", "En modelo", 1024, 1280),
       photo("disidencia-gris-pareja", "Detalle de los cuernos SURE en la manga y el logo al pecho; ella con el zip hoodie Conflict Unknown", "Detalle", 1025, 1281),
@@ -170,11 +169,11 @@ const catalog: Product[] = [
       "Puños y ruedo en resorte",
     ],
     care,
-    cardImage: photo("conflict-pareja-ancha", "Pareja con el zip hoodie Conflict Unknown: él de espaldas con el boxeador, ella de frente con los cuernos rojos", "En modelo", 1600, 1200),
     featured: true,
     images: [
-      photo("conflict-espalda", "Espalda del zip hoodie Conflict Unknown: boxeador contra esqueleto y Conflict unknown en rojo", "Espalda", 1200, 1500),
+      photo("conflict-pareja-vertical", "Pareja con el zip hoodie Conflict Unknown: él de espaldas con el boxeador, ella de frente con los cuernos rojos", "En modelo", 1333, 1666),
       photo("conflict-frente", "Modelo con el zip hoodie Conflict Unknown abierto y los cuernos rojos al pecho", "Frente", 1333, 1666),
+      photo("conflict-espalda", "Espalda del zip hoodie Conflict Unknown: boxeador contra esqueleto y Conflict unknown en rojo", "Espalda", 1200, 1500),
       photo("conflict-pareja", "Modelo de frente con los cuernos al pecho y modelo de espaldas con el estampado del boxeador", "En modelo", 1333, 1666),
       photo("conflict-espalda-ella", "Modelo de espaldas abriendo la capucha del zip hoodie Conflict Unknown", "Espalda", 1333, 1666),
       photo("conflict-abierto", "Modelo sonriendo con el zip hoodie Conflict Unknown abierto sobre la camiseta Disidencia gris", "En modelo", 1200, 1500),
@@ -206,7 +205,6 @@ export function totalStock(p: Product) {
 /* Inglés: mismos productos, textos traducidos. Las fotos y medidas van en el mismo orden que arriba. */
 type ProductText = Pick<Product, "name" | "short" | "color" | "description" | "details" | "care" | "fitNote"> & {
   alts: string[];
-  cardAlt?: string;
   measurementLabels: string[];
 };
 
@@ -277,10 +275,10 @@ const english: Record<string, ProductText> = {
     ],
     care: careEn,
     fitNote: "Relaxed fit. For a regular fit, size down.",
-    cardAlt: "Couple in the Conflict Unknown zip hoodie: him from behind with the boxer print, her from the front with the red horns",
     alts: [
-      "Back of the Conflict Unknown zip hoodie: boxer vs. skeleton and Conflict unknown in red",
+      "Couple in the Conflict Unknown zip hoodie: him from behind with the boxer print, her from the front with the red horns",
       "Model in the open Conflict Unknown zip hoodie with the red horns on the chest",
+      "Back of the Conflict Unknown zip hoodie: boxer vs. skeleton and Conflict unknown in red",
       "One model facing front with the horns on the chest, another from behind showing the boxer print",
       "Model from behind pulling up the hood of the Conflict Unknown zip hoodie",
       "Model smiling in the open Conflict Unknown zip hoodie over the grey Disidencia tee",
@@ -319,11 +317,10 @@ const english: Record<string, ProductText> = {
 export function localizeProduct(p: Product, lang: Lang): Product {
   const t = lang === "en" ? english[p.slug] : undefined;
   if (!t) return p;
-  const { alts, measurementLabels, cardAlt, ...text } = t;
+  const { alts, measurementLabels, ...text } = t;
   return {
     ...p,
     ...text,
-    cardImage: p.cardImage && { ...p.cardImage, alt: cardAlt ?? p.cardImage.alt },
     images: p.images.map((img, i) => ({ ...img, alt: alts[i] ?? img.alt })),
     measurements: p.measurements.map((m, i) => ({ ...m, label: measurementLabels[i] ?? m.label })),
   };

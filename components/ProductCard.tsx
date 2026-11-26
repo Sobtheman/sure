@@ -8,27 +8,21 @@ import type { Lang } from "@/lib/i18n";
 import { shop } from "@/lib/copy/shop";
 
 // product llega ya traducido (productsFor / getProduct con el idioma)
-// Con cardImage la foto se muestra entera dentro de la tarjeta (sin recortar), sobre una copia desenfocada que llena los bordes.
 export default function ProductCard({ product, lang, priority = false }: { product: Product; lang: Lang; priority?: boolean }) {
   const t = shop[lang].card;
-  const whole = product.cardImage;
-  const front = whole ?? product.images[0];
-  const second = whole ? undefined : product.images[1];
+  const [front, second] = product.images;
   const soldOut = totalStock(product) === 0;
   const sizes = "(min-width: 640px) 50vw, 100vw";
   return (
     <Link href={`/producto/${product.slug}`} className="group block">
-      <div className={`relative aspect-[4/5] overflow-hidden ${whole ? "bg-ink" : "bg-frame"}`}>
-        {whole && (
-          <Image src={whole.src} alt="" fill sizes="30vw" quality={40} className="scale-150 object-cover blur-2xl brightness-75 saturate-150" aria-hidden />
-        )}
+      <div className="relative aspect-[4/5] overflow-hidden bg-frame">
         <Image
           src={front.src}
           alt={front.alt}
           fill
           priority={priority}
           sizes={sizes}
-          className={`${whole ? "object-contain" : "object-cover"} transition-[transform,opacity] duration-[1200ms] ease-out group-hover:scale-[1.03] ${
+          className={`object-cover transition-[transform,opacity] duration-[1200ms] ease-out group-hover:scale-[1.03] ${
             second ? "group-hover:opacity-0" : ""
           }`}
         />
