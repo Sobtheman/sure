@@ -6,6 +6,8 @@ const nextConfig = {
       { source: "/producto/hoodie-dissidencia", destination: "/producto/hoodie-disidencia", permanent: true },
       { source: "/en/producto/camiseta-dissidencia", destination: "/en/producto/camiseta-disidencia", permanent: true },
       { source: "/en/producto/hoodie-dissidencia", destination: "/en/producto/hoodie-disidencia", permanent: true },
+      { source: "/archivo/intrinsic", destination: "/archivo/intrinsec-line", permanent: true },
+      { source: "/en/archivo/intrinsic", destination: "/en/archivo/intrinsec-line", permanent: true },
     ];
   },
   images: {

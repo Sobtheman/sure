@@ -3,11 +3,13 @@ import { pageMeta } from "@/lib/seo";
 import ProductCard from "@/components/ProductCard";
 import Reveal from "@/components/Reveal";
 import { productsFor } from "@/lib/catalog";
+import { productGrid } from "@/components/ProductCard";
 import { hero } from "@/lib/config";
 import { lookbookFor } from "@/lib/lookbook";
 import ArchiveGallery from "@/components/ArchiveGallery";
 import { langOf } from "@/lib/i18n";
 import { shop } from "@/lib/copy/shop";
+import { storyCopy } from "@/lib/copy/story";
 
 export function generateMetadata({ params }: { params: { lang: string } }): Metadata {
   const lang = langOf(params);
@@ -18,6 +20,7 @@ export function generateMetadata({ params }: { params: { lang: string } }): Meta
 export default function Tienda({ params }: { params: { lang: string } }) {
   const lang = langOf(params);
   const t = shop[lang].shopPage;
+  const story = storyCopy[lang];
   return (
     <div className="pt-header">
       <section className="wrap pb-10 pt-10 sm:pb-14 sm:pt-16">
@@ -31,7 +34,7 @@ export default function Tienda({ params }: { params: { lang: string } }) {
       </section>
 
       <section className="wrap pb-16 sm:pb-24" aria-label={t.piecesLabel}>
-        <div className="grid gap-x-5 gap-y-12 sm:grid-cols-2">
+        <div className={`grid gap-x-5 gap-y-12 ${productGrid(productsFor(lang).length)}`}>
           {productsFor(lang).map((p, i) => (
             <Reveal key={p.slug} delay={i * 120}>
               <ProductCard product={p} lang={lang} priority />
@@ -42,12 +45,12 @@ export default function Tienda({ params }: { params: { lang: string } }) {
 
       <section className="wrap grid gap-6 border-t border-line py-14 sm:py-20 lg:grid-cols-12 lg:gap-12" aria-labelledby="historia">
         <h2 id="historia" className="label text-muted lg:col-span-3">
-          {t.storyLabel}
+          {story.label} · {story.chapter(5)}
         </h2>
         <div className="lg:col-span-8">
-          <p className="display text-[clamp(32px,6vw,64px)]">{t.storyTagline}</p>
+          <p className="display text-[clamp(32px,6vw,64px)]">{story.current.tagline}</p>
           <div className="mt-8 space-y-5 text-[17px] leading-[1.6] sm:text-[19px]">
-            {t.story.map((p, k) => (
+            {story.current.story.map((p, k) => (
               <Reveal key={k} delay={k * 100}>
                 <p>{p}</p>
               </Reveal>

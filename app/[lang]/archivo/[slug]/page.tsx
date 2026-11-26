@@ -5,6 +5,8 @@ import Link from "@/components/Link";
 import { notFound } from "next/navigation";
 import { archive, archiveFor, getCollection } from "@/lib/archive";
 import { archiveCopy } from "@/lib/copy/archive";
+import { storyCopy } from "@/lib/copy/story";
+import { hero } from "@/lib/config";
 import { langOf, localePath } from "@/lib/i18n";
 import ArchiveGallery from "@/components/ArchiveGallery";
 import Reveal from "@/components/Reveal";
@@ -29,7 +31,12 @@ export default function Coleccion({ params }: { params: { lang: string; slug: st
   if (!c) notFound();
   const list = archiveFor(lang);
   const i = list.findIndex((x) => x.slug === c.slug);
-  const next = list[(i + 1) % list.length];
+  const s = storyCopy[lang];
+  // Después del último capítulo del archivo sigue la colección actual, en la tienda
+  const following = list[i + 1];
+  const next = following
+    ? { href: `/archivo/${following.slug}`, src: following.cover.src, label: `${t.next(following.year)} · ${s.chapter(i + 2)}`, name: following.name }
+    : { href: "/tienda", src: hero.poster, label: `${s.chapter(i + 2)} · ${s.current.meta}`, name: s.current.name };
   // La galería incluye la portada: así todas las colecciones quedan en número par.
   const gallery = [c.cover, ...c.images];
   // Inicio › Archivo › Colección, para Google
@@ -57,7 +64,7 @@ export default function Coleccion({ params }: { params: { lang: string; slug: st
             <Arrow className="rotate-180" /> {t.back}
           </Link>
           <p className="label rise mt-6 text-white/60" style={{ animationDelay: "150ms" }}>
-            {t.soldOut(c.year)}
+            {s.chapter(i + 1)} · {t.soldOut(c.year)}
           </p>
           <h1 className="display rise mt-3 text-[clamp(44px,14vw,200px)]" style={{ animationDelay: "280ms" }}>
             {c.name}
@@ -118,9 +125,9 @@ export default function Coleccion({ params }: { params: { lang: string; slug: st
       </section>
 
       {/* Siguiente */}
-      <Link href={`/archivo/${next.slug}`} className="group relative block h-[46svh] min-h-[320px] overflow-hidden border-t border-white/10">
+      <Link href={next.href} className="group relative block h-[46svh] min-h-[320px] overflow-hidden border-t border-white/10">
         <Image
-          src={next.cover.src}
+          src={next.src}
           alt=""
           fill
           sizes="100vw"
@@ -128,7 +135,7 @@ export default function Coleccion({ params }: { params: { lang: string; slug: st
         />
         <div className="wrap absolute inset-x-0 bottom-0 flex items-end justify-between gap-6 pb-10">
           <div>
-            <p className="label text-white/60">{t.next(next.year)}</p>
+            <p className="label text-white/60">{next.label}</p>
             <p className="display mt-2 text-[clamp(40px,10vw,120px)]">{next.name}</p>
           </div>
           <Arrow className="mb-6 h-4 w-10 text-burgundy-bright transition-transform duration-500 group-hover:translate-x-2" />

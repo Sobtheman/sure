@@ -10,6 +10,8 @@ export const store = {
   // Mensaje directo de Instagram (abre el chat con la marca)
   instagramDM: "https://ig.me/m/surewearco",
   tiktok: "https://www.tiktok.com/@surewearco",
+  // Video "SURE, el primer año" (también va en la página de la historia)
+  tiktokVideo: "https://www.tiktok.com/@surewearco/video/7703394356274679061",
   // WhatsApp de pedidos, con indicativo y sin espacios
   whatsapp: `57${PHONE}`,
   whatsappLabel: readableKey(PHONE),

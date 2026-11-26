@@ -3,8 +3,11 @@ import { pageMeta } from "@/lib/seo";
 import Image from "next/image";
 import Link from "@/components/Link";
 import Reveal from "@/components/Reveal";
+import TikTokVideo from "@/components/TikTokVideo";
 import { archiveFor } from "@/lib/archive";
 import { archiveCopy } from "@/lib/copy/archive";
+import { storyCopy } from "@/lib/copy/story";
+import { hero } from "@/lib/config";
 import { langOf } from "@/lib/i18n";
 import { Arrow } from "@/components/icons";
 
@@ -14,20 +17,31 @@ export function generateMetadata({ params }: { params: { lang: string } }): Meta
   return pageMeta(lang, "/archivo", { title: t.metaTitle, description: t.metaDescription, image: archiveFor(lang)[0].cover });
 }
 
+// La historia de SURE: la intro y el video, y cada colección como un capítulo. El último es la colección actual.
 export default function Archivo({ params }: { params: { lang: string } }) {
   const lang = langOf(params);
   const t = archiveCopy[lang];
+  const s = storyCopy[lang];
   const archive = archiveFor(lang);
 
   return (
     <div className="min-h-screen bg-ink pt-header text-paper">
-      <section className="wrap pb-12 pt-12 sm:pb-16 sm:pt-20">
-        <p className="label text-white/50">{t.eyebrow}</p>
-        <h1 className="display mt-3 text-[clamp(48px,15vw,184px)]">{t.title}</h1>
-        <p className="mt-6 max-w-md text-[15px] leading-relaxed text-white/60">{t.intro}</p>
+      <section className="wrap grid gap-10 pb-14 pt-12 sm:pb-20 sm:pt-20 lg:grid-cols-12 lg:items-end lg:gap-12">
+        <div className="lg:col-span-7">
+          <p className="label text-white/50">{t.title}</p>
+          <h1 className="display mt-3 text-[clamp(40px,8vw,104px)]">{s.introTitle}</h1>
+          <div className="mt-8 max-w-xl space-y-5 text-[17px] leading-[1.6] text-white/75 sm:text-[19px]">
+            {s.intro.map((p, k) => (
+              <p key={k}>{p}</p>
+            ))}
+          </div>
+        </div>
+        <div className="lg:col-span-4 lg:col-start-9">
+          <TikTokVideo className="mx-auto max-w-[320px] lg:max-w-none" />
+        </div>
       </section>
 
-      <ul className="wrap space-y-4 pb-20 sm:space-y-6 sm:pb-28">
+      <ul className="wrap space-y-4 pb-4 sm:space-y-6 sm:pb-6">
         {archive.map((c, i) => (
           <Reveal as="li" key={c.slug} delay={i * 80}>
             <Link href={`/archivo/${c.slug}`} className="group relative block aspect-[4/5] overflow-hidden bg-white/5 sm:aspect-[16/8]">
@@ -42,9 +56,11 @@ export default function Archivo({ params }: { params: { lang: string } }) {
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 flex flex-col items-start gap-4 p-5 sm:flex-row sm:items-end sm:justify-between sm:gap-6 sm:p-10">
                 <div>
-                  <p className="label text-white/85">{t.cardMeta(c.year, c.images.length + 1)}</p>
-                  <h2 className="display mt-2 text-[clamp(44px,10vw,128px)]">{c.name}</h2>
-                  <p className="mt-2 max-w-sm text-[14px] text-white/85">{c.note}</p>
+                  <p className="label text-white/85">
+                    {s.chapter(i + 1)} · {t.cardMeta(c.year, c.images.length + 1)}
+                  </p>
+                  <h2 className="display mt-2 text-[clamp(40px,9vw,128px)]">{c.name}</h2>
+                  <p className="mt-2 max-w-sm text-[14px] text-white/85">{c.tagline || c.note}</p>
                 </div>
                 <span className="link-line label mb-2 shrink-0">
                   {t.viewCollection} <Arrow className="text-burgundy-bright transition-transform duration-500 group-hover:translate-x-1" />
@@ -53,16 +69,34 @@ export default function Archivo({ params }: { params: { lang: string } }) {
             </Link>
           </Reveal>
         ))}
-      </ul>
 
-      <section className="border-t border-white/10">
-        <div className="wrap flex flex-col items-start justify-between gap-6 py-14 sm:flex-row sm:items-center">
-          <p className="display text-[32px] sm:text-[40px]">{t.available}</p>
-          <Link href="/tienda" className="btn-ghost border-white/70 hover:bg-paper hover:text-ink">
-            {t.shopCta} <Arrow className="text-burgundy-bright" />
+        {/* Capítulo V: la colección actual */}
+        <Reveal as="li" delay={archive.length * 80}>
+          <Link href="/tienda" className="group relative block aspect-[4/5] overflow-hidden bg-white/5 sm:aspect-[16/8]">
+            <Image
+              src={hero.poster}
+              alt={hero.posterAlt[lang]}
+              fill
+              sizes="(min-width: 1440px) 1340px, 100vw"
+              className="object-cover object-[60%_40%] transition duration-[1400ms] ease-out group-hover:scale-[1.03]"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 flex flex-col items-start gap-4 p-5 sm:flex-row sm:items-end sm:justify-between sm:gap-6 sm:p-10">
+              <div>
+                <p className="label text-white/85">
+                  {s.chapter(archive.length + 1)} · <span className="text-burgundy-bright">{s.current.meta}</span>
+                </p>
+                <h2 className="display mt-2 text-[clamp(40px,9vw,128px)]">{s.current.name}</h2>
+                <p className="mt-2 max-w-sm text-[14px] text-white/85">{s.current.tagline}</p>
+              </div>
+              <span className="link-line label mb-2 shrink-0">
+                {s.current.cta} <Arrow className="text-burgundy-bright transition-transform duration-500 group-hover:translate-x-1" />
+              </span>
+            </div>
           </Link>
-        </div>
-      </section>
+        </Reveal>
+      </ul>
+      <div className="pb-16 sm:pb-24" />
     </div>
   );
 }

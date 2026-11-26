@@ -29,6 +29,8 @@ export type Product = {
   stock: Record<Size, number>;
   measurements: { label: string; values: Record<Size, number> }[]; // cm
   fitNote: string;
+  video?: string; // clip corto que abre la galería del producto (sin audio)
+  hidden?: boolean; // listo en el catálogo pero fuera de la tienda (p. ej. mientras llegan las fotos)
 };
 
 export const SIZES: Size[] = ["S", "M", "L", "XL"];
@@ -50,7 +52,8 @@ const photo = (src: string, alt: string, view: ProductImage["view"], width = 133
   height,
 });
 
-export const products: Product[] = [
+// Todo el catálogo, incluidas las prendas ocultas. La tienda usa `products` (solo las visibles).
+const catalog: Product[] = [
   {
     slug: "camiseta-disidencia",
     name: "Camiseta Disidencia",
@@ -74,6 +77,31 @@ export const products: Product[] = [
       photo("camiseta-pareja", "Pareja con la camiseta Disidencia; se ve Watch Your Demons en el ruedo", "En modelo"),
       photo("camiseta-duo", "Dos modelos con la camiseta Disidencia blanca", "En modelo"),
     ],
+    stock: { S: 20, M: 20, L: 20, XL: 20 },
+    measurements: [
+      { label: "Ancho de pecho", values: { S: 56, M: 58, L: 61, XL: 64 } },
+      { label: "Largo total", values: { S: 70, M: 72, L: 74, XL: 76 } },
+      { label: "Largo de manga", values: { S: 22, M: 23, L: 24, XL: 25 } },
+    ],
+    fitNote: "Corte oversize. Si lo quieres más ajustado, pide una talla menos.",
+  },
+  {
+    slug: "camiseta-disidencia-gris",
+    name: "Camiseta Disidencia gris",
+    short: "Camiseta gris",
+    color: "Gris",
+    price: 120000,
+    collection: "Disidencia",
+    description:
+      "Camiseta gris oscuro con lavado, corte oversize y hombro caído. El logo Sure al pecho y costuras marcadas que recorren el frente y la espalda.",
+    details: ["Corte oversize, hombro caído", "Gris oscuro con lavado", "Logo Sure al pecho", "Costuras marcadas en frente y espalda"],
+    care,
+    images: [
+      photo("disidencia-gris-frente", "Modelo de frente con la camiseta Disidencia gris y el logo Sure al pecho", "Frente", 576, 720),
+      photo("disidencia-gris-espalda", "Espalda de la camiseta Disidencia gris con las costuras marcadas", "Espalda", 576, 720),
+      photo("disidencia-gris-giro", "Modelo mirando por encima del hombro con la camiseta Disidencia gris", "En modelo", 576, 720),
+    ],
+    video: "/media/producto/disidencia-gris.mp4",
     stock: { S: 20, M: 20, L: 20, XL: 20 },
     measurements: [
       { label: "Ancho de pecho", values: { S: 56, M: 58, L: 61, XL: 64 } },
@@ -115,7 +143,31 @@ export const products: Product[] = [
     ],
     fitNote: "Corte amplio. Para un fit regular, pide una talla menos.",
   },
+  {
+    // Oculto hasta que lleguen las fotos: se agregan en images y se quita hidden
+    slug: "zip-hoodie-conflict-unknown",
+    name: "Zip hoodie Conflict Unknown",
+    short: "Zip hoodie",
+    color: "Negro",
+    price: 180000,
+    collection: "Disidencia",
+    description: "Zip hoodie negro Conflict Unknown, de la colección Disidencia.",
+    details: ["Cierre completo", "Capucha"],
+    care,
+    images: [],
+    hidden: true,
+    stock: { S: 20, M: 20, L: 20, XL: 20 },
+    measurements: [
+      { label: "Ancho de pecho", values: { S: 60, M: 63, L: 66, XL: 69 } },
+      { label: "Largo total", values: { S: 66, M: 68, L: 70, XL: 72 } },
+      { label: "Largo de manga", values: { S: 57, M: 58, L: 59, XL: 60 } },
+    ],
+    fitNote: "Corte amplio. Para un fit regular, pide una talla menos.",
+  },
 ];
+
+// Lo que se vende: todo lo que no está oculto
+export const products = catalog.filter((p) => !p.hidden);
 
 export function getProduct(slug: string, lang: Lang = "es") {
   const p = products.find((x) => x.slug === slug);
@@ -157,6 +209,33 @@ const english: Record<string, ProductText> = {
       "Couple wearing the Disidencia tee; Watch Your Demons on the hem",
       "Two models in the white Disidencia tee",
     ],
+    measurementLabels: measurementLabelsEn,
+  },
+  "camiseta-disidencia-gris": {
+    name: "Disidencia Tee, Grey",
+    short: "Grey tee",
+    color: "Grey",
+    description:
+      "Washed dark grey tee, oversized with a dropped shoulder. The Sure logo on the chest and bold seams running across the front and back.",
+    details: ["Oversized fit, dropped shoulder", "Washed dark grey", "Sure logo on the chest", "Bold seams on the front and back"],
+    care: careEn,
+    fitNote: "Oversized fit. For a closer fit, size down.",
+    alts: [
+      "Model facing the camera in the grey Disidencia tee, Sure logo on the chest",
+      "Back of the grey Disidencia tee with its bold seams",
+      "Model looking over her shoulder in the grey Disidencia tee",
+    ],
+    measurementLabels: measurementLabelsEn,
+  },
+  "zip-hoodie-conflict-unknown": {
+    name: "Conflict Unknown Zip Hoodie",
+    short: "Zip hoodie",
+    color: "Black",
+    description: "The black Conflict Unknown zip hoodie, from the Disidencia collection.",
+    details: ["Full zip", "Hood"],
+    care: careEn,
+    fitNote: "Relaxed fit. For a regular fit, size down.",
+    alts: [],
     measurementLabels: measurementLabelsEn,
   },
   "hoodie-disidencia": {

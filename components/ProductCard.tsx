@@ -51,3 +51,8 @@ export default function ProductCard({ product, lang, priority = false }: { produ
     </Link>
   );
 }
+
+// Columnas de la grilla de prendas: de a tres si son múltiplo de tres, si no de a dos (nunca una sola en la última fila)
+export function productGrid(count: number) {
+  return count % 3 === 0 ? "md:grid-cols-3" : "sm:grid-cols-2";
+}

@@ -7,7 +7,7 @@ const es = {
   // Portada: film de la colección
   hero: {
     kicker: "Nueva colección",
-    tagline: "Camiseta y hoodie · Envíos a toda Colombia",
+    tagline: "Camisetas y hoodie · Envíos a toda Colombia",
     cta: "Comprar colección",
     filmLabel: (collection: string) => `Film de la colección ${collection}`,
     pause: "Pausar film",
@@ -20,19 +20,12 @@ const es = {
   // Página de la tienda
   shopPage: {
     metaTitle: "Tienda",
-    metaDescription: "Colección Disidencia de SURE: camiseta blanca y hoodie negro. Envío gratis siempre y pago contra entrega.",
+    metaDescription: "Colección Disidencia de SURE: camisetas blanca y gris, y hoodie negro. Envío gratis siempre y pago contra entrega.",
     kicker: "Colección",
-    intro: "Camiseta y hoodie. Envío gratis a toda Colombia, siempre.",
+    intro: "Camisetas y hoodie. Envío gratis a toda Colombia, siempre.",
     piecesLabel: "Prendas",
     lookbook: "Lookbook",
     tapToZoom: "Toca una foto para ampliar",
-    storyLabel: "La historia",
-    storyTagline: "Watch your demons.",
-    story: [
-      "Todos tenemos una parte que no siempre mostramos. Nuestros miedos, malos hábitos, frustraciones y sombras también hacen parte de quienes somos.",
-      "DISIDENCIA nace de la importancia de reconocer esa oscuridad, aceptarla y aprender a convivir con ella. Porque conocernos por completo también significa mirar aquello que preferimos esconder.",
-      "Una camiseta blanca con un ojo rojo representa el primer paso: reconocer nuestra sombra. Un hoodie negro representa el siguiente: llevar nuestros demonios con nosotros y convertir ese reconocimiento en una oportunidad para crecer.",
-    ],
   },
   // Página de producto
   productPage: {
@@ -50,6 +43,7 @@ const es = {
     zoomChip: "Ampliar",
     viewPhoto: (n: number, view: string) => `Ver foto ${n}: ${view}`,
     fullscreen: "Clic para ver en pantalla completa",
+    video: "Video",
   },
   // Etiqueta visible para cada vista de foto (ProductImage.view)
   viewLabel: {
@@ -117,7 +111,7 @@ const es = {
 const en: typeof es = {
   hero: {
     kicker: "New collection",
-    tagline: "Tee and hoodie · Shipping across Colombia",
+    tagline: "Tees and hoodie · Shipping across Colombia",
     cta: "Shop the collection",
     filmLabel: (collection: string) => `${collection} collection film`,
     pause: "Pause film",
@@ -129,19 +123,12 @@ const en: typeof es = {
   shopPage: {
     metaTitle: "Shop",
     metaDescription:
-      "The SURE Disidencia collection: white tee and black hoodie. Free shipping, always, and cash on delivery.",
+      "The SURE Disidencia collection: white and grey tees and a black hoodie. Free shipping, always, and cash on delivery.",
     kicker: "Collection",
-    intro: "Tee and hoodie. Free shipping across Colombia, always.",
+    intro: "Tees and hoodie. Free shipping across Colombia, always.",
     piecesLabel: "Pieces",
     lookbook: "Lookbook",
     tapToZoom: "Tap a photo to zoom in",
-    storyLabel: "The story",
-    storyTagline: "Watch your demons.",
-    story: [
-      "We all have a side we don't always show. Our fears, bad habits, frustrations and shadows are part of who we are too.",
-      "DISIDENCIA comes from the importance of recognizing that darkness, accepting it and learning to live with it. Because knowing ourselves completely also means looking at what we'd rather hide.",
-      "A white tee with a red eye stands for the first step: recognizing our shadow. A black hoodie stands for the next one: carrying our demons with us and turning that recognition into a chance to grow.",
-    ],
   },
   productPage: {
     alsoIn: (collection: string) => `More from ${collection}`,
@@ -156,6 +143,7 @@ const en: typeof es = {
     zoomChip: "Zoom",
     viewPhoto: (n: number, view: string) => `View photo ${n}: ${view}`,
     fullscreen: "Click to view full screen",
+    video: "Video",
   },
   viewLabel: {
     Frente: "Front",

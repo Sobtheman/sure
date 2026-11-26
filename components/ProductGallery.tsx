@@ -12,13 +12,17 @@ const HOVER_ZOOM = 1.75;
 // Móvil: carrusel a todo el ancho; tocar abre el visor con pellizco y doble toque.
 // Escritorio: fotos apiladas; al pasar el cursor la foto se acerca en su marco y sigue al mouse,
 // clic abre el visor a pantalla completa.
-export default function ProductGallery({ images }: { images: ProductImage[] }) {
+// Si el producto tiene clip, va de primero (sin audio, en bucle); las fotos siguen después y son las que abren el visor.
+export default function ProductGallery({ images, video }: { images: ProductImage[]; video?: string }) {
   const lang = useLang();
   const t = shop[lang].gallery;
   const viewLabel = shop[lang].viewLabel;
   const track = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
   const [viewer, setViewer] = useState<number | null>(null);
+  const offset = video ? 1 : 0;
+  const slides = images.length + offset;
+  const slideLabel = (i: number) => (video && i === 0 ? t.video : viewLabel[images[i - offset]?.view]);
 
   useEffect(() => {
     const el = track.current;
@@ -40,6 +44,11 @@ export default function ProductGallery({ images }: { images: ProductImage[] }) {
       {/* Móvil y tablet */}
       <div className="relative lg:hidden">
         <div ref={track} className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto" aria-roledescription={t.carousel}>
+          {video && (
+            <div className="relative aspect-[4/5] w-full shrink-0 snap-center bg-frame">
+              <Clip src={video} poster={images[0]?.src} />
+            </div>
+          )}
           {images.map((img, i) => (
             <button
               key={img.src}
@@ -53,15 +62,16 @@ export default function ProductGallery({ images }: { images: ProductImage[] }) {
         </div>
         <div className="pointer-events-none absolute inset-x-0 bottom-3 flex items-center justify-between gap-3 px-4">
           <span className="label whitespace-nowrap bg-paper/90 px-2 py-1 text-[10px]">
-            {images[index] && viewLabel[images[index].view]} · {t.zoomChip}
+            {slideLabel(index)}
+            {!(video && index === 0) && ` · ${t.zoomChip}`}
           </span>
-          {images.length > 1 && (
+          {slides > 1 && (
             <div className="pointer-events-auto flex bg-paper/90 px-1">
-              {images.map((img, i) => (
+              {Array.from({ length: slides }, (_, i) => (
                 <button
-                  key={img.src}
+                  key={i}
                   onClick={() => go(i)}
-                  aria-label={t.viewPhoto(i + 1, viewLabel[img.view])}
+                  aria-label={t.viewPhoto(i + 1, slideLabel(i))}
                   aria-current={i === index ? "true" : undefined}
                   className="grid h-8 w-7 place-items-center"
                 >
@@ -75,6 +85,12 @@ export default function ProductGallery({ images }: { images: ProductImage[] }) {
 
       {/* Escritorio */}
       <div className="hidden gap-3 lg:grid">
+        {video && (
+          <figure className="relative aspect-[4/5] w-full overflow-hidden bg-frame">
+            <Clip src={video} poster={images[0]?.src} />
+            <figcaption className="label pointer-events-none absolute left-4 top-4 text-[10px] text-paper/80">{t.video}</figcaption>
+          </figure>
+        )}
         {images.map((img, i) => (
           <HoverZoom key={img.src} img={img} priority={i === 0} onOpen={() => setViewer(i)} />
         ))}
@@ -145,4 +161,16 @@ function HoverZoom({ img, priority, onOpen }: { img: ProductImage; priority: boo
       </p>
     </figure>
   );
+}
+
+// Clip del producto: sin audio, en bucle y sin controles. Arranca solo; si el navegador no deja, queda la primera foto.
+function Clip({ src, poster }: { src: string; poster?: string }) {
+  const ref = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const v = ref.current;
+    if (!v || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    v.muted = true;
+    v.play().catch(() => {});
+  }, []);
+  return <video ref={ref} src={src} poster={poster} muted loop playsInline preload="metadata" className="absolute inset-0 h-full w-full object-cover" aria-hidden />;
 }

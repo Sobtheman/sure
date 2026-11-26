@@ -86,7 +86,7 @@ export default function ProductPage({ params }: { params: { lang: string; slug: 
       <div className="pt-header">
         <div className="lg:wrap lg:grid lg:grid-cols-12 lg:gap-12 lg:pt-8">
           <div className="lg:col-span-7">
-            <ProductGallery images={product.images} />
+            <ProductGallery images={product.images} video={product.video} />
           </div>
           <div className="wrap pt-7 lg:col-span-5 lg:px-0 lg:pt-0">
             <div className="no-scrollbar lg:sticky lg:top-[136px] lg:max-h-[calc(100svh-136px)] lg:overflow-y-auto lg:overscroll-contain lg:pb-8">

@@ -24,31 +24,32 @@ const h = (src: string, alt: string): ArchiveImage => ({ src: `/img/archivo/${sr
 
 export const archive: ArchiveCollection[] = [
   {
-    slug: "intrinsic",
+    slug: "intrinsec-line",
     year: 2025,
-    name: "Intrinsic",
+    name: "Intrinsec Line",
     note: "Dos camisetas básicas, blanca y negra, con el logo S al pecho.",
+    tagline: "El comienzo de todo.",
     story: [
-      "Antes de las colecciones y de todo lo que hoy representa SURE, hubo una primera intención: crear algo propio. Intrinsic fue nuestro punto de partida, el primer paso de un sueño que comenzaba a hacerse realidad.",
-      "Nuestra primera colección estuvo compuesta por dos camisetas básicas, una negra y una blanca. En ellas plasmamos los primeros símbolos de nuestra identidad y una idea sencilla: la seguridad no debería depender de lo que otros piensen de nosotros.",
-      "Hoy, Intrinsic es mucho más que nuestra primera colección. Es el recuerdo de dónde empezó todo y la primera pieza de una historia que seguimos construyendo.",
+      "Todo comenzó con la intención de crear algo propio. Algo que naciera desde lo esencial, sin depender de factores externos.",
+      "INTRINSEC LINE fue nuestra primera colección: dos camisetas, una negra y una blanca, que representaban una idea sencilla, pero importante. La seguridad no debería depender de lo que otros piensen de nosotros.",
+      "Fue el primer paso de un sueño que apenas comenzaba a tomar forma.",
     ],
-    seoTitle: "Intrinsic — Primera colección de SURE",
+    seoTitle: "Intrinsec Line — Primera colección de SURE",
     seoDescription:
-      "Intrinsic, la primera colección de SURE (2025): dos camisetas básicas, blanca y negra, y una idea: la seguridad no depende de lo que otros piensen.",
+      "Intrinsec Line, la primera colección de SURE (2025): dos camisetas básicas, blanca y negra, y una idea: la seguridad no depende de lo que otros piensen.",
     pieces: [
-      { name: "Camiseta Intrinsic blanca", detail: "Logo S negro al pecho, “Sure” a la espalda" },
-      { name: "Camiseta Intrinsic negra", detail: "Logo S blanco al pecho" },
+      { name: "Camiseta Intrinsec Line blanca", detail: "Logo S negro al pecho, “Sure” a la espalda" },
+      { name: "Camiseta Intrinsec Line negra", detail: "Logo S blanco al pecho" },
     ],
-    cover: v("intrinsic-grafiti", "Pareja frente a un muro de grafiti con las camisetas Intrinsic blanca y negra"),
+    cover: v("intrinsic-grafiti", "Pareja frente a un muro de grafiti con las camisetas Intrinsec Line blanca y negra"),
     images: [
-      v("intrinsic-puerta", "Dos personas en la escalera de una casa antigua con las camisetas Intrinsic"),
-      v("intrinsic-calle", "Modelo con la camiseta Intrinsic blanca y pantalón café en una calle con grafiti"),
-      v("intrinsic-sofa", "Pareja en un sofá verde de cuero con la camiseta Intrinsic negra"),
-      v("intrinsic-pared", "Modelo con la camiseta Intrinsic blanca frente a una pared negra"),
-      v("intrinsic-logo", "Detalle del logo S negro al pecho de la camiseta Intrinsic blanca"),
-      v("intrinsic-espalda", "Espalda de la camiseta Intrinsic blanca con “Sure” bajo el cuello"),
-      v("intrinsic-grupo", "Cuatro personas frente a una pared negra con las camisetas Intrinsic"),
+      v("intrinsic-puerta", "Dos personas en la escalera de una casa antigua con las camisetas Intrinsec Line"),
+      v("intrinsic-calle", "Modelo con la camiseta Intrinsec Line blanca y pantalón café en una calle con grafiti"),
+      v("intrinsic-sofa", "Pareja en un sofá verde de cuero con la camiseta Intrinsec Line negra"),
+      v("intrinsic-pared", "Modelo con la camiseta Intrinsec Line blanca frente a una pared negra"),
+      v("intrinsic-logo", "Detalle del logo S negro al pecho de la camiseta Intrinsec Line blanca"),
+      v("intrinsic-espalda", "Espalda de la camiseta Intrinsec Line blanca con “Sure” bajo el cuello"),
+      v("intrinsic-grupo", "Cuatro personas frente a una pared negra con las camisetas Intrinsec Line"),
     ],
   },
   {
@@ -56,11 +57,12 @@ export const archive: ArchiveCollection[] = [
     year: 2026,
     name: "Niebla",
     note: "Camiseta gris con lavado ácido y las letras SURE dispersas en la espalda.",
-    tagline: "Cuando todo se vuelve borroso",
+    tagline: "Cuando todo se vuelve borroso.",
     story: [
-      "A veces la mente se llena de pensamientos, dudas y preguntas. Todo empieza a mezclarse y aquello que antes parecía claro comienza a sentirse distante.",
-      "Esta colección nace de ese estado: la niebla mental. Nuestra segunda entrega llevó esa idea a una camiseta gris, con las letras de SURE dispersas en su estampado, como fragmentos de una identidad que parecen perderse entre la niebla.",
-      "Porque no siempre tenemos todo claro. No siempre sabemos qué hacer o hacia dónde ir. Y eso también hace parte de nuestra experiencia.",
+      "A veces, la mente se llena de pensamientos, dudas y preguntas. Todo se mezcla y aquello que parecía claro comienza a perder sentido.",
+      "NIEBLA nació de esa sensación: la dificultad de avanzar cuando llevamos demasiado dentro.",
+      "Una camiseta gris, con nuestra identidad dispersa en su estampado, representó esos momentos en los que no sabemos exactamente hacia dónde vamos.",
+      "Porque no siempre es posible tener claridad. A veces, simplemente necesitamos aprender a avanzar dentro de la niebla.",
     ],
     seoTitle: "Niebla — Camiseta gris gráfica de SURE",
     seoDescription:
@@ -80,11 +82,11 @@ export const archive: ArchiveCollection[] = [
     year: 2026,
     name: "Niebla x Ivy",
     note: "Camiseta y crops con lavado ácido en negro, morado y rosado.",
-    tagline: "La niebla tiene más de un color",
+    tagline: "La niebla tiene más de un color.",
     story: [
-      "No todos vivimos la niebla de la misma manera. A veces es oscura, otras veces toma nuevos matices y formas. Pero todos, en algún momento, podemos encontrarnos dentro de ella.",
-      "Esta colección continúa explorando ese estado mental desde diferentes perspectivas. El negro, el morado y el rosado representan distintas formas de expresarnos, porque aunque compartamos experiencias, cada uno las vive a su manera.",
-      "La niebla no distingue entre hombres y mujeres. Simplemente hace parte de lo que somos.",
+      "No todos vivimos la niebla de la misma manera. Cada persona atraviesa sus propias emociones y encuentra distintas formas de expresarlas.",
+      "El negro, el morado y el rosado representan esos matices, especialmente la manera en que las mujeres viven y cuentan su propia historia.",
+      "NIEBLA X IVY nos recordó que podemos compartir una experiencia, pero nunca vivirla exactamente igual.",
     ],
     seoTitle: "Niebla x Ivy — Colección negro, morado y rosado de SURE",
     seoDescription:
@@ -115,9 +117,9 @@ export const archive: ArchiveCollection[] = [
     note: "Camiseta de fútbol retro negra a rayas, la primera hecha 100% por SURE.",
     tagline: "Made from zero. Made by SURE.",
     story: [
-      "SURE26 marca un nuevo capítulo en nuestra historia: nuestra primera colección creada 100% por SURE.",
-      "Desde el diseño inicial hasta la elección de la tela y todo el proceso de confección, cada detalle estuvo en nuestras manos. Una camiseta de inspiración futbolera retro, como homenaje a la Copa del Mundo 2026 y a la capacidad de superar nuestros límites, creer en nosotros y perseguir nuestros objetivos.",
-      "Esta vez, la historia también nos llevó a México, donde compartimos nuestra propuesta, conectamos con nuevas personas y seguimos construyendo comunidad.",
+      "SURE26 fue nuestro salto al vacío. La oportunidad de descubrir de qué estábamos hechos y de demostrar que podíamos construir algo completamente nuestro.",
+      "Creamos una camiseta futbolera desde cero y llevamos nuestra propuesta hasta México, donde compartimos nuestra historia con nuevas personas.",
+      "Fue el momento de dejar de imaginar y comenzar a hacer. De creer que todo era posible, siempre que tuviéramos el valor de levantarnos y dar el primer paso.",
     ],
     seoTitle: "SURE26 — Camiseta de fútbol retro de SURE",
     seoDescription:
@@ -146,38 +148,40 @@ type CollectionText = Pick<ArchiveCollection, "note" | "tagline" | "story" | "se
 };
 
 const english: Record<string, CollectionText> = {
-  intrinsic: {
+  "intrinsec-line": {
     note: "Two basic tees, black and white, with the S logo on the chest.",
+    tagline: "Where it all began.",
     story: [
-      "Before the collections and everything SURE stands for today, there was a first intention: to create something of our own. Intrinsic was our starting point, the first step of a dream that was starting to come true.",
-      "Our first collection was two basic tees, one black and one white. On them we put the first symbols of our identity and one simple idea: being sure of yourself shouldn't depend on what other people think of you.",
-      "Today, Intrinsic is much more than our first collection. It's the memory of where it all began, and the first piece of a story we keep building.",
+      "It all started with the intention of creating something of our own. Something born from the essentials, without depending on anything outside us.",
+      "INTRINSEC LINE was our first collection: two tees, one black and one white, standing for a simple but important idea. Being sure of yourself shouldn't depend on what others think of you.",
+      "It was the first step of a dream that was only just starting to take shape.",
     ],
-    seoTitle: "Intrinsic — SURE's first collection",
+    seoTitle: "Intrinsec Line — SURE's first collection",
     seoDescription:
-      "Intrinsic, SURE's first collection (2025): two basic tees, black and white, and one idea: being sure of yourself shouldn't depend on what others think.",
+      "Intrinsec Line, SURE's first collection (2025): two basic tees, black and white, and one idea: being sure of yourself shouldn't depend on what others think.",
     pieces: [
-      { name: "Intrinsic tee, white", detail: "Black S logo on the chest, “Sure” on the back" },
-      { name: "Intrinsic tee, black", detail: "White S logo on the chest" },
+      { name: "Intrinsec Line tee, white", detail: "Black S logo on the chest, “Sure” on the back" },
+      { name: "Intrinsec Line tee, black", detail: "White S logo on the chest" },
     ],
-    coverAlt: "Couple in front of a graffiti wall wearing the white and black Intrinsic tees",
+    coverAlt: "Couple in front of a graffiti wall wearing the white and black Intrinsec Line tees",
     alts: [
-      "Two people on the steps of an old house wearing Intrinsic tees",
-      "Model in the white Intrinsic tee and brown pants on a graffiti street",
-      "Couple on a green leather sofa, one in the black Intrinsic tee",
-      "Model in the white Intrinsic tee against a black wall",
-      "Close-up of the black S logo on the chest of the white Intrinsic tee",
-      "Back of the white Intrinsic tee with “Sure” under the collar",
-      "Four people against a black wall wearing Intrinsic tees",
+      "Two people on the steps of an old house wearing Intrinsec Line tees",
+      "Model in the white Intrinsec Line tee and brown pants on a graffiti street",
+      "Couple on a green leather sofa, one in the black Intrinsec Line tee",
+      "Model in the white Intrinsec Line tee against a black wall",
+      "Close-up of the black S logo on the chest of the white Intrinsec Line tee",
+      "Back of the white Intrinsec Line tee with “Sure” under the collar",
+      "Four people against a black wall wearing Intrinsec Line tees",
     ],
   },
   niebla: {
     note: "A grey acid-wash tee with the SURE letters scattered across the back.",
-    tagline: "When everything gets blurry",
+    tagline: "When everything gets blurry.",
     story: [
-      "Sometimes the mind fills up with thoughts, doubts and questions. Everything starts to blend together, and what once felt clear starts to feel distant.",
-      "This collection comes from that state: mental fog. Our second drop turned that idea into a grey tee, with the SURE letters scattered across the print, like fragments of an identity getting lost in the fog.",
-      "Because we don't always have it all figured out. We don't always know what to do or where to go. And that's part of our experience too.",
+      "Sometimes the mind fills up with thoughts, doubts and questions. Everything blends together, and what seemed clear starts to lose its meaning.",
+      "NIEBLA was born from that feeling: how hard it is to move forward when we're carrying too much inside.",
+      "A grey tee, with our identity scattered across its print, stood for those moments when we don't know exactly where we're going.",
+      "Because clarity isn't always possible. Sometimes we just need to learn to keep moving inside the fog.",
     ],
     seoTitle: "Niebla — SURE's grey graphic tee",
     seoDescription:
@@ -194,11 +198,11 @@ const english: Record<string, CollectionText> = {
   },
   "niebla-x-ivy": {
     note: "An acid-wash tee and crops in black, purple and pink.",
-    tagline: "Fog comes in more than one color",
+    tagline: "Fog comes in more than one color.",
     story: [
-      "Not everyone lives the fog the same way. Sometimes it's dark; other times it takes on new shades and shapes. But all of us, at some point, can find ourselves inside it.",
-      "This collection keeps exploring that state of mind from different perspectives. Black, purple and pink stand for different ways of expressing ourselves, because even when we share experiences, each of us lives them our own way.",
-      "The fog doesn't tell men and women apart. It's simply part of who we are.",
+      "Not everyone lives the fog the same way. Each person goes through their own emotions and finds different ways to express them.",
+      "Black, purple and pink stand for those shades, especially the way women live and tell their own story.",
+      "NIEBLA X IVY reminded us that we can share an experience, but never live it exactly the same way.",
     ],
     seoTitle: "Niebla x Ivy — SURE's black, purple and pink collection",
     seoDescription:
@@ -226,9 +230,9 @@ const english: Record<string, CollectionText> = {
     note: "A black pinstriped retro soccer jersey, the first piece made 100% by SURE.",
     tagline: "Made from zero. Made by SURE.",
     story: [
-      "SURE26 marks a new chapter in our story: our first collection made 100% by SURE.",
-      "From the first design to choosing the fabric and the whole making process, every detail was in our hands. A retro soccer-inspired jersey, as a tribute to the 2026 World Cup and to pushing past our limits, believing in ourselves and chasing our goals.",
-      "This time, the story also took us to Mexico, where we shared what we do, connected with new people and kept building community.",
+      "SURE26 was our leap into the void. The chance to find out what we were made of and to prove we could build something entirely our own.",
+      "We made a soccer jersey from scratch and took our work all the way to Mexico, where we shared our story with new people.",
+      "It was time to stop imagining and start doing. To believe anything was possible, as long as we had the courage to get up and take the first step.",
     ],
     seoTitle: "SURE26 — SURE's retro soccer jersey",
     seoDescription:

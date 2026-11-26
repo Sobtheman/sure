@@ -12,7 +12,7 @@ const es = {
   checkout: "Finalizar compra",
   // Bolsa vacía
   emptyTitle: "Tu bolsa está vacía.",
-  emptyLead: "Empieza por una de estas dos.",
+  emptyLead: "Empieza por una de estas.",
   viewCollection: "Ver la colección",
   // Sugerencias de la bolsa vacía
   addProduct: (name: string) => `Agregar ${name} a la bolsa`,
@@ -38,7 +38,7 @@ const en: typeof es = {
   total: "Total",
   checkout: "Checkout",
   emptyTitle: "Your bag is empty.",
-  emptyLead: "Start with one of these two.",
+  emptyLead: "Start with one of these.",
   viewCollection: "Shop the collection",
   addProduct: (name: string) => `Add ${name} to bag`,
   closeSizes: (name: string) => `Close sizes for ${name}`,

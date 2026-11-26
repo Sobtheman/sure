@@ -1,15 +1,12 @@
 // Textos del archivo: listado, página de colección, bloque del inicio, galería y visor de fotos. Mismas claves en los dos idiomas.
 const es = {
   // Listado /archivo
-  metaTitle: "Archivo",
-  metaDescription: "Colecciones anteriores de SURE: Intrinsic, Niebla, Niebla x Ivy y SURE26.",
-  eyebrow: "Colecciones anteriores",
+  metaTitle: "Archivo: la historia de SURE",
+  metaDescription:
+    "La historia de SURE en capítulos: Intrinsec Line, Niebla, Niebla x Ivy, SURE26 y Disidencia. Colecciones anteriores, fotos y el video del primer año.",
   title: "Archivo",
-  intro: "Lo que ya pasó por la calle. Estas colecciones están agotadas y no vuelven; quedan aquí con su historia.",
   cardMeta: (year: number, n: number) => `${year} · Agotada · ${n} fotos`,
   viewCollection: "Ver colección",
-  available: "Lo que sí está disponible.",
-  shopCta: "Ver Disidencia",
 
   // Colección /archivo/[slug]
   back: "Archivo",
@@ -47,15 +44,12 @@ const es = {
 };
 
 const en: typeof es = {
-  metaTitle: "Archive",
-  metaDescription: "Past SURE collections: Intrinsic, Niebla, Niebla x Ivy and SURE26.",
-  eyebrow: "Past collections",
+  metaTitle: "Archive: the SURE story",
+  metaDescription:
+    "The SURE story in chapters: Intrinsec Line, Niebla, Niebla x Ivy, SURE26 and Disidencia. Past collections, photos and the first-year video.",
   title: "Archive",
-  intro: "What already hit the streets. These collections are sold out and they're not coming back. Their story stays here.",
   cardMeta: (year: number, n: number) => `${year} · Sold out · ${n} photos`,
   viewCollection: "View collection",
-  available: "What's available now.",
-  shopCta: "Shop Disidencia",
 
   back: "Archive",
   soldOut: (year: number) => `${year} · Sold out`,
