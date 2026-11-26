@@ -8,25 +8,27 @@ import type { Lang } from "@/lib/i18n";
 import { shop } from "@/lib/copy/shop";
 
 // product llega ya traducido (productsFor / getProduct con el idioma)
-// Con cardImage la tarjeta toma la proporción de esa foto, para mostrarla entera.
-export default function ProductCard({ product, lang, priority = false, wide = false }: { product: Product; lang: Lang; priority?: boolean; wide?: boolean }) {
+// Con cardImage la foto se muestra entera dentro de la tarjeta (sin recortar), sobre una copia desenfocada que llena los bordes.
+export default function ProductCard({ product, lang, priority = false }: { product: Product; lang: Lang; priority?: boolean }) {
   const t = shop[lang].card;
-  const front = product.cardImage ?? product.images[0];
-  const second = product.cardImage ? undefined : product.images[1];
+  const whole = product.cardImage;
+  const front = whole ?? product.images[0];
+  const second = whole ? undefined : product.images[1];
   const soldOut = totalStock(product) === 0;
+  const sizes = "(min-width: 640px) 50vw, 100vw";
   return (
     <Link href={`/producto/${product.slug}`} className="group block">
-      <div
-        className={`relative overflow-hidden bg-frame ${product.cardImage ? "" : "aspect-[4/5]"}`}
-        style={product.cardImage ? { aspectRatio: `${front.width} / ${front.height}` } : undefined}
-      >
+      <div className={`relative aspect-[4/5] overflow-hidden ${whole ? "bg-ink" : "bg-frame"}`}>
+        {whole && (
+          <Image src={whole.src} alt="" fill sizes="30vw" quality={40} className="scale-150 object-cover blur-2xl brightness-75 saturate-150" aria-hidden />
+        )}
         <Image
           src={front.src}
           alt={front.alt}
           fill
           priority={priority}
-          sizes={wide ? "(min-width: 1440px) 1344px, 100vw" : "(min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"}
-          className={`object-cover transition-[transform,opacity] duration-[1200ms] ease-out group-hover:scale-[1.03] ${
+          sizes={sizes}
+          className={`${whole ? "object-contain" : "object-cover"} transition-[transform,opacity] duration-[1200ms] ease-out group-hover:scale-[1.03] ${
             second ? "group-hover:opacity-0" : ""
           }`}
         />
@@ -35,7 +37,7 @@ export default function ProductCard({ product, lang, priority = false, wide = fa
             src={second.src}
             alt=""
             fill
-            sizes="(min-width: 640px) 50vw, 100vw"
+            sizes={sizes}
             className="object-cover opacity-0 transition-opacity duration-700 ease-out group-hover:opacity-100"
           />
         )}

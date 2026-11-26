@@ -31,7 +31,7 @@ export type Product = {
   fitNote: string;
   video?: string; // clip corto que abre la galería del producto (sin audio)
   cardImage?: ProductImage; // foto de la tarjeta de la tienda con su proporción real (sin recortar); si no hay, la primera de images
-  featured?: boolean; // prenda destacada: va primero y a todo el ancho en la tienda
+  featured?: boolean; // prenda destacada: va primero en la tienda
   hidden?: boolean; // listo en el catálogo pero fuera de la tienda (p. ej. mientras llegan las fotos)
 };
 
