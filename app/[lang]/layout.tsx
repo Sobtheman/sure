@@ -20,8 +20,8 @@ const archivo = Archivo({
 });
 
 const meta = {
-  es: { ogDescription: "Streetwear colombiano. Colección Disidencia: camisetas y hoodie, envíos a toda Colombia." },
-  en: { ogDescription: "Streetwear from Colombia. The Disidencia collection: tees and a hoodie, shipped across Colombia." },
+  es: { ogDescription: "Streetwear colombiano. Colección Disidencia: camisetas y hoodies, envíos a toda Colombia." },
+  en: { ogDescription: "Streetwear from Colombia. The Disidencia collection: tees and hoodies, shipped across Colombia." },
 };
 
 // Datos de la marca para Google y asistentes de IA (una sola vez en cada página)

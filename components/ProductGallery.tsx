@@ -65,7 +65,13 @@ export default function ProductGallery({ images, video }: { images: ProductImage
             {slideLabel(index)}
             {!(video && index === 0) && ` · ${t.zoomChip}`}
           </span>
-          {slides > 1 && (
+          {/* Con muchas fotos los puntos no caben en un celular angosto: se muestra el contador */}
+          {slides > 5 && (
+            <span className="label whitespace-nowrap bg-paper/90 px-2 py-1 text-[10px] tabular-nums" aria-live="polite">
+              {index + 1} / {slides}
+            </span>
+          )}
+          {slides > 1 && slides <= 5 && (
             <div className="pointer-events-auto flex bg-paper/90 px-1">
               {Array.from({ length: slides }, (_, i) => (
                 <button

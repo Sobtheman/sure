@@ -15,7 +15,7 @@ export function GET() {
   const lines = [
     "# SURE",
     "",
-    `> Streetwear colombiano. Colección actual: Disidencia (camisetas y hoodie). Envío gratis siempre a toda Colombia, pago contra entrega y entrega en ${shipping.deliveryDays} días hábiles o menos. Tienda en español (${absolute("/")}) y en inglés (${absolute("/en")}).`,
+    `> Streetwear colombiano. Colección actual: Disidencia (camisetas y hoodies). Envío gratis siempre a toda Colombia, pago contra entrega y entrega en ${shipping.deliveryDays} días hábiles o menos. Tienda en español (${absolute("/")}) y en inglés (${absolute("/en")}).`,
     "",
     `## La historia: ${storyCopy.es.introTitle}`,
     ...storyCopy.es.intro,

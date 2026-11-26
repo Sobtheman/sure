@@ -7,7 +7,7 @@ const es = {
   // Portada: film de la colección
   hero: {
     kicker: "Nueva colección",
-    tagline: "Camisetas y hoodie · Envíos a toda Colombia",
+    tagline: "Camisetas y hoodies · Envíos a toda Colombia",
     cta: "Comprar colección",
     filmLabel: (collection: string) => `Film de la colección ${collection}`,
     pause: "Pausar film",
@@ -20,9 +20,9 @@ const es = {
   // Página de la tienda
   shopPage: {
     metaTitle: "Tienda",
-    metaDescription: "Colección Disidencia de SURE: camisetas blanca y gris, y hoodie negro. Envío gratis siempre y pago contra entrega.",
+    metaDescription: "Colección Disidencia de SURE: camisetas blanca y gris, hoodie y zip hoodie negros. Envío gratis siempre y pago contra entrega.",
     kicker: "Colección",
-    intro: "Camisetas y hoodie. Envío gratis a toda Colombia, siempre.",
+    intro: "Camisetas y hoodies. Envío gratis a toda Colombia, siempre.",
     piecesLabel: "Prendas",
     lookbook: "Lookbook",
     tapToZoom: "Toca una foto para ampliar",
@@ -111,7 +111,7 @@ const es = {
 const en: typeof es = {
   hero: {
     kicker: "New collection",
-    tagline: "Tees and hoodie · Shipping across Colombia",
+    tagline: "Tees and hoodies · Shipping across Colombia",
     cta: "Shop the collection",
     filmLabel: (collection: string) => `${collection} collection film`,
     pause: "Pause film",
@@ -123,9 +123,9 @@ const en: typeof es = {
   shopPage: {
     metaTitle: "Shop",
     metaDescription:
-      "The SURE Disidencia collection: white and grey tees and a black hoodie. Free shipping, always, and cash on delivery.",
+      "The SURE Disidencia collection: white and grey tees, a black hoodie and a black zip hoodie. Free shipping, always, and cash on delivery.",
     kicker: "Collection",
-    intro: "Tees and hoodie. Free shipping across Colombia, always.",
+    intro: "Tees and hoodies. Free shipping across Colombia, always.",
     piecesLabel: "Pieces",
     lookbook: "Lookbook",
     tapToZoom: "Tap a photo to zoom in",

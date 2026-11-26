@@ -103,6 +103,7 @@ const catalog: Product[] = [
     ],
     care,
     images: [
+      photo("disidencia-gris-sofa", "Modelo sentado con la camiseta Disidencia gris: logo Sure al pecho y cuernos en la manga", "Frente", 960, 1200),
       photo("disidencia-gris-calle", "Modelo en la calle con la camiseta Disidencia gris y jean ancho", "Frente", 576, 720),
       photo("disidencia-gris-muro", "Espalda de la camiseta Disidencia gris frente a una pared con grafiti", "Espalda", 464, 580),
       photo("disidencia-gris-logo", "Detalle del logo Sure en cursiva al pecho de la camiseta Disidencia gris", "Detalle", 464, 580),
@@ -154,18 +155,31 @@ const catalog: Product[] = [
     fitNote: "Corte amplio. Para un fit regular, pide una talla menos.",
   },
   {
-    // Oculto hasta que lleguen las fotos: se agregan en images y se quita hidden
     slug: "zip-hoodie-conflict-unknown",
     name: "Zip hoodie Conflict Unknown",
     short: "Zip hoodie",
     color: "Negro",
     price: 180000,
     collection: "Disidencia",
-    description: "Zip hoodie negro Conflict Unknown, de la colección Disidencia.",
-    details: ["Cierre completo", "Capucha"],
+    description:
+      "Zip hoodie negro de corte amplio. En la espalda, un boxeador contra un esqueleto de pantaloneta y guantes rojos, con “Conflict unknown” en caligrafía roja. Adelante, los cuernos SURE bordados en rojo al pecho.",
+    details: [
+      "Corte amplio, hombro caído",
+      "Cierre completo y capucha",
+      "Cuernos SURE bordados en rojo al pecho",
+      "Espalda: boxeador contra esqueleto y “Conflict unknown” en rojo",
+      "Bolsillos delanteros",
+      "Puños y ruedo en resorte",
+    ],
     care,
-    images: [],
-    hidden: true,
+    images: [
+      photo("conflict-espalda", "Espalda del zip hoodie Conflict Unknown: boxeador contra esqueleto y Conflict unknown en rojo", "Espalda", 1200, 1500),
+      photo("conflict-frente", "Modelo con el zip hoodie Conflict Unknown abierto y los cuernos rojos al pecho", "Frente", 1333, 1666),
+      photo("conflict-pareja", "Modelo de frente con los cuernos al pecho y modelo de espaldas con el estampado del boxeador", "En modelo", 1333, 1666),
+      photo("conflict-espalda-ella", "Modelo de espaldas abriendo la capucha del zip hoodie Conflict Unknown", "Espalda", 1333, 1666),
+      photo("conflict-abierto", "Modelo sonriendo con el zip hoodie Conflict Unknown abierto sobre la camiseta Disidencia gris", "En modelo", 1200, 1500),
+      photo("conflict-sofa", "Pareja en un sofá: ella con el zip hoodie Conflict Unknown, él con la camiseta Disidencia gris", "En modelo", 960, 1200),
+    ],
     stock: { S: 20, M: 20, L: 20, XL: 20 },
     measurements: [
       { label: "Ancho de pecho", values: { S: 60, M: 63, L: 66, XL: 69 } },
@@ -237,6 +251,7 @@ const english: Record<string, ProductText> = {
     care: careEn,
     fitNote: "Oversized fit. For a closer fit, size down.",
     alts: [
+      "Model sitting in the grey Disidencia tee: Sure logo on the chest and horns on the sleeve",
       "Model on the street in the grey Disidencia tee and wide jeans",
       "Back of the grey Disidencia tee against a graffiti wall",
       "Close-up of the Sure script logo on the chest of the grey Disidencia tee",
@@ -251,11 +266,26 @@ const english: Record<string, ProductText> = {
     name: "Conflict Unknown Zip Hoodie",
     short: "Zip hoodie",
     color: "Black",
-    description: "The black Conflict Unknown zip hoodie, from the Disidencia collection.",
-    details: ["Full zip", "Hood"],
+    description:
+      "Relaxed black zip hoodie. On the back, a boxer squaring up to a skeleton in red shorts and gloves, with “Conflict unknown” in red script. On the front, the SURE horns embroidered in red on the chest.",
+    details: [
+      "Relaxed fit, dropped shoulder",
+      "Full zip and hood",
+      "SURE horns embroidered in red on the chest",
+      "Back: boxer vs. skeleton and “Conflict unknown” in red",
+      "Front pockets",
+      "Ribbed cuffs and hem",
+    ],
     care: careEn,
     fitNote: "Relaxed fit. For a regular fit, size down.",
-    alts: [],
+    alts: [
+      "Back of the Conflict Unknown zip hoodie: boxer vs. skeleton and Conflict unknown in red",
+      "Model in the open Conflict Unknown zip hoodie with the red horns on the chest",
+      "One model facing front with the horns on the chest, another from behind showing the boxer print",
+      "Model from behind pulling up the hood of the Conflict Unknown zip hoodie",
+      "Model smiling in the open Conflict Unknown zip hoodie over the grey Disidencia tee",
+      "Couple on a sofa: her in the Conflict Unknown zip hoodie, him in the grey Disidencia tee",
+    ],
     measurementLabels: measurementLabelsEn,
   },
   "hoodie-disidencia": {
